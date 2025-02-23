@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CQRSPattern.Migrator": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+﻿using CQRSPattern.Application.Constants;
+using CQRSPattern.Application.Infrastructure.Persistence.Database;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+
+namespace CQRSPattern.Migrator.Infra;
+
+public class DbContextFactory : IDesignTimeDbContextFactory<RealDbContext>
+{
+    public RealDbContext CreateDbContext(string[] args)
+    {
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environments.Development;
+
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{environment}.json")
+            .Build();
+
+        return new RealDbContext(configuration.GetConnectionString(Database.ConnectionStringName));
+    }
+}

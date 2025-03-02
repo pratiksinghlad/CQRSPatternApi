@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace CQRSPattern.Application.Infrastructure.Persistence.Database;
+namespace CQRSPattern.Infrastructure.Persistence.Database;
 
 public sealed class FakeDbContext : BaseDbContext
 {

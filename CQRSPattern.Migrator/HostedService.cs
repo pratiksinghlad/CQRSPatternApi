@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using CQRSPattern.Application.Constants;
-using CQRSPattern.Application.Infrastructure.Persistence.Database;
+using CQRSPattern.Infrastructure.Persistence.Database;
 
 namespace CQRSPattern.Migrator;
 

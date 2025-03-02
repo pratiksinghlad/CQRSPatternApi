@@ -5,7 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using CQRSPattern.Application.Infrastructure.Persistence.Database;
+using CQRSPattern.Infrastructure.Persistence.Database;
+using CQRSPattern.Application.Infrastructure.Infra;
+using System.Configuration;
 
 namespace CQRSPattern.Migrator;
 

@@ -1,4 +1,5 @@
 using Autofac;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -43,6 +44,8 @@ public partial class Startup
         LoadMediator(services);
         LoadScalar(services);
 
+        LoadHealthChecks(services);
+
         services.AddFeatureManagement(Configuration.GetSection("FeatureManagement"));
         services.AddMvc(options =>
         {
@@ -69,6 +72,18 @@ public partial class Startup
         {
             endpoints.MapControllers();
             endpoints.MapScalarApiReference();
+
+            endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions()
+            {
+                Predicate = (check) => true,
+                ResponseWriter = WriteResponse
+            });
+
+            endpoints.MapHealthChecks("/health/live", new HealthCheckOptions()
+            {
+                Predicate = (check) => false,
+                ResponseWriter = WriteResponse
+            });
         });
 
         app.UseCookiePolicy();

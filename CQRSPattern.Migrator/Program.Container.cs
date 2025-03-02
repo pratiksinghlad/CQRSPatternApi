@@ -1,5 +1,4 @@
-﻿
-using Autofac;
+﻿using Autofac;
 
 namespace CQRSPattern.Migrator;
 

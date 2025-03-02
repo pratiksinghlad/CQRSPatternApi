@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using CQRSPattern.Application.Infrastructure.Persistence.Database;
-using CQRSPattern.Application.Infrastructure.Persistence.Factories;
+using CQRSPattern.Infrastructure.Persistence.Database;
+using CQRSPattern.Infrastructure.Persistence.Factories;
 
 namespace CQRSPattern.Migrator;
 
@@ -15,7 +15,7 @@ public class Registrations : Module
 
     private void RegisterInfrastructurePersistence(ref ContainerBuilder builder)
     {
-        builder.RegisterType<SqlConnectionManager>().As<ISqlConnectionManager>().InstancePerLifetimeScope();
+        builder.RegisterType<MySqlConnectionManager>().As<IMySqlConnectionManager>().InstancePerLifetimeScope();
 
         builder.RegisterType<RealDbContext>().As<IDatabaseContext>().InstancePerLifetimeScope();
     }

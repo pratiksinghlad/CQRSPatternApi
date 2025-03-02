@@ -1,5 +1,5 @@
 ﻿using CQRSPattern.Application.Constants;
-using CQRSPattern.Application.Infrastructure.Persistence.Database;
+using CQRSPattern.Infrastructure.Persistence.Database;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +16,7 @@ public class DbContextFactory : IDesignTimeDbContextFactory<RealDbContext>
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{environment}.json")
+            .AddJsonFile("secrets/appsettings.secrets.json")
             .Build();
 
         return new RealDbContext(configuration.GetConnectionString(Database.ConnectionStringName));

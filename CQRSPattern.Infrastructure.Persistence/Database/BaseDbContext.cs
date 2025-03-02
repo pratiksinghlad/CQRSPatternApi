@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CQRSPattern.Infrastructure.Persistence.Configuration;
+using CQRSPattern.Infrastructure.Persistence.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace CQRSPattern.Application.Infrastructure.Persistence.Database;
+namespace CQRSPattern.Infrastructure.Persistence.Database;
 
 public class BaseDbContext : DbContext, IDatabaseContext
 {
@@ -22,7 +24,9 @@ public class BaseDbContext : DbContext, IDatabaseContext
 
     private void ApplyConfiguration(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("dbo");
+        modelBuilder.HasDefaultSchema(Application.Constants.Database.Schema);
+        modelBuilder.ApplyConfiguration(new EmployeeEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new DepartmentEntityConfiguration());
     }
 
     public virtual string GetNextSequenceId(string sequenceName)
@@ -31,4 +35,6 @@ public class BaseDbContext : DbContext, IDatabaseContext
     }
 
     public DbContext Context { get; }
+    public DbSet<EmployeeEntity> Employees { get; set; }
+    public DbSet<DepartmentEntity> Departments { get; set; }
 }

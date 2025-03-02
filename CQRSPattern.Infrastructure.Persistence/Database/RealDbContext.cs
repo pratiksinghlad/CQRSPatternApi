@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace CQRSPattern.Application.Infrastructure.Persistence.Database;
+namespace CQRSPattern.Infrastructure.Persistence.Database;
 
 public class RealDbContext : BaseDbContext
 {
@@ -34,9 +34,9 @@ public class RealDbContext : BaseDbContext
     {
         base.OnConfiguring(optionsBuilder);
 
-        optionsBuilder.UseSqlServer(_connectionString, dbContextOptionsBuilder =>
+        optionsBuilder.UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString), dbContextOptionsBuilder =>
         {
-            dbContextOptionsBuilder.MigrationsAssembly("CQRSPattern.Application.Infrastructure.Persistence");
+            dbContextOptionsBuilder.MigrationsAssembly("CQRSPattern.Infrastructure.Persistence");
 
             // Default is 30 seconds.
             dbContextOptionsBuilder.CommandTimeout(_timeout); 

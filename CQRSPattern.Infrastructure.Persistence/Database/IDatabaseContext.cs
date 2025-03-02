@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CQRSPattern.Application.Infrastructure.Persistence.Database;
+namespace CQRSPattern.Infrastructure.Persistence.Database;
 
 public interface IDatabaseContext
 { 

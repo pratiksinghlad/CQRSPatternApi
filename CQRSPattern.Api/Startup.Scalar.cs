@@ -9,7 +9,6 @@ public partial class Startup
     public static void LoadScalar(IServiceCollection services)
     {
         // Configure OpenAPI - use a single approach with Scalar
-        services.AddOpenApi();
         services.AddEndpointsApiExplorer();
         services.AddOpenApiDocument(config =>
         {

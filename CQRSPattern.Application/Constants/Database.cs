@@ -2,8 +2,7 @@
 
 public class Database
 {
-    public const string ConnectionStringName = "CQRSPatternDb";
-    public const string Schema = "";
+    public const string ConnectionStringWriteDbName = "WriteDb";
 
     #region Tables
 

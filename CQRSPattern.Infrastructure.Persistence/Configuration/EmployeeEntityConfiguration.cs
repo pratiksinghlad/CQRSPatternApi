@@ -15,7 +15,7 @@ public class EmployeeEntityConfiguration : IEntityTypeConfiguration<EmployeeEnti
         builder.Property(e => e.BirthDate)
             .IsRequired();
 
-        builder.Property(e => e.FirtName)
+        builder.Property(e => e.FirstName)
             .HasMaxLength(30)
             .IsRequired();
 

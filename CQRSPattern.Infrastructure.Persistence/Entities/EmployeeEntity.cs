@@ -1,4 +1,6 @@
-﻿namespace CQRSPattern.Infrastructure.Persistence.Entities;
+﻿using CQRSPattern.Application.Features.Employee;
+
+namespace CQRSPattern.Infrastructure.Persistence.Entities;
 
 public class EmployeeEntity
 {
@@ -15,7 +17,7 @@ public class EmployeeEntity
     /// <summary>
     /// First name.
     /// </summary>
-    public string FirtName { get; set; }
+    public string FirstName { get; set; }
 
     /// <summary>
     /// Last name.
@@ -31,4 +33,17 @@ public class EmployeeEntity
     /// Hire date.
     /// </summary>
     public DateTime HireDate { get; set; }
+
+    public EmployeeModel ToModel()
+    {
+        return new EmployeeModel
+        {
+            Id = Id,
+            BirthDate = BirthDate,
+            FirstName = FirstName,
+            LastName = LastName,
+            Gender = Gender,
+            HireDate = HireDate
+        };
+    }
 }

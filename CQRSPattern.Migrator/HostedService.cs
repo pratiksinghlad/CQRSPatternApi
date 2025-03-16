@@ -14,13 +14,11 @@ public class HostedService : IHostedService
     public HostedService(
         ILogger<HostedService> logger,
         IHostApplicationLifetime appLifetime,
-        IConfiguration configuration,
-        IDatabaseContext dbContext
+        IConfiguration configuration
         )
     {
         _logger = logger;
         _configuration = configuration;
-        _dbContext = dbContext;
 
         _appLifetime = appLifetime;
 
@@ -34,7 +32,7 @@ public class HostedService : IHostedService
         _logger.LogInformation($"1. {nameof(StartAsync)} has been called.");
 
         _logger.LogInformation($"Migrating database ...");
-        var dbContext = new RealDbContext(_configuration.GetConnectionString(Database.ConnectionStringName), 120);
+        var dbContext = new ReadDbContext(_configuration.GetConnectionString(Database.ConnectionStringWriteDbName), 120);
         await dbContext.Database.MigrateAsync(cancellationToken);
         _logger.LogInformation($"Migration done ...");
 
@@ -67,5 +65,4 @@ public class HostedService : IHostedService
 
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
-    private readonly IDatabaseContext _dbContext;
 }

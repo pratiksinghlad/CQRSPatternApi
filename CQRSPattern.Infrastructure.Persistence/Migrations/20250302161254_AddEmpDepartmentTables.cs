@@ -37,7 +37,7 @@ namespace CQRSPattern.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     BirthDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    FirtName = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
+                    FirstName = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),

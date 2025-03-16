@@ -17,6 +17,6 @@ public class Registrations : Module
     {
         builder.RegisterType<MySqlConnectionManager>().As<IMySqlConnectionManager>().InstancePerLifetimeScope();
 
-        builder.RegisterType<RealDbContext>().As<IDatabaseContext>().InstancePerLifetimeScope();
+        builder.RegisterType<WriteDbContext>().As<IDatabaseContext>().InstancePerLifetimeScope();
     }
 }

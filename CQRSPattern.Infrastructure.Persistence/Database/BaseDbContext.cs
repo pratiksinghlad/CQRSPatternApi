@@ -24,14 +24,8 @@ public class BaseDbContext : DbContext, IDatabaseContext
 
     private void ApplyConfiguration(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema(Application.Constants.Database.Schema);
         modelBuilder.ApplyConfiguration(new EmployeeEntityConfiguration());
         modelBuilder.ApplyConfiguration(new DepartmentEntityConfiguration());
-    }
-
-    public virtual string GetNextSequenceId(string sequenceName)
-    {
-        return string.Empty;
     }
 
     public DbContext Context { get; }

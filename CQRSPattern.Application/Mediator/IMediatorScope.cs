@@ -9,7 +9,7 @@ namespace CQRSPattern.Application.Mediator
         /// Asynchronously send a notification to multiple handlers
         /// </summary>
         /// <param name="notification">Notification object</param>
-        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <param name="cancellationToken">Optional cancellation cancellationToken</param>
         /// <returns>A task that represents the publish operation.</returns>
         Task PublishAsync(object notification, CancellationToken cancellationToken = default);
 
@@ -17,7 +17,7 @@ namespace CQRSPattern.Application.Mediator
         /// Asynchronously send a notification to multiple handlers
         /// </summary>
         /// <param name="notification">Notification object</param>
-        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <param name="cancellationToken">Optional cancellation cancellationToken</param>
         /// <returns>A task that represents the publish operation.</returns>
         Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
             where TNotification : INotification;
@@ -27,7 +27,7 @@ namespace CQRSPattern.Application.Mediator
         /// </summary>
         /// <typeparam name="TResponse">Response type</typeparam>
         /// <param name="request">Request object</param>
-        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <param name="cancellationToken">Optional cancellation cancellationToken</param>
         /// <returns>A task that represents the send operation. The task result contains the handler response</returns>
         Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
 
@@ -35,7 +35,7 @@ namespace CQRSPattern.Application.Mediator
         /// Asynchronously send an object request to a single handler via dynamic dispatch
         /// </summary>
         /// <param name="request">Request object</param>
-        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <param name="cancellationToken">Optional cancellation cancellationToken</param>
         /// <returns>A task that represents the send operation. The task result contains the type erased handler response</returns>
         Task<object?> SendAsync(object request, CancellationToken cancellationToken = default);
     }

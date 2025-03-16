@@ -1,9 +1,12 @@
 ﻿using Autofac;
 using CQRSPattern.Infrastructure.Persistence.Database;
 using CQRSPattern.Infrastructure.Persistence.Factories;
+using CQRSPattern.Infrastructure.Persistence.Repositories.Read;
 using CQRSPattern.Application.Mediator;
+using CQRSPattern.Application.Infrastructure.Infra;
 using CQRSPattern.Infrastructure.Mediator;
 using MediatR;
+using Microsoft.Extensions.Options;
 
 namespace CQRSPattern.Api;
 
@@ -23,6 +26,8 @@ public class Registrations : Module
         RegisterMediator(ref builder);
 
         RegisterInfrastructurePersistence(ref builder);
+
+        RegisterRepositories(ref builder);
     }
 
     private static void RegisterMediator(ref ContainerBuilder builder)
@@ -40,6 +45,24 @@ public class Registrations : Module
     private static void RegisterInfrastructurePersistence(ref ContainerBuilder builder)
     {
         builder.RegisterType<MySqlConnectionManager>().As<IMySqlConnectionManager>().InstancePerLifetimeScope();
-        builder.RegisterType<RealDbContext>().As<IDatabaseContext>().InstancePerLifetimeScope();
+        builder.Register(c =>
+        {
+            var config = c.Resolve<IOptions<ConnectionStrings>>();
+            var logger = c.Resolve<ILogger<ReadDbContext>>();
+            return new ReadDbContext(config, logger);
+        }).As<IReadDbContext>().AsSelf().InstancePerLifetimeScope();
+
+        builder.Register(c =>
+        {
+            var config = c.Resolve<IOptions<ConnectionStrings>>();
+            var logger = c.Resolve<ILogger<WriteDbContext>>();
+            return new WriteDbContext(config, logger);
+        }).As<IWriteDbContext>().AsSelf().InstancePerLifetimeScope();
+    }
+
+    private static void RegisterRepositories(ref ContainerBuilder builder)
+    {
+        builder.RegisterType<EmployeeReadRepository>().AsImplementedInterfaces();
+        builder.RegisterType<EmployeeWriteRepository>().AsImplementedInterfaces();
     }
 }

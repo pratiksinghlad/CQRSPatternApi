@@ -4,7 +4,7 @@
       <OutputType>Exe</OutputType>
 	  <TargetFramework>net8.0</TargetFramework>
 	  <ImplicitUsings>enable</ImplicitUsings>
-	  <UserSecretsId>94cc7c8b-6780-41c1-8b5b-08da42a5492b</UserSecretsId>
+    <UserSecretsId>c89d4701-1ea3-4832-a6aa-19f156f1ae4f</UserSecretsId>
     <StartupObject>CQRSPattern.Migrator.Program</StartupObject>
   </PropertyGroup>
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CQRSPattern.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(RealDbContext))]
+    [DbContext(typeof(ReadDbContext))]
     partial class RealDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -52,7 +52,7 @@ namespace CQRSPattern.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("FirtName")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");

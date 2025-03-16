@@ -6,9 +6,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace CQRSPattern.Migrator.Infra;
 
-public class DbContextFactory : IDesignTimeDbContextFactory<RealDbContext>
+public class DbContextFactory : IDesignTimeDbContextFactory<ReadDbContext>
 {
-    public RealDbContext CreateDbContext(string[] args)
+    public ReadDbContext CreateDbContext(string[] args)
     {
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environments.Development;
 
@@ -19,6 +19,6 @@ public class DbContextFactory : IDesignTimeDbContextFactory<RealDbContext>
             .AddJsonFile("secrets/appsettings.secrets.json")
             .Build();
 
-        return new RealDbContext(configuration.GetConnectionString(Database.ConnectionStringName));
+        return new ReadDbContext(configuration.GetConnectionString(Database.ConnectionStringWriteDbName));
     }
 }

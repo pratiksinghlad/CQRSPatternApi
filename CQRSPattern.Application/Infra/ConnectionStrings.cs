@@ -6,9 +6,14 @@
 public class ConnectionStrings
 {
     /// <summary>
-    /// Connection string to the Devops database
+    /// Connection string to the read database
     /// </summary>
-    public string CQRSPatternDb { get; set; }
+    public string ReadDb { get; set; }
+
+    /// <summary>
+    /// Connection string to the write database
+    /// </summary>
+    public string WriteDb { get; set; }
 
     /// <summary>
     /// Timeout of query

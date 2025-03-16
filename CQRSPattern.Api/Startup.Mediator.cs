@@ -1,4 +1,6 @@
+using CQRSPattern.Application.Features.Employee.Add;
 using CQRSPattern.Infrastructure.Mediator;
+using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
 
@@ -14,5 +16,8 @@ public partial class Startup
     {
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(MediatorValidationBehavior<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
+
+        AssemblyScanner.FindValidatorsInAssembly(typeof(AddEmployeeCommandValidator).Assembly)
+            .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
     }
 }

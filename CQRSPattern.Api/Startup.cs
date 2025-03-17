@@ -1,5 +1,6 @@
 using Autofac;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.FeatureManagement;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -25,6 +26,33 @@ public partial class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true; // This is important for https, by default it is disabled for https.
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+            new[] {
+                "application/json",
+                "application/javascript",
+                "text/css",
+                "text/html",
+                "text/json",
+                "text/plain",
+                "text/xml"
+            });
+        });
+
+        services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = System.IO.Compression.CompressionLevel.Fastest;
+        });
+
+        services.Configure<GzipCompressionProviderOptions>(options =>
+        {
+            options.Level = System.IO.Compression.CompressionLevel.Fastest;
+        });
+
         services.AddControllers();
 
         services.AddCors(options =>
@@ -49,10 +77,12 @@ public partial class Startup
         services.AddFeatureManagement(Configuration.GetSection("FeatureManagement"));
         services.AddMvc(options =>
         {
+            
         }).AddControllersAsServices()
         .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         services.AddMemoryCache();
         services.AddApiVersioning(options => options.ReportApiVersions = true);
+        
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -62,6 +92,7 @@ public partial class Startup
             app.UseDeveloperExceptionPage();
         }
 
+        app.UseResponseCompression();
         app.UseStatusCodePages();
         app.UseRouting();
         app.UseCors("AllowAll");

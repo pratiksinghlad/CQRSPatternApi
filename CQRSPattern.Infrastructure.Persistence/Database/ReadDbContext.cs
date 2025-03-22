@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace CQRSPattern.Infrastructure.Persistence.Database;
 
-public class ReadDbContext : BaseDbContext, IReadDbContext
+public class ReadDbContext : BaseDbContext, IDatabaseContext
 {
     private readonly string _connectionString;
     private readonly int _timeout;

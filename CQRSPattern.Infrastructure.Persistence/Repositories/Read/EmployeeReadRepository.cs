@@ -7,7 +7,7 @@ namespace CQRSPattern.Infrastructure.Persistence.Repositories.Read;
 
 public class EmployeeReadRepository : IEmployeeReadRepository
 {
-    public EmployeeReadRepository(ReadDbContext dbContext)
+    public EmployeeReadRepository(IDatabaseContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -22,5 +22,5 @@ public class EmployeeReadRepository : IEmployeeReadRepository
         return employees;
     }
 
-    private readonly ReadDbContext _dbContext;
+    private readonly IDatabaseContext _dbContext;
 }

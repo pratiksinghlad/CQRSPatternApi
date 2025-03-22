@@ -4,6 +4,8 @@
 ![EF](https://img.shields.io/badge/-Entity_Framework-8C3D65?logo=dotnet&logoColor=white)
 ![Openapi](https://img.shields.io/badge/Docs-OpenAPI%208.0-success?style=flat-square)
 ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?logo=swagger&logoColor=white)
+![XUnit](https://img.shields.io/nuget/v/xunit?label=xunit)
+![MSTest](https://img.shields.io/nuget/v/Microsoft.NET.Test.Sdk?label=Microsoft.NET.Test.Sdk)
 ![Rest](https://img.shields.io/badge/rest-40AEF0?logo=rest&logoColor=white)
 ![HTTP3](https://img.shields.io/badge/HTTP%203-v3.0-brightgreen)
 ![HTTP2](https://img.shields.io/badge/HTTP%202-v2.0-blue)
@@ -13,6 +15,9 @@ Command Query Responsibility Segregation (CQRS) is a software architectural patt
 
 This repository demonstrates the **CQRS (Command Query Responsibility Segregation)** pattern using **.NET 8**. The project incorporates the **MediatR** library to enable flexible and standardized querying of data. It also features **OpenAPI documentation** for seamless exploration and understanding of the API. The application uses **Entity Framework** for data access, with two separate databases: one for write operations and another for read operations.
 **HTTP/3/2/1** fallback code supports **Brotli** compression and falls back to **Gzip** for **response compression**.
+**XUnit** Unit test for our projects.
+
+![cqrs_pattern](./Screenshots/CQRS_Pattern.jpg)
 
 # Project structure / technology
 `Onion Layer principle` Dependencies can only be made 1 way. From outside to the inside.

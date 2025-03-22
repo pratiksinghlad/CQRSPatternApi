@@ -1,6 +1,4 @@
-﻿using CQRSPattern.Application.Features.Employee;
-
-namespace CQRSPattern.Application.Features.Employee.GetAll;
+﻿namespace CQRSPattern.Application.Features.Employee.GetAll;
 
 public class GetAllQueryResult
 {

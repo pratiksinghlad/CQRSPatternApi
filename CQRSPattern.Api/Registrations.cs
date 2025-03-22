@@ -50,14 +50,14 @@ public class Registrations : Module
             var config = c.Resolve<IOptions<ConnectionStrings>>();
             var logger = c.Resolve<ILogger<ReadDbContext>>();
             return new ReadDbContext(config, logger);
-        }).As<IReadDbContext>().AsSelf().InstancePerLifetimeScope();
+        }).As<IDatabaseContext>().AsSelf().InstancePerLifetimeScope();
 
         builder.Register(c =>
         {
             var config = c.Resolve<IOptions<ConnectionStrings>>();
             var logger = c.Resolve<ILogger<WriteDbContext>>();
             return new WriteDbContext(config, logger);
-        }).As<IWriteDbContext>().AsSelf().InstancePerLifetimeScope();
+        }).As<IDatabaseContext>().AsSelf().InstancePerLifetimeScope();
     }
 
     private static void RegisterRepositories(ref ContainerBuilder builder)

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace CQRSPattern.Infrastructure.Persistence.Database;
 
-public class WriteDbContext : BaseDbContext, IWriteDbContext
+public class WriteDbContext : BaseDbContext, IDatabaseContext
 {
     private readonly string _connectionString;
     private readonly int _timeout;
@@ -25,7 +25,7 @@ public class WriteDbContext : BaseDbContext, IWriteDbContext
 
     public WriteDbContext(IOptions<ConnectionStrings> connectionStrings, ILogger<WriteDbContext> logger) : base()
     {
-        _connectionString = connectionStrings.Value.ReadDb;
+        _connectionString = connectionStrings.Value.WriteDb;
         _timeout = connectionStrings.Value.SqlTimeoutInSeconds;
         _logger = logger;
     }

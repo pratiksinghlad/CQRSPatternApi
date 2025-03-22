@@ -7,7 +7,7 @@ namespace CQRSPattern.Infrastructure.Persistence.Repositories.Read;
 
 public class EmployeeWriteRepository : IEmployeeWriteRepository
 {
-    public EmployeeWriteRepository(WriteDbContext dbContext)
+    public EmployeeWriteRepository(IDatabaseContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -46,5 +46,5 @@ public class EmployeeWriteRepository : IEmployeeWriteRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private readonly WriteDbContext _dbContext;
+    private readonly IDatabaseContext _dbContext;
 }

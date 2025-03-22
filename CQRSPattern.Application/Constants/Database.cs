@@ -3,6 +3,7 @@
 public class Database
 {
     public const string ConnectionStringWriteDbName = "WriteDb";
+    public const string ConnectionStringReadDbName = "ReadDb";
 
     #region Tables
 

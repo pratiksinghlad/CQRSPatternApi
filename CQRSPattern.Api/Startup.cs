@@ -102,7 +102,16 @@ public partial class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapScalarApiReference();
+            endpoints.MapScalarApiReference(opt =>
+            {
+                opt.Title = $"CQRS API Documentation - {env.EnvironmentName}";
+                if(env.IsDevelopment())
+                    opt.Theme = ScalarTheme.DeepSpace;
+                else if (env.IsStaging())
+                    opt.Theme = ScalarTheme.BluePlanet;
+                else
+                    opt.Theme = ScalarTheme.Purple;
+            });
 
             endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions()
             {

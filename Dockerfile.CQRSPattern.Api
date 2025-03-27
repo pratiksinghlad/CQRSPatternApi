@@ -1,0 +1,37 @@
+# Stage 1: Build and publish the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy solution and project files
+COPY ["CQRSPattern.sln", "./"]
+COPY ["CQRSPattern.Api/CQRSPattern.Api.csproj", "CQRSPattern.Api/"]
+COPY ["CQRSPattern.Application/CQRSPattern.Application.csproj", "CQRSPattern.Application/"]
+COPY ["CQRSPattern.Infrastructure.Mediator/CQRSPattern.Infrastructure.Mediator.csproj", "CQRSPattern.Infrastructure.Mediator/"]
+COPY ["CQRSPattern.Infrastructure.Persistence/CQRSPattern.Infrastructure.Persistence.csproj", "CQRSPattern.Infrastructure.Persistence/"]
+COPY ["CQRSPattern.Shared.Test/CQRSPattern.Shared.Test.csproj", "CQRSPattern.Shared.Test/"]
+
+# Restore dependencies
+RUN dotnet restore "CQRSPattern.Api/CQRSPattern.Api.csproj"
+
+# Copy the rest of the code
+COPY . .
+
+# Build and publish
+RUN dotnet publish "CQRSPattern.Api/CQRSPattern.Api.csproj" -c Release -o /app/publish
+
+# Stage 2: Build the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Make sure files can be accessed
+RUN chmod +x /app
+
+# Configure environment variables
+ENV ASPNETCORE_URLS=http://+:80;
+ENV ASPNETCORE_ENVIRONMENT=Local
+
+# Expose ports
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "CQRSPattern.Api.dll"]

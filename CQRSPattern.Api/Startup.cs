@@ -82,7 +82,6 @@ public partial class Startup
         .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         services.AddMemoryCache();
         services.AddApiVersioning(options => options.ReportApiVersions = true);
-        
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

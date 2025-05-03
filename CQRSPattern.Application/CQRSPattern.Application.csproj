@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
 	<ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EnableSourceGeneration>true</EnableSourceGeneration>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <WarningsAsErrors>CS0169;CS0219;CS0162</WarningsAsErrors> <!-- CS0169 PRIVATE MEMBER Treat unused variable warnings as errors and Unreachable Code after a retur -->
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+    <UseHotReload>true</UseHotReload>
   </PropertyGroup>
 
   <ItemGroup>

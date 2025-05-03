@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using CQRSPattern.Api.Services;
 using CQRSPattern.Infrastructure.Persistence.Database;
 using CQRSPattern.Infrastructure.Persistence.Factories;
 using CQRSPattern.Infrastructure.Persistence.Repositories.Read;
@@ -28,6 +29,8 @@ public class Registrations : Module
         RegisterInfrastructurePersistence(ref builder);
 
         RegisterRepositories(ref builder);
+        
+        RegisteredServices(ref builder);
     }
 
     private static void RegisterMediator(ref ContainerBuilder builder)
@@ -64,5 +67,11 @@ public class Registrations : Module
     {
         builder.RegisterType<EmployeeReadRepository>().AsImplementedInterfaces();
         builder.RegisterType<EmployeeWriteRepository>().AsImplementedInterfaces();
+        builder.RegisterType<WeatherForecastRepository>().AsImplementedInterfaces();
+    }
+    
+    private static void RegisteredServices(ref ContainerBuilder builder)
+    {
+        builder.RegisterType<ServerSentEventsService>().SingleInstance();
     }
 }

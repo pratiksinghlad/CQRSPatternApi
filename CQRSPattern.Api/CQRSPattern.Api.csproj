@@ -5,6 +5,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>c89d4701-1ea3-4832-a6aa-19f156f1ae4f</UserSecretsId>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EnableSourceGeneration>true</EnableSourceGeneration>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <WarningsAsErrors>CS0169;CS0219;CS0162</WarningsAsErrors> <!-- CS0169 PRIVATE MEMBER Treat unused variable warnings as errors and Unreachable Code after a retur -->
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+    <UseHotReload>true</UseHotReload>
   </PropertyGroup>
 
   <ItemGroup>

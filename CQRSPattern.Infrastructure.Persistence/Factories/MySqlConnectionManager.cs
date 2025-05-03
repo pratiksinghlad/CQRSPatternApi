@@ -8,6 +8,7 @@ public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
     private readonly IConfiguration _configuration;
     private MySqlConnection _mySqlConnection;
     private bool _disposed;
+    private readonly SemaphoreSlim _lock= new (1,1);
 
     public MySqlConnectionManager(IConfiguration configuration)
     {
@@ -22,7 +23,12 @@ public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
         var connectionString = _configuration.GetConnectionString(Application.Constants.Database.ConnectionStringWriteDbName);
         _mySqlConnection = new MySqlConnection(connectionString);
 
+        _lock.Wait();
+
+        _lock.Release();
         return _mySqlConnection;
+
+        
     }
 
     public void Dispose()

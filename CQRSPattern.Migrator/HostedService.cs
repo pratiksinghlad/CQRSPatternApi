@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CQRSPattern.Application.Constants;
+using CQRSPattern.Infrastructure.Persistence.Database;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using CQRSPattern.Application.Constants;
-using CQRSPattern.Infrastructure.Persistence.Database;
 
 namespace CQRSPattern.Migrator;
 
@@ -15,7 +15,7 @@ public class HostedService : IHostedService
         ILogger<HostedService> logger,
         IHostApplicationLifetime appLifetime,
         IConfiguration configuration
-        )
+    )
     {
         _logger = logger;
         _configuration = configuration;
@@ -25,20 +25,22 @@ public class HostedService : IHostedService
         _appLifetime.ApplicationStarted.Register(OnStarted);
         _appLifetime.ApplicationStopping.Register(OnStopping);
         _appLifetime.ApplicationStopped.Register(OnStopped);
-
     }
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation($"1. {nameof(StartAsync)} has been called.");
 
         _logger.LogInformation($"Migrating database ...");
-        var dbContext = new ReadDbContext(_configuration.GetConnectionString(Database.ConnectionStringWriteDbName), 120);
+        using var dbContext = new ReadDbContext(
+            _configuration.GetConnectionString(Database.ConnectionStringWriteDbName),
+            120
+        );
         await dbContext.Database.MigrateAsync(cancellationToken);
         _logger.LogInformation($"Migration done ...");
 
         await dbContext.SaveChangesAsync(cancellationToken);
     }
-
 
     public Task StopAsync(CancellationToken cancellationToken)
     {

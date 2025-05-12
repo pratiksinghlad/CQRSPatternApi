@@ -22,10 +22,13 @@ public class MockedHttpClient
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>()
                 )
-            .ReturnsAsync(new HttpResponseMessage()
-            {
-                StatusCode = System.Net.HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(objectToBeReturnedByApi))
+            .ReturnsAsync(() => {
+                var response = new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    Content = new StringContent(JsonConvert.SerializeObject(objectToBeReturnedByApi))
+                };
+                return response;
             })
             .Verifiable();
         var client = new HttpClient(handlerMock.Object) { BaseAddress = new Uri("https://omp.unit.test") };

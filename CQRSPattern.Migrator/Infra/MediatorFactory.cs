@@ -11,6 +11,7 @@ public class MediatorFactory : IMediatorFactory
     {
         _lifetimeScope = lifetimeScope;
     }
+
     public IMediatorScope CreateScope()
     {
         return _lifetimeScope.Resolve<IMediatorScope>();

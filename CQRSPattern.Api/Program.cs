@@ -21,12 +21,18 @@ public class Program
             {
                 webBuilder.UseStartup<Startup>();
             })
-            .ConfigureAppConfiguration((context, builder) =>
-            {
-                builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                builder.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true, true);
-                builder.AddJsonFile("secrets/appsettings.secrets.json", true, true);
-                builder.AddUserSecrets<Program>();
-                builder.AddEnvironmentVariables();
-            });
+            .ConfigureAppConfiguration(
+                (context, builder) =>
+                {
+                    builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    builder.AddJsonFile(
+                        $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
+                        true,
+                        true
+                    );
+                    builder.AddJsonFile("secrets/appsettings.secrets.json", true, true);
+                    builder.AddUserSecrets<Program>();
+                    builder.AddEnvironmentVariables();
+                }
+            );
 }

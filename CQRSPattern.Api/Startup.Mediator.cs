@@ -17,7 +17,8 @@ public partial class Startup
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(MediatorValidationBehavior<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
 
-        AssemblyScanner.FindValidatorsInAssembly(typeof(AddEmployeeCommandValidator).Assembly)
+        AssemblyScanner
+            .FindValidatorsInAssembly(typeof(AddEmployeeCommandValidator).Assembly)
             .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
     }
 }

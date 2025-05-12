@@ -1,7 +1,7 @@
-﻿using FluentValidation;
-using MediatR.Pipeline;
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
+using FluentValidation;
+using MediatR.Pipeline;
 
 namespace CQRSPattern.Infrastructure.Mediator
 {
@@ -45,17 +45,19 @@ namespace CQRSPattern.Infrastructure.Mediator
 
         private IEnumerable<MediatorAssemblyScannerResult> Execute()
         {
-            var query = from type in _types
-                        where !type.IsAbstract && !type.IsGenericTypeDefinition
-                        let interfaces = type.GetInterfaces()
-                        let genericInterfaces = interfaces.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == _typeToFind)
-                        let matchingInterface = genericInterfaces.FirstOrDefault()
-                        where matchingInterface != null
-                        select new MediatorAssemblyScannerResult(matchingInterface, type);
+            var query =
+                from type in _types
+                where !type.IsAbstract && !type.IsGenericTypeDefinition
+                let interfaces = type.GetInterfaces()
+                let genericInterfaces = interfaces.Where(i =>
+                    i.IsGenericType && i.GetGenericTypeDefinition() == _typeToFind
+                )
+                let matchingInterface = genericInterfaces.FirstOrDefault()
+                where matchingInterface != null
+                select new MediatorAssemblyScannerResult(matchingInterface, type);
 
             return query;
         }
-
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection.

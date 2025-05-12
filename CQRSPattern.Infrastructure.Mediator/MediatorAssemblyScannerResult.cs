@@ -6,10 +6,10 @@
     public class MediatorAssemblyScannerResult
     {
         /// <summary>
-		/// Validator interface type, e.g. IPreProcessor&lt;AddLogicMediatorCommand&gt;
+        /// Validator interface type, e.g. IPreProcessor&lt;AddLogicMediatorCommand&gt;
         /// <code>IPreProcessor&lt;AddLogicMediatorCommand&gt;</code>
-		/// </summary>
-		public Type InterfaceType { get; private set; }
+        /// </summary>
+        public Type InterfaceType { get; private set; }
 
         /// <summary>
         /// Concrete type that implements the InterfaceType

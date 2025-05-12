@@ -9,6 +9,6 @@ public class Database
 
     public const string TableEmployee = "Employee";
     public const string TableDepartment = "Department";
-    
+
     #endregion
 }

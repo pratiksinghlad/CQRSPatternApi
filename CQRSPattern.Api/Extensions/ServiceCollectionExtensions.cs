@@ -1,6 +1,6 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.FeatureManagement;
-using System.Text.Json.Serialization;
 
 namespace CQRSPattern.Api.Extensions;
 
@@ -12,18 +12,23 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds and configures API-specific services
     /// </summary>
-    public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApiServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
-        services.AddControllers()
-            .AddJsonOptions(options => 
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        services
+            .AddControllers()
+            .AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+            );
 
         services.AddApiVersioning(options => options.ReportApiVersions = true);
         services.AddMemoryCache();
         services.AddHttpContextAccessor();
         services.AddResponseCaching();
         services.AddFeatureManagement(configuration.GetSection("FeatureManagement"));
-        
+
         return services;
     }
 
@@ -38,15 +43,17 @@ public static class ServiceCollectionExtensions
             options.Providers.Add<BrotliCompressionProvider>();
             options.Providers.Add<GzipCompressionProvider>();
             options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                new[] {
+                new[]
+                {
                     "application/json",
                     "application/javascript",
                     "text/css",
                     "text/html",
                     "text/json",
                     "text/plain",
-                    "text/xml"
-                });
+                    "text/xml",
+                }
+            );
         });
 
         services.Configure<BrotliCompressionProviderOptions>(options =>
@@ -69,20 +76,22 @@ public static class ServiceCollectionExtensions
     {
         services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll", policy =>
-            {
-                policy.AllowAnyOrigin()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader();
-            });
-            
+            options.AddPolicy(
+                "AllowAll",
+                policy =>
+                {
+                    policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                }
+            );
+
             // Consider adding more restricted policies for production
-            options.AddPolicy("Production", policy =>
-            {
-                policy.WithOrigins("https://yourdomain.com")
-                      .AllowAnyMethod()
-                      .AllowAnyHeader();
-            });
+            options.AddPolicy(
+                "Production",
+                policy =>
+                {
+                    policy.WithOrigins("https://yourdomain.com").AllowAnyMethod().AllowAnyHeader();
+                }
+            );
         });
 
         return services;

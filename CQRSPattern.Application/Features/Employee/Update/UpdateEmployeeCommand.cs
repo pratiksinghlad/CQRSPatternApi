@@ -14,10 +14,7 @@ public class UpdateEmployeeCommand : IRequest<Unit>
     /// <summary>
     /// Default CTor
     /// </summary>
-    public UpdateEmployeeCommand()
-    {
-
-    }
+    public UpdateEmployeeCommand() { }
 
     /// <summary>
     /// Create new instance of the command.
@@ -29,13 +26,20 @@ public class UpdateEmployeeCommand : IRequest<Unit>
     /// <param name="birthDate"></param>
     /// <param name="hireDate"></param>
     /// <returns></returns>
-    public static UpdateEmployeeCommand CreateCommand(int id, string firstName, string lastName, string gender, DateTime birthDate, DateTime hireDate)
+    public static UpdateEmployeeCommand CreateCommand(
+        int id,
+        string firstName,
+        string lastName,
+        string gender,
+        DateTime birthDate,
+        DateTime hireDate
+    )
     {
         return new UpdateEmployeeCommand()
         {
             Id = id,
             FirstName = firstName,
-            LastName = lastName,    
+            LastName = lastName,
             Gender = gender,
             BirthDate = birthDate,
             HireDate = hireDate,

@@ -1,5 +1,5 @@
-﻿using MediatR;
-using CQRSPattern.Application.Mediator;
+﻿using CQRSPattern.Application.Mediator;
+using MediatR;
 
 namespace CQRSPattern.Infrastructure.Mediator
 {
@@ -23,7 +23,10 @@ namespace CQRSPattern.Infrastructure.Mediator
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task PublishAsync(object notification, CancellationToken cancellationToken = default)
+        public async Task PublishAsync(
+            object notification,
+            CancellationToken cancellationToken = default
+        )
         {
             await _mediator.Publish(notification, cancellationToken);
         }
@@ -35,7 +38,11 @@ namespace CQRSPattern.Infrastructure.Mediator
         /// <param name="notification"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken = default) where TNotification : INotification
+        public async Task PublishAsync<TNotification>(
+            TNotification notification,
+            CancellationToken cancellationToken = default
+        )
+            where TNotification : INotification
         {
             await _mediator.Publish(notification, cancellationToken);
         }
@@ -47,7 +54,10 @@ namespace CQRSPattern.Infrastructure.Mediator
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
+        public async Task<TResponse> SendAsync<TResponse>(
+            IRequest<TResponse> request,
+            CancellationToken cancellationToken = default
+        )
         {
             return await _mediator.Send(request, cancellationToken);
         }
@@ -58,7 +68,10 @@ namespace CQRSPattern.Infrastructure.Mediator
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<object?> SendAsync(object request, CancellationToken cancellationToken = default)
+        public async Task<object?> SendAsync(
+            object request,
+            CancellationToken cancellationToken = default
+        )
         {
             return await _mediator.Send(request, cancellationToken);
         }

@@ -2,7 +2,8 @@
 
 namespace CQRSPattern.Shared.Test;
 
-public class GenericBuilder<T> : IBuilder<T> where T : class
+public class GenericBuilder<T> : IBuilder<T>
+    where T : class
 {
     public T Item { get; private set; }
 
@@ -15,6 +16,7 @@ public class GenericBuilder<T> : IBuilder<T> where T : class
     {
         Item = ctor();
     }
+
     public GenericBuilder<T> SetDefaults(Action<T> action)
     {
         action(Item);
@@ -29,8 +31,14 @@ public class GenericBuilder<T> : IBuilder<T> where T : class
 
     public IBuilder<T> With<TProp>(Expression<Func<T, TProp>> expression, TProp value)
     {
-        var prop = typeof(T).GetProperty(((MemberExpression)expression.Body).Member.Name, BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty);
-        prop.SetValue(Item, value, null);
+        var prop = typeof(T).GetProperty(
+            ((MemberExpression)expression.Body).Member.Name,
+            BindingFlags.Instance
+                | BindingFlags.GetProperty
+                | BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.SetProperty
+        );
 
         return this;
     }

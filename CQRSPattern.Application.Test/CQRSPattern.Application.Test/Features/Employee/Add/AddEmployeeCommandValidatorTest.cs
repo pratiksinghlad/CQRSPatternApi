@@ -18,10 +18,16 @@ public class AddEmployeeCommandValidatorTest
     [InlineData("John", "Doe", "", "2025-01-01", "2005-01-01", true)] // Invalid Gender
     [InlineData("John", "Doe", "M", "2010-01-01", "2005-01-01", true)] // Invalid HireDate (in the past)
     [InlineData("John", "Doe", "M", "2025-01-01", "2010-01-01", true)] // Invalid BirthDate (under 18)
-
     [InlineData("John", "Doe", "M", "2025-01-01", "1990-01-01", false)] // Valid BirthDate (over 18)
     [InlineData("John", "Doe", "M", "2025-01-01", "2005-01-01", false)] // Valid Input
-    public void Should_Validate_All_Rules_Correctly(string firstName, string lastName, string gender, string hireDate, string birthDate, bool shouldHaveError)
+    public void Should_Validate_All_Rules_Correctly(
+        string firstName,
+        string lastName,
+        string gender,
+        string hireDate,
+        string birthDate,
+        bool shouldHaveError
+    )
     {
         // Arrange: Create the AddEmployeeCommand with the parameters provided by InlineData
         var command = new AddEmployeeCommand
@@ -30,7 +36,7 @@ public class AddEmployeeCommandValidatorTest
             LastName = lastName,
             Gender = gender,
             HireDate = DateTime.Parse(hireDate),
-            BirthDate = DateTime.Parse(birthDate)
+            BirthDate = DateTime.Parse(birthDate),
         };
 
         // Act: Validate the command

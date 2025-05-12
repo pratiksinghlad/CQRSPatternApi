@@ -5,7 +5,7 @@ namespace CQRSPattern.Application.Repositories.Write;
 public interface IEmployeeWriteRepository
 {
     /// <summary>
-    /// Add employee. 
+    /// Add employee.
     /// </summary>
     /// <param name="employee"></param>
     /// <param name="cancellationToken"></param>
@@ -13,7 +13,7 @@ public interface IEmployeeWriteRepository
     Task AddAsync(EmployeeModel employee, CancellationToken cancellationToken);
 
     /// <summary>
-    /// update employee. 
+    /// update employee.
     /// </summary>
     /// <param name="employee"></param>
     /// <param name="cancellationToken"></param>

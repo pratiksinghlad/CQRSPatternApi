@@ -15,7 +15,10 @@ public class Registrations : Module
 
     private void RegisterInfrastructurePersistence(ref ContainerBuilder builder)
     {
-        builder.RegisterType<MySqlConnectionManager>().As<IMySqlConnectionManager>().InstancePerLifetimeScope();
+        builder
+            .RegisterType<MySqlConnectionManager>()
+            .As<IMySqlConnectionManager>()
+            .InstancePerLifetimeScope();
 
         builder.RegisterType<WriteDbContext>().As<IDatabaseContext>().InstancePerLifetimeScope();
     }

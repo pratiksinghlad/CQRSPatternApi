@@ -30,7 +30,7 @@ public class EmployeesController : ControllerBase
     {
         var scope = _factory.CreateScope();
         var result = await scope.SendAsync(GetAllQuery.Create(), cancellationToken);
-        
+
         return result.Data;
     }
 
@@ -41,7 +41,10 @@ public class EmployeesController : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] Request request, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync(
+        [FromBody] Request request,
+        CancellationToken cancellationToken
+    )
     {
         var scope = _factory.CreateScope();
         await scope.SendAsync(request.ToMediator(), cancellationToken);
@@ -57,7 +60,11 @@ public class EmployeesController : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAsync(int id, [FromBody] Update.Request request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateAsync(
+        int id,
+        [FromBody] Update.Request request,
+        CancellationToken cancellationToken
+    )
     {
         var scope = _factory.CreateScope();
         await scope.SendAsync(request.ToMediator(id), cancellationToken);

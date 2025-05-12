@@ -7,9 +7,7 @@ public class GetAllQuery : IRequest<GetAllQueryResult>
     /// <summary>
     /// Default CTor
     /// </summary>
-    public GetAllQuery()
-    {
-    }
+    public GetAllQuery() { }
 
     /// <summary>
     /// Create new instance of the query.
@@ -17,9 +15,6 @@ public class GetAllQuery : IRequest<GetAllQueryResult>
     /// <returns></returns>
     public static GetAllQuery Create()
     {
-        return new GetAllQuery()
-        {
-            
-        };
+        return new GetAllQuery() { };
     }
 }

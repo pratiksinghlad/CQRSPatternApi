@@ -10,7 +10,10 @@ public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeComman
         _employeeRepo = employeeRepo;
     }
 
-    public async Task<Unit> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(
+        UpdateEmployeeCommand request,
+        CancellationToken cancellationToken
+    )
     {
         EmployeeModel employee = new()
         {

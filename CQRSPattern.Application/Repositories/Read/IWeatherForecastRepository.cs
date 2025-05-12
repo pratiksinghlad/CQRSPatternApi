@@ -9,7 +9,7 @@ public interface IWeatherForecastRepository
     WeatherForecast Add(WeatherForecast forecast);
     WeatherForecast? Update(WeatherForecast forecast);
     bool Delete(int id);
-        
+
     // Event for data changes
     event Action<WeatherForecast> OnDataChange;
 }

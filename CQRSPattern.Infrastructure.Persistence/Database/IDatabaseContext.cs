@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CQRSPattern.Infrastructure.Persistence.Database;
 
 public interface IDatabaseContext
-{ 
+{
     /// <summary>
     /// Commit changes to database.
     /// </summary>

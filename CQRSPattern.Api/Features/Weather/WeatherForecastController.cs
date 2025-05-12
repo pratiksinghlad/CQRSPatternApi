@@ -17,7 +17,8 @@ public class WeatherForecastController : ControllerBase
     public WeatherForecastController(
         IWeatherForecastRepository repository,
         ServerSentEventsService sseService,
-        ILogger<WeatherForecastController> logger)
+        ILogger<WeatherForecastController> logger
+    )
     {
         _repository = repository;
         _sseService = sseService;

@@ -14,10 +14,10 @@ public class EmployeeReadRepository : IEmployeeReadRepository
 
     public async Task<IEnumerable<EmployeeModel>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var employees = await _dbContext.Employees
-                        .Select(e => e.ToModel())
-                        .AsNoTracking()
-                        .ToListAsync(cancellationToken);
+        var employees = await _dbContext
+            .Employees.Select(e => e.ToModel())
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
 
         return employees;
     }

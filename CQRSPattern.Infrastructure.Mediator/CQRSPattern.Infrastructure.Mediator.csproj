@@ -1,18 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <!-- Project-specific settings can be added here if needed -->
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
-    <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="12.3.0" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\CQRSPattern.Application\CQRSPattern.Application.csproj" />
   </ItemGroup>
-
 </Project>

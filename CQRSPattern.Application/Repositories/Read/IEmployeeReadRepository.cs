@@ -5,7 +5,7 @@ namespace CQRSPattern.Application.Repositories.Read;
 public interface IEmployeeReadRepository
 {
     /// <summary>
-    /// Get all employees. 
+    /// Get all employees.
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>

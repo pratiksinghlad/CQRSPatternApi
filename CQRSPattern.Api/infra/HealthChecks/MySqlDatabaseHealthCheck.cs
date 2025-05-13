@@ -18,16 +18,19 @@ public class MySqlDatabaseHealthCheck : IHealthCheck
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context,
+        CancellationToken cancellationToken = new CancellationToken()
+    )
     {
         try
         {
-            using(var connection = _sqlConnection.Get())
+            using (var connection = _sqlConnection.Get())
             {
                 await connection.OpenAsync(cancellationToken);
                 await connection.CloseAsync();

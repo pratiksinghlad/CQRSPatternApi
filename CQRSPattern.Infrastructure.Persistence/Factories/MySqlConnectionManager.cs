@@ -1,5 +1,5 @@
-﻿using MySqlConnector;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 
 namespace CQRSPattern.Infrastructure.Persistence.Factories;
 
@@ -8,7 +8,7 @@ public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
     private readonly IConfiguration _configuration;
     private MySqlConnection _mySqlConnection;
     private bool _disposed;
-    private readonly SemaphoreSlim _lock= new (1,1);
+    private readonly SemaphoreSlim _lock = new(1, 1);
 
     public MySqlConnectionManager(IConfiguration configuration)
     {
@@ -17,18 +17,24 @@ public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
 
     public MySqlConnection Get()
     {
-        if (_mySqlConnection != null) return _mySqlConnection;
-
-        // Ensure the connection string is a valid MySQL connection string.
-        var connectionString = _configuration.GetConnectionString(Application.Constants.Database.ConnectionStringWriteDbName);
-        _mySqlConnection = new MySqlConnection(connectionString);
-
         _lock.Wait();
+        try
+        {
+            if (_mySqlConnection != null)
+            {
+                return _mySqlConnection;
+            }
 
-        _lock.Release();
-        return _mySqlConnection;
-
-        
+            var connectionString = _configuration.GetConnectionString(
+                Application.Constants.Database.ConnectionStringWriteDbName
+            );
+            _mySqlConnection = new MySqlConnection(connectionString);
+            return _mySqlConnection;
+        }
+        finally
+        {
+            _lock.Release();
+        }
     }
 
     public void Dispose()

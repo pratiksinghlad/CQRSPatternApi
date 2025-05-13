@@ -10,7 +10,10 @@ public class GetAllQueryHandler : IRequestHandler<GetAllQuery, GetAllQueryResult
         _employeeRepo = employeeRepo;
     }
 
-    public async Task<GetAllQueryResult> Handle(GetAllQuery request, CancellationToken cancellationToken)
+    public async Task<GetAllQueryResult> Handle(
+        GetAllQuery request,
+        CancellationToken cancellationToken
+    )
     {
         var result = await _employeeRepo.GetAllAsync(cancellationToken);
 

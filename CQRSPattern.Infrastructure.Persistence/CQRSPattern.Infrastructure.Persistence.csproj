@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-	<ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>3c39b77e-5a12-4725-bbbb-e8212ded6c53</UserSecretsId>
     <OutputType>Library</OutputType>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Converters\**" />
     <Compile Remove="Generated\**" />
@@ -15,24 +11,20 @@
     <None Remove="Converters\**" />
     <None Remove="Generated\**" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.2" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\CQRSPattern.Application\CQRSPattern.Application.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Migrations\" />
   </ItemGroup>
-
 </Project>

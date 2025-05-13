@@ -13,22 +13,25 @@ public class AddEmployeeCommand : IRequest<Unit>
     /// <summary>
     /// Default CTor (for builders in testing)
     /// </summary>
-    public AddEmployeeCommand()
-    {
-
-    }
+    public AddEmployeeCommand() { }
 
     /// <summary>
     /// Create new instance of the command.
     /// </summary>
     /// <param name="title">Title of the bug.</param>
     /// <returns></returns>
-    public static AddEmployeeCommand CreateCommand(string firstName, string lastName, string gender, DateTime birthDate, DateTime hireDate)
+    public static AddEmployeeCommand CreateCommand(
+        string firstName,
+        string lastName,
+        string gender,
+        DateTime birthDate,
+        DateTime hireDate
+    )
     {
         return new AddEmployeeCommand()
         {
             FirstName = firstName,
-            LastName = lastName,    
+            LastName = lastName,
             Gender = gender,
             BirthDate = birthDate,
             HireDate = hireDate,

@@ -20,7 +20,7 @@ public class EmployeeWriteRepository : IEmployeeWriteRepository
             LastName = employee.LastName,
             Gender = employee.Gender,
             BirthDate = employee.BirthDate,
-            HireDate = employee.HireDate
+            HireDate = employee.HireDate,
         };
 
         await _dbContext.Employees.AddAsync(employeeEntity, cancellationToken);
@@ -29,7 +29,10 @@ public class EmployeeWriteRepository : IEmployeeWriteRepository
 
     public async Task UpdateAsync(EmployeeModel employee, CancellationToken cancellationToken)
     {
-        var existingEmployee = await _dbContext.Employees.FindAsync(new object[] { employee.Id }, cancellationToken);
+        var existingEmployee = await _dbContext.Employees.FindAsync(
+            new object[] { employee.Id },
+            cancellationToken
+        );
 
         if (existingEmployee == null)
         {

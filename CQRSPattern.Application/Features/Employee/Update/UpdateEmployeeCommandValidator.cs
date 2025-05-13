@@ -6,22 +6,17 @@ public class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCo
 {
     public UpdateEmployeeCommandValidator()
     {
-        RuleFor(cmd => cmd.Id)
-           .GreaterThan(0);
+        RuleFor(cmd => cmd.Id).GreaterThan(0);
 
-        RuleFor(cmd => cmd.FirstName)
-            .NotNull()
-            .NotEmpty();
+        RuleFor(cmd => cmd.FirstName).NotNull().NotEmpty();
 
-        RuleFor(cmd => cmd.LastName)
-            .NotNull()
-            .NotEmpty();
+        RuleFor(cmd => cmd.LastName).NotNull().NotEmpty();
 
         RuleFor(cmd => cmd.Gender)
-             .NotNull()
-             .NotEmpty()
-             .MaximumLength(1)
-             .WithMessage("Gender must be a single character.");
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(1)
+            .WithMessage("Gender must be a single character.");
 
         // BirthDate should not be null, not empty, and employee must be at least 18 years old.
         RuleFor(cmd => cmd.BirthDate)

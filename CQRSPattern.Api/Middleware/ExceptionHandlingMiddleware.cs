@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace CQRSPattern.Api.Middleware;
 
@@ -16,7 +16,11 @@ public class ExceptionHandlingMiddleware
     /// <summary>
     /// Initializes a new instance of the <see cref="ExceptionHandlingMiddleware"/> class.
     /// </summary>
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger, IWebHostEnvironment environment)
+    public ExceptionHandlingMiddleware(
+        RequestDelegate next,
+        ILogger<ExceptionHandlingMiddleware> logger,
+        IWebHostEnvironment environment
+    )
     {
         _next = next;
         _logger = logger;
@@ -42,7 +46,7 @@ public class ExceptionHandlingMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/problem+json";
-        
+
         var problemDetails = new
         {
             type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
@@ -51,17 +55,17 @@ public class ExceptionHandlingMiddleware
             traceId = context.TraceIdentifier,
             errors = new Dictionary<string, string[]>
             {
-                { "Error", new[] { GetErrorMessage(exception) } }
-            }
+                { "Error", new[] { GetErrorMessage(exception) } },
+            },
         };
 
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        
+
         var options = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
-        
+
         await context.Response.WriteAsync(JsonSerializer.Serialize(problemDetails, options));
     }
 
@@ -69,8 +73,8 @@ public class ExceptionHandlingMiddleware
     {
         // In development, return the full exception details
         // In production, return a generic message
-        return _environment.IsDevelopment() 
-            ? exception.ToString() 
+        return _environment.IsDevelopment()
+            ? exception.ToString()
             : "An error occurred processing your request. Please try again later.";
     }
 }

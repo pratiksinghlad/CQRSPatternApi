@@ -6,7 +6,7 @@ public class DepartmentEntity
     /// Dept id.
     /// </summary>
     public int Id { get; set; }
- 
+
     /// <summary>
     /// Dept name.
     /// </summary>

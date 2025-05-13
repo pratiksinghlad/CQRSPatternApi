@@ -12,22 +12,14 @@ public class EmployeeEntityConfiguration : IEntityTypeConfiguration<EmployeeEnti
 
         builder.HasKey(e => e.Id).HasName("Employee_PK");
 
-        builder.Property(e => e.BirthDate)
-            .IsRequired();
+        builder.Property(e => e.BirthDate).IsRequired();
 
-        builder.Property(e => e.FirstName)
-            .HasMaxLength(30)
-            .IsRequired();
+        builder.Property(e => e.FirstName).HasMaxLength(30).IsRequired();
 
-        builder.Property(e => e.LastName)
-           .HasMaxLength(30)
-           .IsRequired();
+        builder.Property(e => e.LastName).HasMaxLength(30).IsRequired();
 
-        builder.Property(e => e.Gender)
-           .HasMaxLength(1)
-           .IsRequired();
+        builder.Property(e => e.Gender).HasMaxLength(1).IsRequired();
 
-        builder.Property(e => e.HireDate)
-            .IsRequired();
+        builder.Property(e => e.HireDate).IsRequired();
     }
 }

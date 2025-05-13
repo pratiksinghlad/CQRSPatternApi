@@ -11,19 +11,25 @@ public class WriteDbContext : BaseDbContext, IDatabaseContext
     private readonly int _timeout;
     private readonly ILogger _logger;
 
-    public WriteDbContext(string connectionString) : base()
+    public WriteDbContext(string connectionString)
+        : base()
     {
         _connectionString = connectionString;
         _timeout = 30;
     }
 
-    public WriteDbContext(string connectionString, int timeout) : base()
+    public WriteDbContext(string connectionString, int timeout)
+        : base()
     {
         _connectionString = connectionString;
         _timeout = timeout;
     }
 
-    public WriteDbContext(IOptions<ConnectionStrings> connectionStrings, ILogger<WriteDbContext> logger) : base()
+    public WriteDbContext(
+        IOptions<ConnectionStrings> connectionStrings,
+        ILogger<WriteDbContext> logger
+    )
+        : base()
     {
         _connectionString = connectionStrings.Value.WriteDb;
         _timeout = connectionStrings.Value.SqlTimeoutInSeconds;
@@ -34,13 +40,19 @@ public class WriteDbContext : BaseDbContext, IDatabaseContext
     {
         base.OnConfiguring(optionsBuilder);
 
-        optionsBuilder.UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString), dbContextOptionsBuilder =>
-        {
-            dbContextOptionsBuilder.MigrationsAssembly("CQRSPattern.Infrastructure.Persistence");
+        optionsBuilder.UseMySql(
+            _connectionString,
+            ServerVersion.AutoDetect(_connectionString),
+            dbContextOptionsBuilder =>
+            {
+                dbContextOptionsBuilder.MigrationsAssembly(
+                    "CQRSPattern.Infrastructure.Persistence"
+                );
 
-            // Default is 30 seconds.
-            dbContextOptionsBuilder.CommandTimeout(_timeout); 
-        });
+                // Default is 30 seconds.
+                dbContextOptionsBuilder.CommandTimeout(_timeout);
+            }
+        );
 
         if (_logger != null)
             optionsBuilder.LogTo(msg => _logger.LogDebug(msg, null));

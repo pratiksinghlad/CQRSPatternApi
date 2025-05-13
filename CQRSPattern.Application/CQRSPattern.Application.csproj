@@ -1,27 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-	<ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <EnableSourceGeneration>true</EnableSourceGeneration>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <WarningsAsErrors>CS0169;CS0219;CS0162</WarningsAsErrors> <!-- CS0169 PRIVATE MEMBER Treat unused variable warnings as errors and Unreachable Code after a retur -->
-    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
-    <UseHotReload>true</UseHotReload>
+    <!-- Project-specific settings can be added here if needed -->
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Azure.Core" Version="1.45.0" />
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
-    <PackageReference Include="JsonDiffPatch.Net" Version="2.3.0" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="19.225.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Azure.Core" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="JsonDiffPatch.Net" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.VisualStudio.Services.Client" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
-
 </Project>

@@ -7,10 +7,6 @@ public class GetAllQueryResultBuilder : GenericBuilder<GetAllQueryResult>
 {
     public GetAllQueryResultBuilder()
     {
-
-        SetDefaults(() => new GetAllQueryResult
-        {
-            Data = new EmployeeModelListBuilder().Build(),
-        });
+        SetDefaults(() => new GetAllQueryResult { Data = new EmployeeModelListBuilder().Build() });
     }
 }

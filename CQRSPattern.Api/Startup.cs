@@ -1,9 +1,9 @@
+using System.Text.Json.Serialization;
 using Autofac;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.FeatureManagement;
 using Scalar.AspNetCore;
-using System.Text.Json.Serialization;
 
 namespace CQRSPattern.Api;
 
@@ -32,15 +32,17 @@ public partial class Startup
             options.Providers.Add<BrotliCompressionProvider>();
             options.Providers.Add<GzipCompressionProvider>();
             options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-            new[] {
-                "application/json",
-                "application/javascript",
-                "text/css",
-                "text/html",
-                "text/json",
-                "text/plain",
-                "text/xml"
-            });
+                new[]
+                {
+                    "application/json",
+                    "application/javascript",
+                    "text/css",
+                    "text/html",
+                    "text/json",
+                    "text/plain",
+                    "text/xml",
+                }
+            );
         });
 
         services.Configure<BrotliCompressionProviderOptions>(options =>
@@ -57,12 +59,13 @@ public partial class Startup
 
         services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll", policy =>
-            {
-                policy.AllowAnyOrigin()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader();
-            });
+            options.AddPolicy(
+                "AllowAll",
+                policy =>
+                {
+                    policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                }
+            );
         });
 
         services.AddHttpContextAccessor();
@@ -75,11 +78,12 @@ public partial class Startup
         LoadHealthChecks(services);
 
         services.AddFeatureManagement(Configuration.GetSection("FeatureManagement"));
-        services.AddMvc(options =>
-        {
-            
-        }).AddControllersAsServices()
-        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+        services
+            .AddMvc(options => { })
+            .AddControllersAsServices()
+            .AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+            );
         services.AddMemoryCache();
         services.AddApiVersioning(options => options.ReportApiVersions = true);
     }
@@ -104,7 +108,7 @@ public partial class Startup
             endpoints.MapScalarApiReference(opt =>
             {
                 opt.Title = $"CQRS API Documentation - {env.EnvironmentName}";
-                if(env.IsDevelopment())
+                if (env.IsDevelopment())
                     opt.Theme = ScalarTheme.DeepSpace;
                 else if (env.IsStaging())
                     opt.Theme = ScalarTheme.BluePlanet;
@@ -112,17 +116,23 @@ public partial class Startup
                     opt.Theme = ScalarTheme.Purple;
             });
 
-            endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions()
-            {
-                Predicate = (check) => true,
-                ResponseWriter = WriteResponse
-            });
+            endpoints.MapHealthChecks(
+                "/health/ready",
+                new HealthCheckOptions()
+                {
+                    Predicate = (check) => true,
+                    ResponseWriter = WriteResponse,
+                }
+            );
 
-            endpoints.MapHealthChecks("/health/live", new HealthCheckOptions()
-            {
-                Predicate = (check) => false,
-                ResponseWriter = WriteResponse
-            });
+            endpoints.MapHealthChecks(
+                "/health/live",
+                new HealthCheckOptions()
+                {
+                    Predicate = (check) => false,
+                    ResponseWriter = WriteResponse,
+                }
+            );
         });
 
         app.UseCookiePolicy();

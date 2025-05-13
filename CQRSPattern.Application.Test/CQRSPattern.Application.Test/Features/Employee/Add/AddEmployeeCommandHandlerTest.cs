@@ -19,9 +19,7 @@ public class AddEmployeeCommandHandlerTest
     public async Task Handle_Ok()
     {
         // Arrange
-        var employee = new EmployeeModelBuilder()
-                       .With(x => x.Id, 0)
-                       .Build();
+        var employee = new EmployeeModelBuilder().With(x => x.Id, 0).Build();
         var cmd = new AddEmployeeCommandBuilder().Build();
         _employeeRepo.Setup(x => x.AddAsync(employee, default));
 

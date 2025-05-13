@@ -9,13 +9,15 @@ public class AddEmployeeCommandBuilder : GenericBuilder<AddEmployeeCommand>
     {
         var employee = new EmployeeModelBuilder().Build();
 
-        SetDefaults(() => new AddEmployeeCommand
-        {
-            FirstName = employee.FirstName,
-            LastName = employee.LastName,
-            Gender = employee.Gender,
-            HireDate = employee.HireDate,
-            BirthDate = employee.BirthDate
-        });
+        SetDefaults(() =>
+            new AddEmployeeCommand
+            {
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Gender = employee.Gender,
+                HireDate = employee.HireDate,
+                BirthDate = employee.BirthDate,
+            }
+        );
     }
 }

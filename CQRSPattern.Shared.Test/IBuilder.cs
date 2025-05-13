@@ -1,6 +1,7 @@
 ﻿namespace CQRSPattern.Shared.Test;
 
-public interface IBuilder<T> where T : class
+public interface IBuilder<T>
+    where T : class
 {
     T Item { get; }
 

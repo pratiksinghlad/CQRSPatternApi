@@ -6,13 +6,9 @@ public class AddEmployeeCommandValidator : AbstractValidator<AddEmployeeCommand>
 {
     public AddEmployeeCommandValidator()
     {
-        RuleFor(cmd => cmd.FirstName)
-            .NotNull()
-            .NotEmpty();
+        RuleFor(cmd => cmd.FirstName).NotNull().NotEmpty();
 
-        RuleFor(cmd => cmd.LastName)
-            .NotNull()
-            .NotEmpty();
+        RuleFor(cmd => cmd.LastName).NotNull().NotEmpty();
 
         RuleFor(cmd => cmd.Gender)
             .NotNull()

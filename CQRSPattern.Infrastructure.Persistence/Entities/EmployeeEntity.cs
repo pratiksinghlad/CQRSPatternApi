@@ -8,7 +8,7 @@ public class EmployeeEntity
     /// Emp id.
     /// </summary>
     public int Id { get; set; }
- 
+
     /// <summary>
     /// Birth date.
     /// </summary>
@@ -43,7 +43,7 @@ public class EmployeeEntity
             FirstName = FirstName,
             LastName = LastName,
             Gender = Gender,
-            HireDate = HireDate
+            HireDate = HireDate,
         };
     }
 }

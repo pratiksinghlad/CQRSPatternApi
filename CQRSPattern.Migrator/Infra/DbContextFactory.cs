@@ -10,7 +10,9 @@ public class DbContextFactory : IDesignTimeDbContextFactory<ReadDbContext>
 {
     public ReadDbContext CreateDbContext(string[] args)
     {
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environments.Development;
+        var environment =
+            Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+            ?? Environments.Development;
 
         IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
@@ -19,6 +21,8 @@ public class DbContextFactory : IDesignTimeDbContextFactory<ReadDbContext>
             .AddJsonFile("secrets/appsettings.secrets.json")
             .Build();
 
-        return new ReadDbContext(configuration.GetConnectionString(Database.ConnectionStringWriteDbName));
+        return new ReadDbContext(
+            configuration.GetConnectionString(Database.ConnectionStringWriteDbName)
+        );
     }
 }

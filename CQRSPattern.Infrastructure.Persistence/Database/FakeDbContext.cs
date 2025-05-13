@@ -16,7 +16,11 @@ public sealed class FakeDbContext : BaseDbContext
 
         var randomUniqueInMemoryDatabaseInstanceName = "FakeDbInstance";
 
-        optionsBuilder.UseInMemoryDatabase(randomUniqueInMemoryDatabaseInstanceName, new InMemoryDatabaseRoot())
+        optionsBuilder
+            .UseInMemoryDatabase(
+                randomUniqueInMemoryDatabaseInstanceName,
+                new InMemoryDatabaseRoot()
+            )
             .EnableServiceProviderCaching(false);
     }
 

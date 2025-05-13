@@ -12,8 +12,6 @@ public class DepartmentEntityConfiguration : IEntityTypeConfiguration<Department
 
         builder.HasKey(e => e.Id).HasName("Department_PK");
 
-        builder.Property(e => e.Name)
-            .HasMaxLength(30)
-            .IsRequired();
+        builder.Property(e => e.Name).HasMaxLength(30).IsRequired();
     }
 }

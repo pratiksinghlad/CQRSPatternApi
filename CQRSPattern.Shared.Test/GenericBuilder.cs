@@ -40,6 +40,8 @@ public class GenericBuilder<T> : IBuilder<T>
                 | BindingFlags.SetProperty
         );
 
+        prop?.SetValue(Item, value);
+
         return this;
     }
 

@@ -17,19 +17,24 @@ public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
 
     public MySqlConnection Get()
     {
-        if (_mySqlConnection != null)
-            return _mySqlConnection;
-
-        // Ensure the connection string is a valid MySQL connection string.
-        var connectionString = _configuration.GetConnectionString(
-            Application.Constants.Database.ConnectionStringWriteDbName
-        );
-        _mySqlConnection = new MySqlConnection(connectionString);
-
         _lock.Wait();
+        try
+        {
+            if (_mySqlConnection != null)
+            {
+                return _mySqlConnection;
+            }
 
-        _lock.Release();
-        return _mySqlConnection;
+            var connectionString = _configuration.GetConnectionString(
+                Application.Constants.Database.ConnectionStringWriteDbName
+            );
+            _mySqlConnection = new MySqlConnection(connectionString);
+            return _mySqlConnection;
+        }
+        finally
+        {
+            _lock.Release();
+        }
     }
 
     public void Dispose()

@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>3c39b77e-5a12-4725-bbbb-e8212ded6c53</UserSecretsId>
     <OutputType>Library</OutputType>
   </PropertyGroup>

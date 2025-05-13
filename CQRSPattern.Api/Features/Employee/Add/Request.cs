@@ -2,6 +2,8 @@
 
 namespace CQRSPattern.Api.Features.Employee.Add;
 
+#nullable disable
+
 /// <summary>
 /// Request to add a employee.
 /// </summary>

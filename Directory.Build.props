@@ -4,5 +4,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <!-- CS0169: Field is never used; CS0219: Variable is assigned but never used; CS0162: Unreachable code detected -->
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+    <UseHotReload>true</UseHotReload>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EnableSourceGeneration>true</EnableSourceGeneration>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <WarningsAsErrors>CS0169;CS0219;CS0162</WarningsAsErrors>
+    <!-- CS0169 PRIVATE MEMBER Treat unused variable warnings as errors and Unreachable Code after a retur -->
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
   </PropertyGroup>
 </Project>

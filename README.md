@@ -10,6 +10,7 @@
 ![HTTP3](https://img.shields.io/badge/HTTP%203-v3.0-brightgreen)
 ![HTTP2](https://img.shields.io/badge/HTTP%202-v2.0-blue)
 ![HTTP1](https://img.shields.io/badge/HTTP%201-v1.1-orange)
+![NetArchTest](https://img.shields.io/badge/NetArchTest-1.3.2-blue)
 
 Command Query Responsibility Segregation (CQRS) is a software architectural pattern that separates the operations of reading data (queries) from modifying data (commands). This distinction allows for independent optimization of each operation, enhancing performance, scalability, and security in applications.
 
@@ -25,12 +26,14 @@ To communicate from controller to our business logic layer (CQRSPattern.Applicat
 * .NET 8: Technology
 * Entity Framework Core: ORM mapper of Microsoft
 * MediatR: Framework written by J. Bogard to decouple code more easily
+* NetArchTest: Validates architectural boundaries at runtime and during tests
 
 ## Key Components
 
 1. **CQRSPattern.Api**: Main API project with controllers and API endpoints
    - Contains employee and weather forecast controllers
    - Implements Server-Sent Events (SSE) for real-time updates
+   - Includes architecture validation on startup
 
 2. **CQRSPattern.Application**: Core application logic
    - Defines queries, commands, and models

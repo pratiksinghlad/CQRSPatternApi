@@ -1,18 +1,29 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MySqlConnector;
 
 namespace CQRSPattern.Infrastructure.Persistence.Factories;
 
+/// <summary>
+/// Manages MySQL connections with thread-safe access and proper resource disposal
+/// </summary>
 public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
 {
     private readonly IConfiguration _configuration;
+    private readonly ILogger<MySqlConnectionManager> _logger;
     private MySqlConnection _mySqlConnection;
     private bool _disposed;
     private readonly SemaphoreSlim _lock = new(1, 1);
 
-    public MySqlConnectionManager(IConfiguration configuration)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MySqlConnectionManager"/> class.
+    /// </summary>
+    /// <param name="configuration">The application configuration</param>
+    /// <param name="logger">The logger instance</param>
+    public MySqlConnectionManager(IConfiguration configuration, ILogger<MySqlConnectionManager> logger)
     {
         _configuration = configuration;
+        _logger = logger;
     }
 
     public MySqlConnection Get()

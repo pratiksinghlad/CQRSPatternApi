@@ -48,9 +48,15 @@ public class Registrations : Module
     private static void RegisterInfrastructurePersistence(ref ContainerBuilder builder)
     {
         builder
-            .RegisterType<MySqlConnectionManager>()
+            .Register(c => 
+            {
+                var configuration = c.Resolve<IConfiguration>();
+                var logger = c.Resolve<ILogger<MySqlConnectionManager>>();
+                return new MySqlConnectionManager(configuration, logger);
+            })
             .As<IMySqlConnectionManager>()
             .InstancePerLifetimeScope();
+            
         builder
             .Register(c =>
             {

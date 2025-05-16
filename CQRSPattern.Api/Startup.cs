@@ -90,18 +90,24 @@ public partial class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        // Validate architecture in development and staging environments
+        if (env.IsDevelopment() || env.IsStaging())
+        {
+            ValidateArchitecture(app.ApplicationServices);
+        }
+    
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
-
+    
         app.UseResponseCompression();
         app.UseStatusCodePages();
         app.UseRouting();
         app.UseCors("AllowAll");
-
+    
         UseScalar(ref app);
-
+    
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -115,7 +121,7 @@ public partial class Startup
                 else
                     opt.Theme = ScalarTheme.Purple;
             });
-
+    
             endpoints.MapHealthChecks(
                 "/health/ready",
                 new HealthCheckOptions()
@@ -124,7 +130,7 @@ public partial class Startup
                     ResponseWriter = WriteResponse,
                 }
             );
-
+    
             endpoints.MapHealthChecks(
                 "/health/live",
                 new HealthCheckOptions()
@@ -134,7 +140,38 @@ public partial class Startup
                 }
             );
         });
-
+    
         app.UseCookiePolicy();
+    }
+    
+    private void ValidateArchitecture(IServiceProvider serviceProvider)
+    {
+        // Create a scope to resolve the architecture validator
+        using var scope = serviceProvider.CreateScope();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Startup>>();
+        
+        try
+        {
+            var architectureValidator = new Architecture.ArchitectureValidator(
+                scope.ServiceProvider.GetRequiredService<ILogger<Architecture.ArchitectureValidator>>());
+            
+            var isValid = architectureValidator.ValidateArchitecture();
+            
+            if (!isValid)
+            {
+                logger.LogWarning("Architecture validation failed. The application may not be structured according to the defined architecture rules.");
+                
+                // Optionally, you can make this a critical error and shut down in development to enforce architecture compliance
+                // In production, we typically want to continue running even if validation fails
+                if (Environment.GetEnvironmentVariable("ENFORCE_ARCHITECTURE") == "true")
+                {
+                    throw new Exception("Architecture validation failed. Fix the violations before running the application.");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while validating architecture");
+        }
     }
 }

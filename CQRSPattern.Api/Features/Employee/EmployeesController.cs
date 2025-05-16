@@ -37,7 +37,7 @@ public class EmployeesController : ControllerBase
     {
         try
         {
-            using var scope = _factory.CreateScope();
+            var scope = _factory.CreateScope();
             var result = await scope.SendAsync(GetAllQuery.Create(), cancellationToken);
             return Ok(result.Data);
         }
@@ -69,7 +69,7 @@ public class EmployeesController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-            using var scope = _factory.CreateScope();
+            var scope = _factory.CreateScope();
             await scope.SendAsync(request.ToMediator(), cancellationToken);
 
             return StatusCode(StatusCodes.Status201Created);
@@ -110,7 +110,7 @@ public class EmployeesController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-            using var scope = _factory.CreateScope();
+            var scope = _factory.CreateScope();
             await scope.SendAsync(request.ToMediator(id), cancellationToken);
 
             return NoContent();

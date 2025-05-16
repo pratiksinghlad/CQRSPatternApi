@@ -12,6 +12,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.FeatureManagement" />
+    <PackageReference Include="NetArchTest.Rules" />
     <PackageReference Include="NSwag.AspNetCore" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
     <PackageReference Include="Scalar.AspNetCore" />

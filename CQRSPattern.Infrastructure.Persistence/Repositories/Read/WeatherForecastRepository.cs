@@ -3,14 +3,22 @@ using CQRSPattern.Application.Repositories.Read;
 
 namespace CQRSPattern.Infrastructure.Persistence.Repositories.Read;
 
+/// <summary>
+/// Repository for handling weather forecast data operations
+/// </summary>
 public class WeatherForecastRepository : IWeatherForecastRepository
 {
     private readonly List<WeatherForecast> _forecasts;
     private int _nextId = 1;
 
-    // Event that will be triggered when data changes
+    /// <summary>
+    /// Event that will be triggered when data changes
+    /// </summary>
     public event Action<WeatherForecast> OnDataChange = delegate { };
 
+    /// <summary>
+    /// Array of possible weather summaries
+    /// </summary>
     private static readonly string[] Summaries = new[]
     {
         "Freezing",

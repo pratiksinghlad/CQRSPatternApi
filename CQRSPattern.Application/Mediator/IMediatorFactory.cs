@@ -1,7 +1,6 @@
-﻿namespace CQRSPattern.Application.Mediator
+﻿namespace CQRSPattern.Application.Mediator;
+
+public interface IMediatorFactory
 {
-    public interface IMediatorFactory
-    {
-        IMediatorScope CreateScope();
-    }
+    IMediatorScope CreateScope();
 }

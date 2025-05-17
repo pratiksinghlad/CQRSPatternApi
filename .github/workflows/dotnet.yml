@@ -55,6 +55,7 @@ jobs:
         # Specify the languages to lint. C# is covered by .NET_CS.
         VALIDATE_ALL_CODEBASE: false # Set to true to validate all files, false to validate only changed files
         VALIDATE_DOTNET_CS: true # Enable C# linting
+        VALIDATE_GITHUB_STATUS: false # Explicitly disable GitHub status reports no github tok required for this
         # Add other language flags if needed, e.g., VALIDATE_YAML: true, VALIDATE_MARKDOWN: true
 
     # Execute all unit tests

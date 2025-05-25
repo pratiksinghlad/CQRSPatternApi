@@ -1,100 +1,92 @@
 using CQRSPattern.Application.Features.Models;
 using CQRSPattern.Application.Repositories.Read;
+using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
 namespace CQRSPattern.Infrastructure.Persistence.Repositories.Read;
 
 /// <summary>
 /// Repository for handling weather forecast data operations
 /// </summary>
-public class WeatherForecastRepository : IWeatherForecastRepository
+public sealed class WeatherForecastRepository : IWeatherForecastRepository
 {
-    private readonly List<WeatherForecast> _forecasts;
+    private readonly ConcurrentDictionary<int, WeatherForecast> _forecasts = new();
     private int _nextId = 1;
+    private readonly ILogger<WeatherForecastRepository> _logger;
 
     /// <summary>
     /// Event that will be triggered when data changes
     /// </summary>
     public event Action<WeatherForecast> OnDataChange = delegate { };
 
-    /// <summary>
-    /// Array of possible weather summaries
-    /// </summary>
-    private static readonly string[] Summaries = new[]
+    public WeatherForecastRepository(ILogger<WeatherForecastRepository> logger)
     {
-        "Freezing",
-        "Bracing",
-        "Chilly",
-        "Cool",
-        "Mild",
-        "Warm",
-        "Balmy",
-        "Hot",
-        "Sweltering",
-        "Scorching",
-    };
+        _logger = logger;
+        InitializeData();
+    }
 
-    public WeatherForecastRepository()
+    private void InitializeData()
     {
-        _forecasts = Enumerable
-            .Range(1, 5)
-            .Select(index => new WeatherForecast
-            {
-                Id = _nextId++,
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)],
-            })
-            .ToList();
+        foreach (var index in Enumerable.Range(1, 5))
+        {
+            var forecast = WeatherForecast.CreateRandom(_nextId++, index);
+            _forecasts.TryAdd(forecast.Id, forecast);
+        }
     }
 
     public IEnumerable<WeatherForecast> GetAll()
     {
-        return _forecasts;
+        return _forecasts.Values;
     }
 
     public WeatherForecast? GetById(int id)
     {
-        return _forecasts.FirstOrDefault(f => f.Id == id);
+        return _forecasts.TryGetValue(id, out var forecast) ? forecast : null;
     }
 
     public WeatherForecast Add(WeatherForecast forecast)
     {
-        forecast.Id = _nextId++;
-        _forecasts.Add(forecast);
+        ArgumentNullException.ThrowIfNull(forecast);
 
-        // Trigger the event
-        OnDataChange(forecast);
+        forecast.Id = Interlocked.Increment(ref _nextId);
+        if (_forecasts.TryAdd(forecast.Id, forecast))
+        {
+            _logger.LogInformation("Added new weather forecast with ID: {Id}", forecast.Id);
+            OnDataChange(forecast);
+            return forecast;
+        }
 
-        return forecast;
+        throw new InvalidOperationException($"Could not add forecast with ID: {forecast.Id}");
     }
 
     public WeatherForecast? Update(WeatherForecast forecast)
     {
-        var existingForecast = _forecasts.FirstOrDefault(f => f.Id == forecast.Id);
-        if (existingForecast == null)
-            return null;
+        ArgumentNullException.ThrowIfNull(forecast);
 
-        existingForecast.Date = forecast.Date;
-        existingForecast.TemperatureC = forecast.TemperatureC;
-        existingForecast.Summary = forecast.Summary;
+        if (_forecasts.TryGetValue(forecast.Id, out var existing))
+        {
+            if (_forecasts.TryUpdate(forecast.Id, forecast, existing))
+            {
+                _logger.LogInformation("Updated weather forecast with ID: {Id}", forecast.Id);
+                OnDataChange(forecast);
+                return forecast;
+            }
+        }
 
-        // Trigger the event
-        OnDataChange(existingForecast);
-
-        return existingForecast;
+        _logger.LogWarning("Failed to update weather forecast with ID: {Id}", forecast.Id);
+        return null;
     }
 
     public bool Delete(int id)
     {
-        var forecast = _forecasts.FirstOrDefault(f => f.Id == id);
-        if (forecast == null)
-            return false;
+        if (_forecasts.TryRemove(id, out var forecast))
+        {
+            _logger.LogInformation("Deleted weather forecast with ID: {Id}", id);
+            OnDataChange(forecast);
+            return true;
+        }
 
-        _forecasts.Remove(forecast);
-
-        // Trigger the event
-        OnDataChange(forecast);
-
-        return true;
+        _logger.LogWarning("Failed to delete weather forecast with ID: {Id}", id);
+        return false;
     }
 }

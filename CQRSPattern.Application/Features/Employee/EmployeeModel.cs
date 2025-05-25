@@ -1,11 +1,11 @@
 ﻿namespace CQRSPattern.Application.Features.Employee;
 
-public class EmployeeModel
+public sealed class EmployeeModel
 {
-    public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Gender { get; set; }
-    public DateTime BirthDate { get; set; }
-    public DateTime HireDate { get; set; }
+    public required int Id { get; set; }
+    public required string FirstName { get; set; } = string.Empty;
+    public required string LastName { get; set; } = string.Empty;
+    public required string Gender { get; set; } = string.Empty;
+    public required DateTime BirthDate { get; set; }
+    public required DateTime HireDate { get; set; }
 }

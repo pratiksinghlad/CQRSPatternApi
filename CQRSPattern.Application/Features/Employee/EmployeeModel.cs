@@ -2,7 +2,7 @@
 
 public sealed class EmployeeModel
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
     public required string FirstName { get; set; } = string.Empty;
     public required string LastName { get; set; } = string.Empty;
     public required string Gender { get; set; } = string.Empty;

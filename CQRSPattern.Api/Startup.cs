@@ -98,8 +98,7 @@ public partial class Startup
             options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
             options.JsonSerializerOptions.WriteIndented = true;
         })
-        //.AddXmlSerializerFormatters() // This enables XML serialization
-        .AddXmlDataContractSerializerFormatters(); // Additional XML support
+        .AddXmlDataContractSerializerFormatters(); // Use XmlSerializer instead of XmlDataContractSerializer
 
         // Configure XML serialization options
         services.Configure<MvcOptions>(options =>
@@ -118,8 +117,14 @@ public partial class Startup
                     OmitXmlDeclaration = false,
                     Indent = true,
                     IndentChars = "  ",
-                    Encoding = System.Text.Encoding.UTF8
+                    Encoding = System.Text.Encoding.UTF8,
+                    NamespaceHandling = System.Xml.NamespaceHandling.OmitDuplicates
                 });
+
+            // Configure namespace resolver to use empty namespaces
+            customXmlFormatter.WriterSettings.NamespaceHandling = System.Xml.NamespaceHandling.OmitDuplicates;
+           // customXmlFormatter.SerializerSettings.Namespace = string.Empty;
+            //customXmlFormatter.SerializerSettings.DefaultNamespaces.Add(string.Empty, string.Empty);
 
             customXmlFormatter.SupportedMediaTypes.Add("application/xml");
             customXmlFormatter.SupportedMediaTypes.Add("text/xml");

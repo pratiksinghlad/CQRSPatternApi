@@ -33,9 +33,9 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public IEnumerable<WeatherForecast> GetAll()
     {
-        return Ok(_repository.GetAll());
+        return _repository.GetAll();
     }
 
     [HttpGet("{id}")]

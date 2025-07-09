@@ -2,22 +2,18 @@ using System.Xml.Serialization;
 
 namespace CQRSPattern.Application.Features.Models;
 
-[XmlRoot("WeatherForecast")]
+[XmlRoot("WeatherForecast", Namespace = "")]
+[XmlType(Namespace = "")]
 public class WeatherForecast
 {
-    [XmlElement("Id")]
     public required int Id { get; set; }
 
-    [XmlElement("Date")]
     public required DateTime Date { get; set; }
 
-    [XmlElement("TemperatureC")]
     public required int TemperatureC { get; set; }
 
-    [XmlElement("Summary")]
     public string Summary { get; set; } = string.Empty;
 
-    [XmlElement("TemperatureF")]
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
     private const int _minTemp = -20;

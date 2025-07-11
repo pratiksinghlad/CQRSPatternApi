@@ -1,0 +1,63 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET Build and Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x  # Adjust this to your project's .NET version
+
+    # Restore dependencies
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # Build the project
+    - name: Build
+      run: dotnet build --configuration ${{ matrix.configuration }} --no-restore
+
+    # Verify build was successful
+    - name: Verify Build Success
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "✅ Build successful"
+        else
+          echo "❌ Build failed"
+          exit 1
+        fi
+
+    # Execute all unit tests
+    - name: Execute unit tests
+      run: dotnet test --configuration ${{ matrix.configuration }} --no-build --verbosity normal
+
+    # Upload build artifacts
+    - name: Upload build artifacts
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.configuration }}-Artifacts
+        path: |
+          **/bin/${{ matrix.configuration }}/
+          **/obj/${{ matrix.configuration }}/

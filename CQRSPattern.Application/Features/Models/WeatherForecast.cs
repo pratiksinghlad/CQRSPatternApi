@@ -2,6 +2,7 @@ using System.Xml.Serialization;
 
 namespace CQRSPattern.Application.Features.Models;
 
+<<<<<<< HEAD
 [XmlRoot("WeatherForecast", Namespace = "")]
 [XmlType(Namespace = "")]
 public class WeatherForecast
@@ -12,6 +13,13 @@ public class WeatherForecast
 
     public required int TemperatureC { get; set; }
 
+=======
+public sealed class WeatherForecast
+{
+    public required int Id { get; set; }
+    public required DateTime Date { get; set; }
+    public required int TemperatureC { get; set; }
+>>>>>>> 060d0727bb21f7050cc6dd30f210624a5f92c68c
     public string Summary { get; set; } = string.Empty;
 
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);

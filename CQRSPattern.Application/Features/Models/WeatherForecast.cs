@@ -1,11 +1,12 @@
 namespace CQRSPattern.Application.Features.Models;
 
-public sealed class WeatherForecast
+public class WeatherForecast
 {
     public int Id { get; set; }
-    public required DateTime Date { get; set; }
-    public required int TemperatureC { get; set; }
 
+    public required DateTime Date { get; set; }
+
+    public required int TemperatureC { get; set; }
     public string Summary { get; set; } = string.Empty;
 
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);

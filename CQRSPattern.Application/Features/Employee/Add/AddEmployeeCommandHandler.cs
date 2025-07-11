@@ -12,7 +12,7 @@ public class AddEmployeeCommandHandler : IRequestHandler<AddEmployeeCommand, Uni
 
     public async Task<Unit> Handle(AddEmployeeCommand request, CancellationToken cancellationToken)
     {
-        EmployeeModel employee = new()
+        var employee = new EmployeeModel()
         {
             FirstName = request.FirstName,
             LastName = request.LastName,

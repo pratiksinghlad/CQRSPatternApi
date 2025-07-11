@@ -1,9 +1,10 @@
-using System.Text.Json.Serialization;
 using Autofac;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.FeatureManagement;
 using Scalar.AspNetCore;
+using System.Text.Json.Serialization;
 
 namespace CQRSPattern.Api;
 
@@ -35,6 +36,7 @@ public partial class Startup
                 new[]
                 {
                     "application/json",
+                    "application/xml",
                     "application/javascript",
                     "text/css",
                     "text/html",
@@ -54,8 +56,6 @@ public partial class Startup
         {
             options.Level = System.IO.Compression.CompressionLevel.Fastest;
         });
-
-        services.AddControllers();
 
         services.AddCors(options =>
         {
@@ -78,12 +78,60 @@ public partial class Startup
         LoadHealthChecks(services);
 
         services.AddFeatureManagement(Configuration.GetSection("FeatureManagement"));
-        services
-            .AddMvc(options => { })
-            .AddControllersAsServices()
-            .AddJsonOptions(options =>
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-            );
+
+        // Configure MVC with proper content negotiation
+        services.AddMvc(options =>
+        {
+            // Enable content negotiation
+            options.RespectBrowserAcceptHeader = true;
+            options.ReturnHttpNotAcceptable = true;
+
+            // Set default content type to JSON
+            options.FormatterMappings.SetMediaTypeMappingForFormat("json", "application/json");
+            options.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
+        })
+        .AddControllersAsServices()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            // Configure JSON serialization options
+            options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+            options.JsonSerializerOptions.WriteIndented = true;
+        })
+        .AddXmlDataContractSerializerFormatters(); // Use XmlSerializer instead of XmlDataContractSerializer
+
+        // Configure XML serialization options
+        services.Configure<MvcOptions>(options =>
+        {
+            // Remove the default XML formatter and add a custom one with proper settings
+            var xmlFormatter = options.OutputFormatters.OfType<Microsoft.AspNetCore.Mvc.Formatters.XmlSerializerOutputFormatter>().FirstOrDefault();
+            if (xmlFormatter != null)
+            {
+                options.OutputFormatters.Remove(xmlFormatter);
+            }
+
+            // Add custom XML formatter with proper settings
+            var customXmlFormatter = new Microsoft.AspNetCore.Mvc.Formatters.XmlSerializerOutputFormatter(
+                new System.Xml.XmlWriterSettings
+                {
+                    OmitXmlDeclaration = false,
+                    Indent = true,
+                    IndentChars = "  ",
+                    Encoding = System.Text.Encoding.UTF8,
+                    NamespaceHandling = System.Xml.NamespaceHandling.OmitDuplicates
+                });
+
+            // Configure namespace resolver to use empty namespaces
+            customXmlFormatter.WriterSettings.NamespaceHandling = System.Xml.NamespaceHandling.OmitDuplicates;
+           // customXmlFormatter.SerializerSettings.Namespace = string.Empty;
+            //customXmlFormatter.SerializerSettings.DefaultNamespaces.Add(string.Empty, string.Empty);
+
+            customXmlFormatter.SupportedMediaTypes.Add("application/xml");
+            customXmlFormatter.SupportedMediaTypes.Add("text/xml");
+
+            options.OutputFormatters.Add(customXmlFormatter);
+        });
+
         services.AddMemoryCache();
         services.AddApiVersioning(options => options.ReportApiVersions = true);
     }
@@ -95,19 +143,19 @@ public partial class Startup
         {
             ValidateArchitecture(app.ApplicationServices);
         }
-    
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
-    
+
         app.UseResponseCompression();
         app.UseStatusCodePages();
         app.UseRouting();
         app.UseCors("AllowAll");
-    
+
         UseScalar(ref app);
-    
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -121,7 +169,7 @@ public partial class Startup
                 else
                     opt.Theme = ScalarTheme.Purple;
             });
-    
+
             endpoints.MapHealthChecks(
                 "/health/ready",
                 new HealthCheckOptions()
@@ -130,7 +178,7 @@ public partial class Startup
                     ResponseWriter = WriteResponse,
                 }
             );
-    
+
             endpoints.MapHealthChecks(
                 "/health/live",
                 new HealthCheckOptions()
@@ -140,27 +188,27 @@ public partial class Startup
                 }
             );
         });
-    
+
         app.UseCookiePolicy();
     }
-    
+
     private void ValidateArchitecture(IServiceProvider serviceProvider)
     {
         // Create a scope to resolve the architecture validator
         using var scope = serviceProvider.CreateScope();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Startup>>();
-        
+
         try
         {
             var architectureValidator = new Architecture.ArchitectureValidator(
                 scope.ServiceProvider.GetRequiredService<ILogger<Architecture.ArchitectureValidator>>());
-            
+
             var isValid = architectureValidator.ValidateArchitecture();
-            
+
             if (!isValid)
             {
                 logger.LogWarning("Architecture validation failed. The application may not be structured according to the defined architecture rules.");
-                
+
                 // Optionally, you can make this a critical error and shut down in development to enforce architecture compliance
                 // In production, we typically want to continue running even if validation fails
                 if (Environment.GetEnvironmentVariable("ENFORCE_ARCHITECTURE") == "true")

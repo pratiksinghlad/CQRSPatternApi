@@ -131,23 +131,29 @@ public class PatchEmployeeCommandValidatorTest
     /// <summary>
     /// Tests successful validation with valid gender values.
     /// </summary>
-    //[Theory]
-    //[InlineData("Male")]
-    //[InlineData("Female")]
-    //[InlineData("Other")]
-    //[InlineData("male")] // Case insensitive
-    //[InlineData("FEMALE")] // Case insensitive
-    //public void Validate_WhenGenderIsValid_ShouldPassValidation(string validGender)
-    //{
-    //    // Arrange
-    //    var command = new PatchEmployeeCommandBuilder()
-    //        .With(x => x.Gender, validGender)
-    //        .With(x => x.FirstName, null) // Ensure other fields don't interfere
-    //        .With(x => x.LastName, null)
-    //        .With(x => x.BirthDate, null)
-    //        .With(x => x.HireDate, null)
-    //        .Build();
+    [Theory]
+    [InlineData("Male")]
+    [InlineData("Female")]
+    [InlineData("Other")]
+    [InlineData("male")] // Case insensitive
+    [InlineData("FEMALE")] // Case insensitive
+    public void Validate_WhenGenderIsValid_ShouldPassValidation(string validGender)
+    {
+        // Arrange
+        var command = new PatchEmployeeCommandBuilder()
+            .With(x => x.Gender, validGender)
+            .With(x => x.FirstName, null) // Ensure other fields don't interfere
+            .With(x => x.LastName, null)
+            .With(x => x.BirthDate, null)
+            .With(x => x.HireDate, null)
+            .Build();
 
+        // Act
+        var result = _validator.TestValidate(command);
+
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Gender);
+    }
     //    // Act
     //    var result = _validator.TestValidate(command);
 

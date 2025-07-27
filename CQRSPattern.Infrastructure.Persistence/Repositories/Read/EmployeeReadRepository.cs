@@ -22,5 +22,17 @@ public class EmployeeReadRepository : IEmployeeReadRepository
         return employees;
     }
 
+    public async Task<EmployeeModel?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        var employee = await _dbContext
+            .Employees
+            .Where(e => e.Id == id)
+            .Select(e => e.ToModel())
+            .AsNoTracking()
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return employee;
+    }
+
     private readonly IDatabaseContext _dbContext;
 }

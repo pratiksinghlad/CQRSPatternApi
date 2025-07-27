@@ -57,9 +57,7 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AddAsync(
-        [FromBody] Request request,
-        CancellationToken cancellationToken
+    public async Task<IActionResult> AddAsync([FromBody] Request request, CancellationToken cancellationToken
     )
     {
         try
@@ -92,11 +90,7 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateAsync(
-        int id,
-        [FromBody] Update.Request request,
-        CancellationToken cancellationToken
-    )
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] Update.Request request, CancellationToken cancellationToken)
     {
         try
         {
@@ -118,6 +112,53 @@ public class EmployeesController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while updating the employee", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Partially updates an existing employee using HTTP PATCH.
+    /// </summary>
+    /// <param name="id">The employee ID</param>
+    /// <param name="request">The employee partial update request</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Action result indicating success or failure</returns>
+    [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> PatchAsync(int id, [FromBody] Patch.Request request, CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid employee ID");
+            }
+
+            if (!request.HasAnyUpdates())
+            {
+                return BadRequest("At least one field must be provided for partial update");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var scope = _factory.CreateScope();
+            await scope.SendAsync(request.ToMediator(id), cancellationToken);
+
+            return Accepted();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while partially updating the employee", error = ex.Message });
         }
     }
 }

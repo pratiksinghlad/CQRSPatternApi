@@ -1,4 +1,4 @@
-﻿namespace CQRSPattern.Application.Features.Employee;
+namespace CQRSPattern.Application.Features.Employee;
 
 public sealed class EmployeeModel
 {

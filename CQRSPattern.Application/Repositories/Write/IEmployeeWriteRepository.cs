@@ -44,7 +44,6 @@ public interface IEmployeeWriteRepository
 
     /// <summary>
     /// Partially updates an employee using JSON Patch operations.
-    /// Supports complex patch operations like add, remove, replace, move, copy, test.
     /// </summary>
     /// <param name="id">The employee's unique identifier</param>
     /// <param name="patchDocument">The JSON patch document containing operations</param>

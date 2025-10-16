@@ -9,6 +9,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CQRSPattern.Api\CQRSPattern.Api.csproj" />
     <ProjectReference Include="..\..\CQRSPattern.Application\CQRSPattern.Application.csproj" />
     <ProjectReference Include="..\..\CQRSPattern.Shared.Test\CQRSPattern.Shared.Test.csproj" />
   </ItemGroup>

@@ -55,7 +55,8 @@ public partial class Startup
             options.Level = System.IO.Compression.CompressionLevel.Fastest;
         });
 
-        services.AddControllers();
+        services.AddControllers()
+            .AddNewtonsoftJson();
 
         services.AddCors(options =>
         {

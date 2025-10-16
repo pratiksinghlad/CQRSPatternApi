@@ -89,7 +89,7 @@ public class EmployeeWriteRepositoryPatchTest : IDisposable
             originalEmployee.Id,
             firstName: updatedFirstName);
 
-        // Assert
+    // Assert
         Assert.True(result);
 
         var updatedEmployee = await _context.Employees.FindAsync(originalEmployee.Id);

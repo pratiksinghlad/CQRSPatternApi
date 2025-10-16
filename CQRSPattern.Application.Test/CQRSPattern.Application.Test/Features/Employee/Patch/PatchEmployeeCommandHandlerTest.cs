@@ -75,8 +75,8 @@ public class PatchEmployeeCommandHandlerTest
         // Act
         var result = await _sut.Handle(command, default);
 
-        // Assert
-        Assert.NotNull(result);
+        // Assert  
+        // Unit type always returns Unit.Value, no need to assert NotNull
         _employeeRepository.Verify(x => x.PatchAsync(
             employeeId, newFirstName, null, null, null, null, default), Times.Once);
     }

@@ -1,7 +1,7 @@
-using CQRSPattern.Api.Features.Employee.Add;
 using CQRSPattern.Application.Features.Employee;
 using CQRSPattern.Application.Features.Employee.GetAll;
 using CQRSPattern.Application.Mediator;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CQRSPattern.Api.Features.Employee;
@@ -57,7 +57,9 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AddAsync([FromBody] Request request, CancellationToken cancellationToken
+    public async Task<IActionResult> AddAsync(
+        [FromBody] Add.Request request,
+        CancellationToken cancellationToken
     )
     {
         try
@@ -159,6 +161,95 @@ public class EmployeesController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while partially updating the employee", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Partially updates an existing employee using JSON Patch operations.
+    /// Supports complex patch operations like add, remove, replace, move, copy, test.
+    /// </summary>
+    /// <param name="id">The employee ID</param>
+    /// <param name="request">The JSON patch request containing operations</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Action result indicating success or failure</returns>
+    /// <remarks>
+    /// Example request body:
+    /// 
+    ///     [
+    ///       { "op": "replace", "path": "/FirstName", "value": "Jane" },
+    ///       { "op": "replace", "path": "/BirthDate", "value": "1985-06-15T00:00:00Z" },
+    ///       { "op": "test", "path": "/Gender", "value": "Female" },
+    ///       { "op": "remove", "path": "/LastName" }
+    ///     ]
+    /// 
+    /// Supported operations:
+    /// - **add**: Adds a value to the specified path
+    /// - **remove**: Removes the value at the specified path
+    /// - **replace**: Replaces the value at the specified path
+    /// - **move**: Moves a value from one path to another
+    /// - **copy**: Copies a value from one path to another
+    /// - **test**: Tests that the value at the specified path equals the given value
+    /// 
+    /// Valid paths: /FirstName, /LastName, /Gender, /BirthDate, /HireDate
+    /// </remarks>
+    [HttpPatch("{id}/jsonpatch")]
+    [Consumes("application/json-patch+json")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> JsonPatchAsync(
+        int id,
+        [FromBody] JsonPatchDocument<EmployeeModel> patchDocument,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid employee ID");
+            }
+
+            if (patchDocument == null)
+            {
+                return BadRequest("Patch document cannot be null");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var scope = _factory?.CreateScope();
+            if (scope == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, 
+                    new { message = "Unable to create mediator scope" });
+            }
+
+            var command = CQRSPattern.Application.Features.Employee.JsonPatch.JsonPatchEmployeeCommand.CreateCommand(id, patchDocument);
+            var wasUpdated = await scope.SendAsync(command, cancellationToken);
+            
+            if (!wasUpdated)
+            {
+                return NotFound(new { message = $"Employee with ID {id} not found" });
+            }
+
+            return NoContent();
+        }
+        catch (ArgumentNullException ex)
+        {
+            return BadRequest(new { message = $"Null argument: {ex.ParamName}", error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, 
+                new { message = "An error occurred while applying JSON patch to the employee", error = ex?.Message ?? "Unknown error" });
         }
     }
 }

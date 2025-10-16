@@ -7,9 +7,9 @@ namespace CQRSPattern.Api.Features.Employee.Update;
 /// </summary>
 public class Request
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Gender { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string Gender { get; set; }
     public DateTime BirthDate { get; set; }
     public DateTime HireDate { get; set; }
 

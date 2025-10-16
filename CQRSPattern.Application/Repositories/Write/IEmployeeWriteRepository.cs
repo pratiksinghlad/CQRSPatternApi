@@ -1,4 +1,5 @@
 ﻿using CQRSPattern.Application.Features.Employee;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace CQRSPattern.Application.Repositories.Write;
 
@@ -21,7 +22,8 @@ public interface IEmployeeWriteRepository
     Task UpdateAsync(EmployeeModel employee, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Partially updates an employee with only the provided fields.
+    /// Partially updates an employee with only the provided fields using modern .NET 9 approach.
+    /// Uses Entity Framework ExecuteUpdateAsync for optimal performance.
     /// </summary>
     /// <param name="id">The employee's unique identifier</param>
     /// <param name="firstName">The employee's first name (optional)</param>
@@ -38,5 +40,18 @@ public interface IEmployeeWriteRepository
         string? gender = null,
         DateTime? birthDate = null,
         DateTime? hireDate = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Partially updates an employee using JSON Patch operations.
+    /// Supports complex patch operations like add, remove, replace, move, copy, test.
+    /// </summary>
+    /// <param name="id">The employee's unique identifier</param>
+    /// <param name="patchDocument">The JSON patch document containing operations</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>True if the employee was found and updated; otherwise, false</returns>
+    Task<bool> PatchWithJsonPatchAsync(
+        int id,
+        JsonPatchDocument<EmployeeModel> patchDocument,
         CancellationToken cancellationToken = default);
 }

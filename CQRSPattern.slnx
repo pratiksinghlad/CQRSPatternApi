@@ -1,18 +1,19 @@
-﻿<Solution>
+<Solution>
   <Folder Name="/01.Hosting/">
-    <Project Path="CQRSPattern.Api\CQRSPattern.Api.csproj" Type="Classic C#" />
-    <Project Path="CQRSPattern.Migrator\CQRSPattern.Migrator.csproj" Type="Classic C#" />
+    <Project Path="CQRSPattern.Api\CQRSPattern.Api.csproj" Type="C#" />
+    <Project Path="CQRSPattern.Migrator\CQRSPattern.Migrator.csproj" Type="C#" />
   </Folder>
   <Folder Name="/02. Infrastructure/">
-    <Project Path="CQRSPattern.Infrastructure.Mediator\CQRSPattern.Infrastructure.Mediator.csproj" Type="Classic C#" />
-    <Project Path="CQRSPattern.Infrastructure.Persistence.Test\CQRSPattern.Infrastructure.Persistence.Test.csproj" Type="Classic C#" />
-    <Project Path="CQRSPattern.Infrastructure.Persistence\CQRSPattern.Infrastructure.Persistence.csproj" Type="Classic C#" />
+    <Project Path="CQRSPattern.Infrastructure.Mediator\CQRSPattern.Infrastructure.Mediator.csproj" Type="C#" />
+    <Project Path="CQRSPattern.Infrastructure.Persistence.Test\CQRSPattern.Infrastructure.Persistence.Test.csproj" Type="C#" />
+    <Project Path="CQRSPattern.Infrastructure.Persistence\CQRSPattern.Infrastructure.Persistence.csproj" Type="C#" />
   </Folder>
   <Folder Name="/03. Application/">
-    <Project Path="CQRSPattern.Application.Test\CQRSPattern.Application.Test\CQRSPattern.Application.Test.csproj" Type="Classic C#" />
-    <Project Path="CQRSPattern.Application\CQRSPattern.Application.csproj" Type="Classic C#" />
+    <Project Path="CQRSPattern.Application.Test\CQRSPattern.Application.Test\CQRSPattern.Application.Test.csproj" Type="C#" />
+    <Project Path="CQRSPattern.Application\CQRSPattern.Application.csproj" Type="C#" />
   </Folder>
   <Folder Name="/99. Shared/">
-    <Project Path="CQRSPattern.Shared.Test\CQRSPattern.Shared.Test.csproj" Type="Classic C#" />
+    <Project Path="CQRSPattern.Shared.Test\CQRSPattern.Shared.Test.csproj" Type="C#" />
   </Folder>
+  <Project Path="CQRSPattern.McpServer/CQRSPattern.McpServer.csproj" />
 </Solution>

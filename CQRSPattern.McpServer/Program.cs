@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
@@ -6,7 +7,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Configure logging to go to stderr (required for MCP stdio protocol)
 builder.Logging.AddConsole(options =>
@@ -33,7 +34,61 @@ builder.Services
     .WithStdioServerTransport()
     .WithToolsFromAssembly();
 
-await builder.Build().RunAsync();
+// No additional transports registered here; VS Code will connect over stdio transport.
+
+// Diagnostic: enumerate methods with the McpServerTool attribute and log them to stderr so clients/admins can verify discovery
+try
+{
+    var execAsm = System.Reflection.Assembly.GetExecutingAssembly();
+    var toolMethods = execAsm.GetTypes()
+        .SelectMany(t => t.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Instance))
+        .Where(m => m.GetCustomAttributesData().Any(ad => ad.AttributeType.Name == "McpServerToolAttribute"))
+        .ToList();
+
+    if (toolMethods.Count > 0)
+    {
+        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger("McpStartup");
+        logger.LogInformation("Discovered {Count} MCP tool methods:", toolMethods.Count);
+        foreach (var m in toolMethods)
+        {
+            // try to read the attribute named argument 'Name' if present
+            var attr = m.GetCustomAttributesData().FirstOrDefault(ad => ad.AttributeType.Name == "McpServerToolAttribute");
+            string toolName = m.Name;
+            if (attr != null)
+            {
+                var named = attr.NamedArguments.FirstOrDefault(na => na.MemberName == "Name");
+                if (named.TypedValue.Value is string s && !string.IsNullOrEmpty(s)) toolName = s;
+            }
+            logger.LogInformation(" - {Tool} => {Method}", toolName, m.DeclaringType?.FullName + "." + m.Name);
+        }
+    }
+    else
+    {
+        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger("McpStartup");
+        logger.LogWarning("No MCP tool methods discovered via reflection");
+    }
+}
+catch (Exception ex)
+{
+    // write to stderr to avoid polluting stdio
+    Console.Error.WriteLine($"MCP discovery diagnostics failed: {ex}");
+}
+
+var app = builder.Build();
+
+// Temporary HTTP endpoint to invoke MCP tool logic directly (works around stdio pairing issues).
+// GET /mcp/tools/get_all_employees -> returns the JSON array returned by the CQRS API's /api/employees
+app.MapGet("/mcp/tools/get_all_employees", async (IHttpClientFactory httpClientFactory) =>
+{
+    var client = httpClientFactory.CreateClient("CQRSApi");
+    var response = await client.GetAsync("/api/employees");
+    response.EnsureSuccessStatusCode();
+    var body = await response.Content.ReadAsStringAsync();
+    // Return raw JSON content
+    return Results.Content(body, "application/json");
+});
+
+await app.RunAsync();
 
 /// <summary>
 /// Tools for interacting with the CQRS Pattern API

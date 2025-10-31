@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using CQRSPattern.Api.Features.Mcp.Handlers;
+using CQRSPattern.Api.Features.Mcp.Services;
 using CQRSPattern.Api.Services;
 using CQRSPattern.Application.Infrastructure.Infra;
 using CQRSPattern.Application.Mediator;
@@ -31,6 +33,8 @@ public class Registrations : Module
         RegisterRepositories(ref builder);
 
         RegisteredServices(ref builder);
+
+        RegisterMcpServices(ref builder);
     }
 
     private static void RegisterMediator(ref ContainerBuilder builder)
@@ -90,5 +94,17 @@ public class Registrations : Module
     private static void RegisteredServices(ref ContainerBuilder builder)
     {
         builder.RegisterType<ServerSentEventsService>().SingleInstance();
+    }
+
+    private static void RegisterMcpServices(ref ContainerBuilder builder)
+    {
+        // Register MCP router
+        builder.RegisterType<McpRequestRouter>().As<IMcpRequestRouter>().InstancePerLifetimeScope();
+
+        // Register MCP method handlers
+        builder.RegisterType<EmployeeGetAllHandler>().AsSelf().InstancePerLifetimeScope();
+        builder.RegisterType<EmployeeAddHandler>().AsSelf().InstancePerLifetimeScope();
+        builder.RegisterType<EmployeeUpdateHandler>().AsSelf().InstancePerLifetimeScope();
+        builder.RegisterType<EmployeePatchHandler>().AsSelf().InstancePerLifetimeScope();
     }
 }

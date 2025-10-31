@@ -1,0 +1,14 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "query_entities",
+    "arguments": {
+      "entityType": "employees",
+      "pageNumber": 1,
+      "pageSize": 100,
+      "filters": ""
+    }
+  }
+}

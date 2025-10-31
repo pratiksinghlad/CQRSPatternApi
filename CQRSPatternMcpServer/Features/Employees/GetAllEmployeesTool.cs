@@ -1,11 +1,5 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using ModelContextProtocol.Server;
 
 namespace CQRSPattern.McpServer.Features.Employees;

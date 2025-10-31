@@ -15,5 +15,5 @@
   <Folder Name="/99. Shared/">
     <Project Path="CQRSPattern.Shared.Test\CQRSPattern.Shared.Test.csproj" Type="C#" />
   </Folder>
-  <Project Path="CQRSPattern.McpServer/CQRSPattern.McpServer.csproj" />
+  <Project Path="CQRSPatternMcpServer/CQRSPattern.McpServer.csproj" />
 </Solution>

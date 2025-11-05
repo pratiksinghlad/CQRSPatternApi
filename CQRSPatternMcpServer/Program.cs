@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Text.Json;
+using CQRSPattern.McpServer.Configuration;
 using Serilog;
 
 namespace CQRSPattern.McpServer;
@@ -29,16 +31,46 @@ public static class Program
 
             Log.Information("Starting up MCP Server");
 
+            // Load MCP configuration from mcp.json if it exists
+            McpConfiguration? mcpConfig = null;
+            var mcpConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "../../mcp.json");
+            if (File.Exists(mcpConfigPath))
+            {
+                try
+                {
+                    var mcpConfigJson = await File.ReadAllTextAsync(mcpConfigPath);
+                    mcpConfig = JsonSerializer.Deserialize<McpConfiguration>(mcpConfigJson, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    Log.Information("Loaded MCP configuration from {Path}", mcpConfigPath);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Failed to load MCP configuration from {Path}, using defaults", mcpConfigPath);
+                }
+            }
+            else
+            {
+                Log.Information("No mcp.json found at {Path}, using environment variables and defaults", mcpConfigPath);
+            }
+
             // Add HTTP client for API calls
             builder.Services.AddHttpClient("CQRSApi", client =>
             {
-                var apiUrl = Environment.GetEnvironmentVariable("CQRS_API_URL") ?? "http://localhost:5000";
+                // Try to get API URL from mcp.json first, then environment variable, then default
+                var apiUrl = mcpConfig?.Settings?.ApiUrl 
+                    ?? Environment.GetEnvironmentVariable("CQRS_API_URL") 
+                    ?? "http://localhost:5000";
                 client.BaseAddress = new Uri(apiUrl);
+                
+                Log.Information("MCP Server will connect to API at: {ApiUrl}", apiUrl);
                 
                 var apiKey = Environment.GetEnvironmentVariable("CQRS_API_KEY");
                 if (!string.IsNullOrEmpty(apiKey))
                 {
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+                    Log.Information("API key configured for requests");
                 }
             });
 

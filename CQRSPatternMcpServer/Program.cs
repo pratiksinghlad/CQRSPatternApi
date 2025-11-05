@@ -33,26 +33,45 @@ public static class Program
 
             // Load MCP configuration from mcp.json if it exists
             McpConfiguration? mcpConfig = null;
-            var mcpConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "../../mcp.json");
-            if (File.Exists(mcpConfigPath))
+            
+            // Try multiple locations for mcp.json
+            var possiblePaths = new[]
+            {
+                Path.Combine(Directory.GetCurrentDirectory(), "mcp.json"),
+                Path.Combine(Directory.GetCurrentDirectory(), "../../mcp.json"),
+                Path.Combine(AppContext.BaseDirectory, "mcp.json"),
+                Path.Combine(AppContext.BaseDirectory, "../../mcp.json")
+            };
+
+            string? foundConfigPath = null;
+            foreach (var path in possiblePaths)
+            {
+                if (File.Exists(path))
+                {
+                    foundConfigPath = path;
+                    break;
+                }
+            }
+
+            if (foundConfigPath != null)
             {
                 try
                 {
-                    var mcpConfigJson = await File.ReadAllTextAsync(mcpConfigPath);
+                    var mcpConfigJson = await File.ReadAllTextAsync(foundConfigPath);
                     mcpConfig = JsonSerializer.Deserialize<McpConfiguration>(mcpConfigJson, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
-                    Log.Information("Loaded MCP configuration from {Path}", mcpConfigPath);
+                    Log.Information("Loaded MCP configuration from {Path}", foundConfigPath);
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning(ex, "Failed to load MCP configuration from {Path}, using defaults", mcpConfigPath);
+                    Log.Warning(ex, "Failed to load MCP configuration from {Path}, using defaults", foundConfigPath);
                 }
             }
             else
             {
-                Log.Information("No mcp.json found at {Path}, using environment variables and defaults", mcpConfigPath);
+                Log.Information("No mcp.json found in any standard location, using environment variables and defaults");
             }
 
             // Add HTTP client for API calls
@@ -150,17 +169,26 @@ public static class Program
             {
                 try
                 {
-                    // Read the MCP request from the body
-                    using var reader = new StreamReader(context.Request.Body);
-                    var requestBody = await reader.ReadToEndAsync();
-                    
-                    Log.Information("Received HTTP MCP request");
-                    
-                    // Forward to the actual API
+                    // Limit request body size to prevent memory issues (10MB max)
+                    const long maxRequestSize = 10 * 1024 * 1024;
+                    if (context.Request.ContentLength > maxRequestSize)
+                    {
+                        return Results.BadRequest(new { error = "Request body too large. Maximum size is 10MB." });
+                    }
+
+                    // Forward the request stream directly to avoid copying to memory
                     var client = httpClientFactory.CreateClient("CQRSApi");
-                    using var content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("/mcp/request", content);
                     
+                    using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/mcp/request")
+                    {
+                        Content = new StreamContent(context.Request.Body)
+                    };
+                    
+                    requestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    
+                    Log.Information("Forwarding HTTP MCP request to API");
+                    
+                    var response = await client.SendAsync(requestMessage);
                     var responseBody = await response.Content.ReadAsStringAsync();
                     
                     return Results.Content(responseBody, "application/json", statusCode: (int)response.StatusCode);

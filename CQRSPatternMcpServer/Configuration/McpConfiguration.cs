@@ -88,6 +88,11 @@ public sealed class McpSettings
     public string ApiUrlHttps { get; set; } = "https://localhost:5001";
 
     /// <summary>
+    /// Gets or sets the MCP Server URL (for HTTP proxy mode)
+    /// </summary>
+    public string McpServerUrl { get; set; } = "http://localhost:5002";
+
+    /// <summary>
     /// Gets or sets whether logging is enabled
     /// </summary>
     public bool EnableLogging { get; set; } = true;

@@ -84,15 +84,20 @@ The application uses multiple configuration files for different environments:
 
 #### MCP Configuration (mcp.json)
 
-The `mcp.json` file configures how clients connect to the MCP server. It supports both HTTP and stdio transports:
+The `mcp.json` file configures how clients connect to the MCP server. It supports multiple transport modes:
 
 ```json
 {
   "mcpServers": {
-    "cqrspattern-http": {
+    "cqrspattern-http-direct": {
       "type": "http",
       "url": "http://localhost:5000/mcp/request",
-      "description": "CQRS Pattern API MCP Server - HTTP Transport"
+      "description": "Direct connection to API MCP endpoint"
+    },
+    "cqrspattern-http-proxy": {
+      "type": "http",
+      "url": "http://localhost:5002/mcp/request",
+      "description": "Connection via MCP Server proxy (port 5002)"
     },
     "cqrspattern-stdio": {
       "type": "stdio",
@@ -166,20 +171,36 @@ dotnet run
 
 #### Running the MCP Server (Standalone)
 
-The standalone MCP server provides stdio-based communication for IDE integration (e.g., VS Code with GitHub Copilot):
+The standalone MCP server provides multiple transport modes for different use cases:
 
+##### Mode 1: HTTP Proxy Mode (Port 5002)
 ```bash
 # Build the MCP server first
 dotnet build CQRSPatternMcpServer/CQRSPattern.McpServer.csproj
 
-# Run the MCP server (make sure the API is running first)
+# Run the MCP server (make sure the API is running first on port 5000)
 dotnet run --project CQRSPatternMcpServer/CQRSPattern.McpServer.csproj
 
 # Or run the compiled DLL directly
 dotnet CQRSPatternMcpServer/bin/Debug/net9.0/CQRSPattern.McpServer.dll
+
+# The MCP Server will be available at:
+# - HTTP Proxy: http://localhost:5002/mcp/request
+# - Health Check: http://localhost:5002/health
 ```
 
-**Note**: The MCP server needs the main API to be running since it acts as a proxy to the API endpoints.
+In this mode, the MCP server acts as an HTTP proxy that forwards requests to the main API.
+
+##### Mode 2: stdio Mode (for IDE Integration)
+```bash
+# Start via IDE integration (e.g., VS Code with GitHub Copilot)
+# The IDE will automatically start the server using the stdio transport
+# Configuration is in mcp.json under "cqrspattern-stdio"
+```
+
+In this mode, the MCP server communicates via stdin/stdout for IDE integration.
+
+**Note**: The MCP server needs the main API to be running since it acts as a proxy/client to the API endpoints.
 
 **Configuration**: The MCP server reads configuration from `mcp.json` to determine the API URL and other settings.
 
@@ -565,13 +586,18 @@ Both approaches access the same underlying CQRS infrastructure, so choose based 
 
 ## Client Communication Guide
 
-### Option 1: Using the HTTP MCP Endpoint
+### Option 1: Direct HTTP MCP Endpoint (Recommended for most use cases)
 
-The HTTP MCP endpoint provides a unified interface for all operations using the MCP protocol.
+Connect directly to the API's built-in MCP endpoint.
 
 **Endpoint**: `POST http://localhost:5000/mcp/request` or `POST https://localhost:5001/mcp/request`
 
-**Configuration**: Set up in `mcp.json` under `cqrspattern-http`.
+**Configuration**: Set up in `mcp.json` under `cqrspattern-http-direct`.
+
+**Benefits**: 
+- Lowest latency (direct connection)
+- No additional server needed
+- Best for production use
 
 #### Example: Get All Employees
 ```bash
@@ -600,7 +626,45 @@ curl -X POST http://localhost:5000/mcp/request \
   }'
 ```
 
-### Option 2: Using the Standalone MCP Server (stdio)
+### Option 2: HTTP Proxy via MCP Server (Port 5002)
+
+Use the standalone MCP server as an HTTP proxy to the API.
+
+**Endpoint**: `POST http://localhost:5002/mcp/request`
+
+**Configuration**: Set up in `mcp.json` under `cqrspattern-http-proxy`.
+
+**Prerequisites**:
+1. Main API must be running on port 5000
+2. MCP Server must be running on port 5002
+
+**Benefits**:
+- Additional layer for logging/monitoring
+- Potential for request transformation
+- Can add middleware functionality
+
+**Start the servers**:
+```bash
+# Terminal 1: Start the API
+cd CQRSPattern.Api
+dotnet run
+
+# Terminal 2: Start the MCP Server
+cd CQRSPatternMcpServer
+dotnet run
+```
+
+**Make requests**:
+```bash
+curl -X POST http://localhost:5002/mcp/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "employee.getAll",
+    "id": "req-001"
+  }'
+```
+
+### Option 3: Using the Standalone MCP Server (stdio)
 
 The standalone MCP server is ideal for IDE integration (e.g., VS Code with GitHub Copilot).
 
@@ -632,7 +696,7 @@ dotnet run
 - `get_entity_by_id` - Get specific entity by ID
 - `api_health_check` - Check API health status
 
-### Option 3: Using Traditional REST Endpoints
+### Option 4: Using Traditional REST Endpoints
 
 Standard RESTful HTTP endpoints are available for all operations.
 
@@ -682,11 +746,24 @@ curl -X PATCH http://localhost:5000/api/employees/1 \
 
 | Use Case | Recommended Approach | Why |
 |----------|---------------------|-----|
-| AI Assistant Integration | MCP stdio Server | Native MCP protocol support |
-| Web Application | REST Endpoints | Standard HTTP semantics |
-| Automation Scripts | MCP HTTP Endpoint | Consistent error handling |
-| Mobile App | REST Endpoints | Wide client library support |
-| Microservices | MCP HTTP Endpoint | Protocol standardization |
+| AI Assistant Integration | MCP stdio Server (Option 3) | Native MCP protocol support for IDEs |
+| Production API Access | Direct MCP HTTP (Option 1) | Lowest latency, no extra server |
+| Development/Testing | HTTP Proxy (Option 2) | Additional logging & monitoring |
+| Web Application | REST Endpoints (Option 4) | Standard HTTP semantics |
+| Automation Scripts | Direct MCP HTTP (Option 1) | Consistent error handling |
+| Mobile App | REST Endpoints (Option 4) | Wide client library support |
+| Microservices | Direct MCP HTTP (Option 1) | Protocol standardization |
+
+### Transport Mode Comparison
+
+| Feature | Direct HTTP MCP | HTTP Proxy MCP | stdio MCP | REST |
+|---------|----------------|----------------|-----------|------|
+| Port | 5000/5001 | 5002 | N/A | 5000/5001 |
+| Extra Server Needed | No | Yes | Yes | No |
+| IDE Integration | Via HTTP | Via HTTP | ✓ Native | No |
+| Latency | Lowest | Low | N/A | Lowest |
+| Logging/Monitoring | API only | API + Proxy | Separate | API only |
+| Best For | Production | Development | AI Tools | Web Apps |
 
 ### Authentication
 

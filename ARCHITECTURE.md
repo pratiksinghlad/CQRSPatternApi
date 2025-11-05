@@ -156,12 +156,17 @@ A separate .NET application (`CQRSPattern.McpServer`) that:
 Client → HTTP Request → API Controller → MediatR → Handler → Database → Response
 ```
 
-### Flow 2: MCP HTTP Request
+### Flow 2: Direct MCP HTTP Request
 ```
-Client → MCP Request (HTTP) → MCP Endpoint → MCP Router → MediatR → Handler → Database → MCP Response
+Client → MCP Request (HTTP) → API MCP Endpoint → MCP Router → MediatR → Handler → Database → MCP Response
 ```
 
-### Flow 3: MCP stdio Request (from IDE)
+### Flow 3: MCP HTTP Proxy Request
+```
+Client → MCP Request (HTTP) → MCP Server (port 5002) → API MCP Endpoint → MCP Router → MediatR → Handler → Database → Response → MCP Server → Client
+```
+
+### Flow 4: MCP stdio Request (from IDE)
 ```
 IDE → stdio → MCP Server → HTTP Request → API → MediatR → Handler → Database → Response → MCP Server → stdio → IDE
 ```
@@ -175,9 +180,13 @@ The `mcp.json` file configures MCP server connections:
 ```json
 {
   "mcpServers": {
-    "cqrspattern-http": {
+    "cqrspattern-http-direct": {
       "type": "http",
       "url": "http://localhost:5000/mcp/request"
+    },
+    "cqrspattern-http-proxy": {
+      "type": "http",
+      "url": "http://localhost:5002/mcp/request"
     },
     "cqrspattern-stdio": {
       "type": "stdio",
@@ -193,12 +202,14 @@ The `mcp.json` file configures MCP server connections:
 
 ## Benefits of This Architecture
 
-1. **Dual Interface**: Supports both traditional REST and modern MCP protocol
-2. **Separation of Concerns**: Clear boundaries between read/write operations
-3. **Scalability**: Read and write databases can scale independently
-4. **AI Integration**: MCP support enables AI assistants to interact with the API
-5. **Flexibility**: Clients can choose the most appropriate interface
-6. **Standardization**: MCP provides consistent error handling and request/response format
+1. **Multiple Access Modes**: Supports REST, direct MCP HTTP, MCP HTTP proxy, and MCP stdio
+2. **Flexibility**: Clients can choose the most appropriate interface for their use case
+3. **Separation of Concerns**: Clear boundaries between read/write operations
+4. **Scalability**: Read and write databases can scale independently
+5. **AI Integration**: MCP support enables AI assistants to interact with the API
+6. **Development vs Production**: HTTP proxy mode for development, direct mode for production
+7. **Standardization**: MCP provides consistent error handling and request/response format
+8. **Monitoring**: HTTP proxy mode allows additional logging and request/response inspection
 
 ## Security Considerations
 

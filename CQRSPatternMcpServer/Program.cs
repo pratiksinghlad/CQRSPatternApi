@@ -142,6 +142,38 @@ public static class Program
 
             var app = builder.Build();
 
+            // Add HTTP endpoints for MCP server (HTTP transport mode)
+            // These endpoints allow the MCP server to be used over HTTP as well as stdio
+            app.MapPost("/mcp/request", async (
+                HttpContext context,
+                IHttpClientFactory httpClientFactory) =>
+            {
+                try
+                {
+                    // Read the MCP request from the body
+                    using var reader = new StreamReader(context.Request.Body);
+                    var requestBody = await reader.ReadToEndAsync();
+                    
+                    Log.Information("Received HTTP MCP request");
+                    
+                    // Forward to the actual API
+                    var client = httpClientFactory.CreateClient("CQRSApi");
+                    using var content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("/mcp/request", content);
+                    
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    
+                    return Results.Content(responseBody, "application/json", statusCode: (int)response.StatusCode);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error processing HTTP MCP request");
+                    return Results.Problem("Error processing MCP request", statusCode: 500);
+                }
+            })
+            .WithName("ProcessMcpRequest")
+            .WithDescription("Processes MCP requests over HTTP and forwards to the API");
+
             // Temporary HTTP endpoint to invoke MCP tool logic directly (works around stdio pairing issues)
             app.MapGet("/mcp/tools/get_all_employees", async (IHttpClientFactory httpClientFactory) =>
             {
@@ -151,7 +183,40 @@ public static class Program
                 var body = await response.Content.ReadAsStringAsync();
                 // Return raw JSON content
                 return Results.Content(body, "application/json");
-            });
+            })
+            .WithName("GetAllEmployees")
+            .WithDescription("Gets all employees via direct tool call");
+
+            // Health check endpoint for the MCP server
+            app.MapGet("/health", async (IHttpClientFactory httpClientFactory) =>
+            {
+                try
+                {
+                    var client = httpClientFactory.CreateClient("CQRSApi");
+                    var response = await client.GetAsync("/health/ready");
+                    var isHealthy = response.IsSuccessStatusCode;
+                    
+                    return Results.Ok(new
+                    {
+                        status = isHealthy ? "healthy" : "unhealthy",
+                        mcpServer = "running",
+                        apiConnection = isHealthy ? "connected" : "disconnected",
+                        timestamp = DateTime.UtcNow
+                    });
+                }
+                catch
+                {
+                    return Results.Ok(new
+                    {
+                        status = "degraded",
+                        mcpServer = "running",
+                        apiConnection = "disconnected",
+                        timestamp = DateTime.UtcNow
+                    });
+                }
+            })
+            .WithName("HealthCheck")
+            .WithDescription("Health check for the MCP server");
 
             try
             {

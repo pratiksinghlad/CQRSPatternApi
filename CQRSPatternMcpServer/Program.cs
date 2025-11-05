@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Text.Json;
+using CQRSPattern.McpServer.Configuration;
 using Serilog;
 
 namespace CQRSPattern.McpServer;
@@ -29,16 +31,65 @@ public static class Program
 
             Log.Information("Starting up MCP Server");
 
+            // Load MCP configuration from mcp.json if it exists
+            McpConfiguration? mcpConfig = null;
+            
+            // Try multiple locations for mcp.json
+            var possiblePaths = new[]
+            {
+                Path.Combine(Directory.GetCurrentDirectory(), "mcp.json"),
+                Path.Combine(Directory.GetCurrentDirectory(), "../../mcp.json"),
+                Path.Combine(AppContext.BaseDirectory, "mcp.json"),
+                Path.Combine(AppContext.BaseDirectory, "../../mcp.json")
+            };
+
+            string? foundConfigPath = null;
+            foreach (var path in possiblePaths)
+            {
+                if (File.Exists(path))
+                {
+                    foundConfigPath = path;
+                    break;
+                }
+            }
+
+            if (foundConfigPath != null)
+            {
+                try
+                {
+                    var mcpConfigJson = await File.ReadAllTextAsync(foundConfigPath);
+                    mcpConfig = JsonSerializer.Deserialize<McpConfiguration>(mcpConfigJson, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    Log.Information("Loaded MCP configuration from {Path}", foundConfigPath);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Failed to load MCP configuration from {Path}, using defaults", foundConfigPath);
+                }
+            }
+            else
+            {
+                Log.Information("No mcp.json found in any standard location, using environment variables and defaults");
+            }
+
             // Add HTTP client for API calls
             builder.Services.AddHttpClient("CQRSApi", client =>
             {
-                var apiUrl = Environment.GetEnvironmentVariable("CQRS_API_URL") ?? "http://localhost:5000";
+                // Try to get API URL from mcp.json first, then environment variable, then default
+                var apiUrl = mcpConfig?.Settings?.ApiUrl 
+                    ?? Environment.GetEnvironmentVariable("CQRS_API_URL") 
+                    ?? "http://localhost:5000";
                 client.BaseAddress = new Uri(apiUrl);
+                
+                Log.Information("MCP Server will connect to API at: {ApiUrl}", apiUrl);
                 
                 var apiKey = Environment.GetEnvironmentVariable("CQRS_API_KEY");
                 if (!string.IsNullOrEmpty(apiKey))
                 {
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+                    Log.Information("API key configured for requests");
                 }
             });
 
@@ -110,6 +161,47 @@ public static class Program
 
             var app = builder.Build();
 
+            // Add HTTP endpoints for MCP server (HTTP transport mode)
+            // These endpoints allow the MCP server to be used over HTTP as well as stdio
+            app.MapPost("/mcp/request", async (
+                HttpContext context,
+                IHttpClientFactory httpClientFactory) =>
+            {
+                try
+                {
+                    // Limit request body size to prevent memory issues (10MB max)
+                    const long maxRequestSize = 10 * 1024 * 1024;
+                    if (context.Request.ContentLength > maxRequestSize)
+                    {
+                        return Results.BadRequest(new { error = "Request body too large. Maximum size is 10MB." });
+                    }
+
+                    // Forward the request stream directly to avoid copying to memory
+                    var client = httpClientFactory.CreateClient("CQRSApi");
+                    
+                    using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "/mcp/request")
+                    {
+                        Content = new StreamContent(context.Request.Body)
+                    };
+                    
+                    requestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    
+                    Log.Information("Forwarding HTTP MCP request to API");
+                    
+                    var response = await client.SendAsync(requestMessage);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    
+                    return Results.Content(responseBody, "application/json", statusCode: (int)response.StatusCode);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error processing HTTP MCP request");
+                    return Results.Problem("Error processing MCP request", statusCode: 500);
+                }
+            })
+            .WithName("ProcessMcpRequest")
+            .WithDescription("Processes MCP requests over HTTP and forwards to the API");
+
             // Temporary HTTP endpoint to invoke MCP tool logic directly (works around stdio pairing issues)
             app.MapGet("/mcp/tools/get_all_employees", async (IHttpClientFactory httpClientFactory) =>
             {
@@ -119,7 +211,40 @@ public static class Program
                 var body = await response.Content.ReadAsStringAsync();
                 // Return raw JSON content
                 return Results.Content(body, "application/json");
-            });
+            })
+            .WithName("GetAllEmployees")
+            .WithDescription("Gets all employees via direct tool call");
+
+            // Health check endpoint for the MCP server
+            app.MapGet("/health", async (IHttpClientFactory httpClientFactory) =>
+            {
+                try
+                {
+                    var client = httpClientFactory.CreateClient("CQRSApi");
+                    var response = await client.GetAsync("/health/ready");
+                    var isHealthy = response.IsSuccessStatusCode;
+                    
+                    return Results.Ok(new
+                    {
+                        status = isHealthy ? "healthy" : "unhealthy",
+                        mcpServer = "running",
+                        apiConnection = isHealthy ? "connected" : "disconnected",
+                        timestamp = DateTime.UtcNow
+                    });
+                }
+                catch
+                {
+                    return Results.Ok(new
+                    {
+                        status = "degraded",
+                        mcpServer = "running",
+                        apiConnection = "disconnected",
+                        timestamp = DateTime.UtcNow
+                    });
+                }
+            })
+            .WithName("HealthCheck")
+            .WithDescription("Health check for the MCP server");
 
             try
             {

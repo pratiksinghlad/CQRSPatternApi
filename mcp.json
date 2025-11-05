@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "cqrspattern-http-direct": {
+      "type": "http",
+      "url": "http://localhost:5000/mcp/request",
+      "description": "CQRS Pattern API MCP Endpoint - Direct HTTP Transport",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "timeout": 30000,
+      "retryAttempts": 3
+    },
+    "cqrspattern-http-proxy": {
+      "type": "http",
+      "url": "http://localhost:5002/mcp/request",
+      "description": "CQRS Pattern MCP Server - HTTP Proxy Transport (forwards to API)",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "timeout": 30000,
+      "retryAttempts": 3
+    },
+    "cqrspattern-stdio": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "CQRSPatternMcpServer/CQRSPattern.McpServer.csproj"
+      ],
+      "description": "CQRS Pattern MCP Server - stdio Transport (for IDE integration)",
+      "env": {
+        "CQRS_API_URL": "http://localhost:5000",
+        "CQRS_API_KEY": ""
+      }
+    }
+  },
+  "defaultServer": "cqrspattern-http-direct",
+  "settings": {
+    "apiUrl": "http://localhost:5000",
+    "apiUrlHttps": "https://localhost:5001",
+    "mcpServerUrl": "http://localhost:5002",
+    "enableLogging": true,
+    "logLevel": "Information"
+  }
+}

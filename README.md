@@ -80,6 +80,40 @@ The application uses multiple configuration files for different environments:
 - `appsettings.Production.json` - Production environment settings
 - `appsettings.Local.json` - Local development overrides (optional)
 - `secrets/appsettings.secrets.json` - Sensitive data (gitignored)
+- **`mcp.json`** - MCP server configuration (NEW)
+
+#### MCP Configuration (mcp.json)
+
+The `mcp.json` file configures how clients connect to the MCP server. It supports multiple transport modes:
+
+```json
+{
+  "mcpServers": {
+    "cqrspattern-http-direct": {
+      "type": "http",
+      "url": "http://localhost:5000/mcp/request",
+      "description": "Direct connection to API MCP endpoint"
+    },
+    "cqrspattern-http-proxy": {
+      "type": "http",
+      "url": "http://localhost:5002/mcp/request",
+      "description": "Connection via MCP Server proxy (port 5002)"
+    },
+    "cqrspattern-stdio": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": ["run", "--project", "CQRSPatternMcpServer/CQRSPattern.McpServer.csproj"],
+      "env": {
+        "CQRS_API_URL": "http://localhost:5000"
+      }
+    }
+  },
+  "settings": {
+    "apiUrl": "http://localhost:5000",
+    "apiUrlHttps": "https://localhost:5001"
+  }
+}
+```
 
 #### Environment Variables
 
@@ -97,6 +131,8 @@ Key configuration settings:
 You can also use environment variables:
 - `ConnectionStrings__ReadDb`
 - `ConnectionStrings__WriteDb`
+- `CQRS_API_URL` - Base URL for the CQRS API (used by MCP server)
+- `CQRS_API_KEY` - Optional API key for authentication
 
 For more configuration conventions, see [copilot-instructions.md](.github/copilot-instructions.md).
 
@@ -132,6 +168,41 @@ cd CQRSPattern.Migrator
 # Run migrations
 dotnet run
 ```
+
+#### Running the MCP Server (Standalone)
+
+The standalone MCP server provides multiple transport modes for different use cases:
+
+##### Mode 1: HTTP Proxy Mode (Port 5002)
+```bash
+# Build the MCP server first
+dotnet build CQRSPatternMcpServer/CQRSPattern.McpServer.csproj
+
+# Run the MCP server (make sure the API is running first on port 5000)
+dotnet run --project CQRSPatternMcpServer/CQRSPattern.McpServer.csproj
+
+# Or run the compiled DLL directly
+dotnet CQRSPatternMcpServer/bin/Debug/net9.0/CQRSPattern.McpServer.dll
+
+# The MCP Server will be available at:
+# - HTTP Proxy: http://localhost:5002/mcp/request
+# - Health Check: http://localhost:5002/health
+```
+
+In this mode, the MCP server acts as an HTTP proxy that forwards requests to the main API.
+
+##### Mode 2: stdio Mode (for IDE Integration)
+```bash
+# Start via IDE integration (e.g., VS Code with GitHub Copilot)
+# The IDE will automatically start the server using the stdio transport
+# Configuration is in mcp.json under "cqrspattern-stdio"
+```
+
+In this mode, the MCP server communicates via stdin/stdout for IDE integration.
+
+**Note**: The MCP server needs the main API to be running since it acts as a proxy/client to the API endpoints.
+
+**Configuration**: The MCP server reads configuration from `mcp.json` to determine the API URL and other settings.
 
 ## MCP Server
 
@@ -438,17 +509,43 @@ You can test the MCP endpoint using:
 
 ## Architecture
 
-This solution follows Clean Architecture principles with clear separation of concerns:
+This solution follows Clean Architecture principles with clear separation of concerns.
+
+For a detailed architecture explanation with diagrams, see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+
+### Key Architectural Components
+
+1. **CQRS Pattern API** - Main .NET 9 API with REST and MCP endpoints
+2. **MCP Server** - Standalone stdio server for IDE integration
+3. **MediatR** - Command/Query mediator implementation
+4. **Dual Database** - Separate read and write databases for optimal performance
+5. **Client Flexibility** - Support for REST, MCP HTTP, and MCP stdio protocols
+
+### Quick Architecture Overview
+
+```
+Clients (Web/Mobile/IDE) 
+    ↓
+CQRS API (REST + MCP HTTP Endpoint)
+    ↓
+MediatR (Commands/Queries)
+    ↓
+Read DB ← Write DB
+```
+
+For complete architecture details including communication flows, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Hosting projects: CQRSPattern.Api
 The executing code runs from these projects.
 
 ## Additional Resources
 
+- **[Architecture Documentation](ARCHITECTURE.md)** - Detailed architecture with diagrams and flows
 - **[Copilot Instructions](.github/copilot-instructions.md)** - Project conventions, coding standards, and setup rules
 - **[PATCH Implementation](PATCH_IMPLEMENTATION.md)** - Details on HTTP PATCH support
 - **[Swagger PATCH Examples](SWAGGER_PATCH_EXAMPLE.md)** - Examples for using PATCH endpoints
 - **[JSON Patch Examples](JsonPatchExample.md)** - JSON Patch operation examples
+- **[MCP Server README](CQRSPatternMcpServer/README.md)** - Standalone MCP server documentation
 
 ## API Documentation
 
@@ -477,6 +574,7 @@ The API provides health check endpoints for monitoring:
 - Method-based routing with consistent error handling
 - Building automation tools or scripts
 - Integrating with other MCP-compatible systems
+- AI-powered interactions (e.g., GitHub Copilot)
 
 ### When to use REST:
 - Traditional HTTP operations (GET, POST, PUT, PATCH, DELETE)
@@ -485,6 +583,207 @@ The API provides health check endpoints for monitoring:
 - Standard HTTP semantics
 
 Both approaches access the same underlying CQRS infrastructure, so choose based on your needs.
+
+## Client Communication Guide
+
+### Option 1: Direct HTTP MCP Endpoint (Recommended for most use cases)
+
+Connect directly to the API's built-in MCP endpoint.
+
+**Endpoint**: `POST http://localhost:5000/mcp/request` or `POST https://localhost:5001/mcp/request`
+
+**Configuration**: Set up in `mcp.json` under `cqrspattern-http-direct`.
+
+**Benefits**: 
+- Lowest latency (direct connection)
+- No additional server needed
+- Best for production use
+
+#### Example: Get All Employees
+```bash
+curl -X POST http://localhost:5000/mcp/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "employee.getAll",
+    "id": "req-001"
+  }'
+```
+
+#### Example: Add Employee
+```bash
+curl -X POST http://localhost:5000/mcp/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "employee.add",
+    "params": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "gender": "Female",
+      "birthDate": "1990-01-01T00:00:00Z",
+      "hireDate": "2021-01-01T00:00:00Z"
+    },
+    "id": "req-002"
+  }'
+```
+
+### Option 2: HTTP Proxy via MCP Server (Port 5002)
+
+Use the standalone MCP server as an HTTP proxy to the API.
+
+**Endpoint**: `POST http://localhost:5002/mcp/request`
+
+**Configuration**: Set up in `mcp.json` under `cqrspattern-http-proxy`.
+
+**Prerequisites**:
+1. Main API must be running on port 5000
+2. MCP Server must be running on port 5002
+
+**Benefits**:
+- Additional layer for logging/monitoring
+- Potential for request transformation
+- Can add middleware functionality
+
+**Start the servers**:
+```bash
+# Terminal 1: Start the API
+cd CQRSPattern.Api
+dotnet run
+
+# Terminal 2: Start the MCP Server
+cd CQRSPatternMcpServer
+dotnet run
+```
+
+**Make requests**:
+```bash
+curl -X POST http://localhost:5002/mcp/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "employee.getAll",
+    "id": "req-001"
+  }'
+```
+
+### Option 3: Using the Standalone MCP Server (stdio)
+
+The standalone MCP server is ideal for IDE integration (e.g., VS Code with GitHub Copilot).
+
+**Prerequisites**:
+1. Main API must be running
+2. MCP server configured in your IDE's MCP client
+
+**Steps**:
+
+1. **Start the API**:
+```bash
+cd CQRSPattern.Api
+dotnet run
+```
+
+2. **Start the MCP Server**:
+```bash
+cd CQRSPatternMcpServer
+dotnet run
+```
+
+3. **Use from IDE**: The MCP server will be available via stdio transport for AI assistants.
+
+**Configuration**: Set up in `mcp.json` under `cqrspattern-stdio`.
+
+#### Available MCP Tools
+- `query_entities` - Query any entity type with pagination
+- `execute_command` - Execute CQRS commands
+- `get_entity_by_id` - Get specific entity by ID
+- `api_health_check` - Check API health status
+
+### Option 4: Using Traditional REST Endpoints
+
+Standard RESTful HTTP endpoints are available for all operations.
+
+#### Employee Endpoints
+
+**Get All Employees**:
+```bash
+curl -X GET http://localhost:5000/api/employees
+```
+
+**Create Employee**:
+```bash
+curl -X POST http://localhost:5000/api/employees \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "gender": "Male",
+    "birthDate": "1990-01-01T00:00:00Z",
+    "hireDate": "2020-01-01T00:00:00Z"
+  }'
+```
+
+**Update Employee**:
+```bash
+curl -X PUT http://localhost:5000/api/employees/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe-Updated",
+    "gender": "Male",
+    "birthDate": "1990-01-01T00:00:00Z",
+    "hireDate": "2020-01-01T00:00:00Z"
+  }'
+```
+
+**Partial Update (PATCH)**:
+```bash
+curl -X PATCH http://localhost:5000/api/employees/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "lastName": "Smith"
+  }'
+```
+
+### Choosing the Right Approach
+
+| Use Case | Recommended Approach | Why |
+|----------|---------------------|-----|
+| AI Assistant Integration | MCP stdio Server (Option 3) | Native MCP protocol support for IDEs |
+| Production API Access | Direct MCP HTTP (Option 1) | Lowest latency, no extra server |
+| Development/Testing | HTTP Proxy (Option 2) | Additional logging & monitoring |
+| Web Application | REST Endpoints (Option 4) | Standard HTTP semantics |
+| Automation Scripts | Direct MCP HTTP (Option 1) | Consistent error handling |
+| Mobile App | REST Endpoints (Option 4) | Wide client library support |
+| Microservices | Direct MCP HTTP (Option 1) | Protocol standardization |
+
+### Transport Mode Comparison
+
+| Feature | Direct HTTP MCP | HTTP Proxy MCP | stdio MCP | REST |
+|---------|----------------|----------------|-----------|------|
+| Port | 5000/5001 | 5002 | N/A | 5000/5001 |
+| Extra Server Needed | No | Yes | Yes | No |
+| IDE Integration | Via HTTP | Via HTTP | ✓ Native | No |
+| Latency | Lowest | Low | N/A | Lowest |
+| Logging/Monitoring | API only | API + Proxy | Separate | API only |
+| Best For | Production | Development | AI Tools | Web Apps |
+
+### Authentication
+
+To use API key authentication (if configured):
+
+**REST**:
+```bash
+curl -X GET http://localhost:5000/api/employees \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**MCP HTTP**:
+```bash
+curl -X POST http://localhost:5000/mcp/request \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"method": "employee.getAll"}'
+```
+
+**MCP stdio**: Configure `CQRS_API_KEY` in the environment variables section of `mcp.json`.
 
 ## Backward Compatibility
 

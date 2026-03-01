@@ -3,6 +3,7 @@ using Autofac;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.FeatureManagement;
+using ModelContextProtocol.AspNetCore;
 using Scalar.AspNetCore;
 
 namespace CQRSPattern.Api;
@@ -75,6 +76,7 @@ public partial class Startup
         LoadConfiguration(services);
         LoadMediator(services);
         LoadScalar(services);
+        LoadMcp(services);
 
         LoadHealthChecks(services);
 
@@ -112,6 +114,7 @@ public partial class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapMcp();
             endpoints.MapScalarApiReference(opt =>
             {
                 opt.Title = $"CQRS API Documentation - {env.EnvironmentName}";

@@ -1,154 +1,396 @@
-# ✅ .NET MCP Server - Setup Complete!
+# MCP Server Integration — CQRS Pattern API
 
-Your CQRS Pattern API now works with GitHub Copilot using a **pure .NET 9 MCP server**!
+This project integrates the official **[Model Context Protocol (MCP)](https://modelcontextprotocol.io)** server directly into the existing CQRS REST API using the `ModelContextProtocol.AspNetCore` SDK.
 
-## 🎯 What Was Created
+**No separate server or port needed** — MCP endpoints run alongside your existing REST controllers.
 
-### CQRSPattern.McpServer Project
-- **.NET 9 Console Application**
-- **ModelContextProtocol 0.4.0-preview.2** (Official C# SDK from Microsoft)
-- **Pure .NET** - No Node.js required!
+---
 
-### Configuration
-- `.vscode\mcp.json` - VS Code MCP integration
-- `Program.cs` - MCP server implementation with 4 tools
+## Architecture Overview
 
-## 🚀 Quick Start
-
-### 1. Start Your CQRS API
-```powershell
-dotnet run --project CQRSPattern.Api
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     CQRSPattern.Api                             │
+│                                                                 │
+│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐  │
+│  │ REST API     │    │  MCP Server      │    │  MediatR /    │  │
+│  │ Controllers  │───▶│  (SDK Endpoints) │───▶│  CQRS Layer   │  │
+│  │              │    │  /mcp            │    │               │  │
+│  │  /api/...    │    │                  │    │  Commands &   │  │
+│  └──────────────┘    └──────────────────┘    │  Queries      │  │
+│                                              └───────────────┘  │
+│                                                                 │
+│  Transports:                                                    │
+│  • Streamable HTTP  (POST /mcp)                                 │
+│  • SSE              (GET  /mcp)                                 │
+│  • stdio            (via CQRSPatternMcpServer project)          │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Reload VS Code
-`Ctrl+Shift+P` → "Developer: Reload Window"
+### How It Works
 
-### 3. Test in Copilot Chat
+1. **MCP tools** are defined in `Features/Mcp/Tools/EmployeeTools.cs` using `[McpServerTool]` attributes
+2. Each tool **directly calls the same CQRS commands/queries** used by the REST controllers via `IMediatorFactory`
+3. The SDK auto-discovers tools at startup via `WithToolsFromAssembly()`
+4. `MapMcp()` registers the Streamable HTTP + SSE endpoints at `/mcp`
+
+**Zero logic duplication** — both REST and MCP share the same Application layer handlers.
+
+---
+
+## Available MCP Tools
+
+| Tool Name           | Description                   | Parameters                                                       |
+| ------------------- | ----------------------------- | ---------------------------------------------------------------- |
+| `get_all_employees` | Retrieve all employees        | _(none)_                                                         |
+| `add_employee`      | Add a new employee            | `firstName`, `lastName`, `gender`, `birthDate`, `hireDate`       |
+| `update_employee`   | Full update of an employee    | `id`, `firstName`, `lastName`, `gender`, `birthDate`, `hireDate` |
+| `patch_employee`    | Partial update of an employee | `id`, + any optional fields                                      |
+
+---
+
+## Transport Support
+
+### 1. Streamable HTTP (recommended for web clients)
+
+The primary transport. Uses standard HTTP POST/GET at `/mcp`.
+
+- **POST `/mcp`** — Send JSON-RPC requests
+- **GET `/mcp`** — Open SSE stream for server-initiated messages
+
+### 2. SSE (Server-Sent Events)
+
+Built into Streamable HTTP. Clients that connect via `GET /mcp` receive an SSE stream.
+
+### 3. stdio (for CLI tools like Claude Code)
+
+Use the standalone `CQRSPatternMcpServer` project, which wraps the same tools with `WithStdioServerTransport()`.
+
+---
+
+## Connecting from Clients
+
+### 🔵 Postman
+
+1. Open Postman and create a new **MCP request** (or use the HTTP tab for raw requests)
+2. Set the **MCP Server URL** to:
+   ```
+   http://localhost:5000/mcp
+   ```
+3. Postman will auto-discover available tools via the MCP `initialize` → `tools/list` flow
+
+**Manual HTTP test** (raw JSON-RPC):
+
+```http
+POST http://localhost:5000/mcp
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-03-26",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "postman",
+      "version": "1.0.0"
+    }
+  }
+}
 ```
-"Check if my CQRS API is healthy"
-"Query all users from my API"
-"Get user with ID 123"
+
+Then list tools:
+
+```http
+POST http://localhost:5000/mcp
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/list",
+  "params": {}
+}
 ```
 
-## 🛠️ Available MCP Tools
+Then call a tool:
 
-| Tool | Description | Example |
-|------|-------------|---------|
-| **query_entities** | Query with pagination & filters | "Get all orders on page 2" |
-| **execute_command** | Execute CQRS commands | "Create a new user named John" |
-| **get_entity_by_id** | Get entity by ID | "Get user with ID 123" |
-| **api_health_check** | Check API health | "Is my API running?" |
+```http
+POST http://localhost:5000/mcp
+Content-Type: application/json
 
-## ⚙️ Configuration
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "get_all_employees",
+    "arguments": {}
+  }
+}
+```
 
-Edit `.vscode\mcp.json`:
+**Add Employee example:**
+
+```http
+POST http://localhost:5000/mcp
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "add_employee",
+    "arguments": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "gender": "Male",
+      "birthDate": "1990-01-15",
+      "hireDate": "2020-06-01"
+    }
+  }
+}
+```
+
+---
+
+### 🟢 VS Code (Copilot / Extensions)
+
+Add to your VS Code `settings.json`:
 
 ```json
 {
-  "mcpServers": {
-    "cqrspattern": {
-      "command": "dotnet",
-      "args": [
-        "run",
-        "--project",
-        "d:\\Code\\Github\\CQRSPatternApi\\CQRSPattern.McpServer\\CQRSPattern.McpServer.csproj"
-      ],
-      "env": {
-        "CQRS_API_URL": "http://localhost:5000",
-        "CQRS_API_KEY": ""
+  "mcp": {
+    "servers": {
+      "cqrs-api": {
+        "type": "http",
+        "url": "http://localhost:5000/mcp"
       }
     }
   }
 }
 ```
 
-### Environment Variables
-- `CQRS_API_URL` - Your API base URL
-- `CQRS_API_KEY` - Optional API key for auth
+Or for **stdio** mode (uses the standalone MCP server project):
 
-## 📝 Adding Custom Tools
-
-Edit `CQRSPattern.McpServer\Program.cs`:
-
-```csharp
-[McpServerTool(Name = "my_custom_tool")]
-[Description("Description of your tool")]
-public static async Task<string> MyCustomTool(
-    [Description("Parameter description")] string param,
-    IHttpClientFactory httpClientFactory = null!,
-    CancellationToken cancellationToken = default)
+```json
 {
-    var client = httpClientFactory.CreateClient("CQRSApi");
-    var response = await client.GetAsync($"/api/custom/{param}", cancellationToken);
-    response.EnsureSuccessStatusCode();
-    return await response.Content.ReadAsStringAsync(cancellationToken);
+  "mcp": {
+    "servers": {
+      "cqrs-api": {
+        "type": "stdio",
+        "command": "dotnet",
+        "args": ["run", "--project", "path/to/CQRSPatternMcpServer"]
+      }
+    }
+  }
 }
 ```
 
-## 🏗️ Architecture
-
-```
-┌─────────────────────┐
-│ GitHub Copilot Chat │
-└──────────┬──────────┘
-           │ MCP Protocol (stdio)
-           ▼
-┌─────────────────────┐
-│ CQRSPattern         │  .NET 9 MCP Server
-│ McpServer           │  (ModelContextProtocol SDK)
-└──────────┬──────────┘
-           │ HTTP/REST
-           ▼
-┌─────────────────────┐
-│ CQRS API (.NET 9)   │  Your existing API
-│ Port: 5000          │
-└─────────────────────┘
-```
-
-## 🔧 Troubleshooting
-
-### MCP Server Not Starting
-- Check .NET 9 installed: `dotnet --version`
-- Build project: `dotnet build CQRSPattern.McpServer`
-- Check Output → "GitHub Copilot Chat" for errors
-
-### Cannot Connect to API
-- Ensure API is running on port 5000
-- Verify `CQRS_API_URL` in mcp.json
-- Check firewall settings
-
-### Copilot Not Using Tools
-- Reload VS Code window
-- Check Developer Tools (F12) for errors
-- Verify mcp.json syntax is correct
-
-## 📦 NuGet Packages
-
-- `ModelContextProtocol` (0.4.0-preview.2)
-- `Microsoft.Extensions.Hosting` (9.0.10)
-- `Microsoft.Extensions.Http` (9.0.10)
-
-## 📚 Resources
-
-- [C# SDK Repository](https://github.com/modelcontextprotocol/csharp-sdk)
-- [NuGet Package](https://www.nuget.org/packages/ModelContextProtocol/absoluteLatest)
-- [MCP Specification](https://spec.modelcontextprotocol.io/)
-- [MCP Documentation](https://modelcontextprotocol.io/)
-
-## ✅ Why Pure .NET?
-
-### Before (Incorrect Assumption)
-❌ "There's no .NET MCP SDK"  
-❌ Must use Node.js/TypeScript  
-❌ Mixed technology stack  
-
-### Now (Corrected)
-✅ Official .NET SDK exists!  
-✅ Pure C#/.NET implementation  
-✅ Type-safe with IntelliSense  
-✅ Native integration with your API  
-✅ Easy to debug and extend  
+VS Code Copilot will auto-discover the tools and make them available in chat with `@cqrs-api`.
 
 ---
 
-**Your CQRS API is now Copilot-enabled with pure .NET! 🎉**
+### 🟠 Claude Code (CLI)
+
+Add the MCP server to Claude Code's configuration. Create or edit `~/.claude/claude_desktop_config.json`:
+
+**HTTP mode** (connect to the running API):
+
+```json
+{
+  "mcpServers": {
+    "cqrs-api": {
+      "type": "http",
+      "url": "http://localhost:5000/mcp"
+    }
+  }
+}
+```
+
+**stdio mode** (Claude manages the process):
+
+```json
+{
+  "mcpServers": {
+    "cqrs-api": {
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "D:\\Code\\Github\\CQRSPatternApi\\CQRSPatternMcpServer"
+      ]
+    }
+  }
+}
+```
+
+After configuration, Claude Code will list the available tools when you use `/tools` or ask it to interact with employees.
+
+---
+
+## Example Responses
+
+### `tools/list` response
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "tools": [
+      {
+        "name": "get_all_employees",
+        "description": "Retrieve all employees from the database...",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "name": "add_employee",
+        "description": "Add a new employee to the database...",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "firstName": {
+              "type": "string",
+              "description": "Employee's first name"
+            },
+            "lastName": {
+              "type": "string",
+              "description": "Employee's last name"
+            },
+            "gender": { "type": "string", "description": "Employee's gender" },
+            "birthDate": { "type": "string", "format": "date-time" },
+            "hireDate": { "type": "string", "format": "date-time" }
+          },
+          "required": [
+            "firstName",
+            "lastName",
+            "gender",
+            "birthDate",
+            "hireDate"
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+### `tools/call` response (get_all_employees)
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "[{\"id\":1,\"firstName\":\"John\",\"lastName\":\"Doe\",\"gender\":\"Male\",\"birthDate\":\"1990-01-15\",\"hireDate\":\"2020-06-01\"}]"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Running Locally
+
+```bash
+# Start the API (MCP server runs on the same port)
+dotnet run --project CQRSPattern.Api
+
+# MCP endpoint is now available at:
+# http://localhost:5000/mcp
+```
+
+---
+
+## How to Add New MCP Tools
+
+To expose a new CQRS command/query as an MCP tool:
+
+1. **Create a tool method** in `Features/Mcp/Tools/` (or add to an existing tool class):
+
+   ```csharp
+   [McpServerToolType]
+   public static class MyNewTools
+   {
+       [McpServerTool(Name = "my_new_tool")]
+       [Description("What this tool does")]
+       public static async Task<string> MyNewTool(
+           [Description("Parameter description")] string param1,
+           IMediatorFactory mediatorFactory,
+           CancellationToken cancellationToken)
+       {
+           var scope = mediatorFactory.CreateScope();
+           var result = await scope.SendAsync(MyCommand.Create(param1), cancellationToken);
+           return JsonSerializer.Serialize(result);
+       }
+   }
+   ```
+
+2. **That's it!** — The SDK auto-discovers new `[McpServerToolType]` classes at startup. No registration code needed.
+
+---
+
+## Reusing This Pattern in Other Projects
+
+To add MCP to any existing ASP.NET Core + CQRS project:
+
+1. **Add NuGet packages**:
+
+   ```xml
+   <PackageReference Include="ModelContextProtocol" />
+   <PackageReference Include="ModelContextProtocol.AspNetCore" />
+   ```
+
+2. **Register in Startup/Program.cs**:
+
+   ```csharp
+   services.AddMcpServer().WithHttpTransport().WithToolsFromAssembly();
+   ```
+
+3. **Map endpoints**:
+
+   ```csharp
+   endpoints.MapMcp();
+   ```
+
+4. **Create tool classes** with `[McpServerToolType]` that inject your mediator/service layer
+
+**Total integration: ~3 lines of setup + 1 tool class per feature.**
+
+---
+
+## Project Structure
+
+```
+CQRSPattern.Api/
+├── Features/
+│   ├── Employee/          # REST controllers (unchanged)
+│   └── Mcp/
+│       └── Tools/
+│           └── EmployeeTools.cs   # MCP tool definitions
+├── Startup.cs             # Calls LoadMcp() + MapMcp()
+├── Startup.Mcp.cs         # MCP server registration (partial)
+└── Registrations.cs       # Autofac DI (MCP handled by SDK)
+```
+
+---
+
+## Key Files
+
+| File                                  | Purpose                                           |
+| ------------------------------------- | ------------------------------------------------- |
+| `Features/Mcp/Tools/EmployeeTools.cs` | MCP tool definitions — the single source of truth |
+| `Startup.Mcp.cs`                      | MCP SDK registration (3 lines)                    |
+| `Startup.cs`                          | Calls `LoadMcp()` + `MapMcp()`                    |
+| `Directory.Packages.props`            | Centralized NuGet versions                        |

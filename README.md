@@ -1,5 +1,6 @@
 # CQRS Pattern with MCP Server in .NET 9
-![.Net](https://img.shields.io/badge/-.NET%209.0-blueviolet?logo=dotnet) 
+
+![.Net](https://img.shields.io/badge/-.NET%209.0-blueviolet?logo=dotnet)
 ![Mysql](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white)
 ![EF](https://img.shields.io/badge/-Entity_Framework-8C3D65?logo=dotnet&logoColor=white)
 ![Openapi](https://img.shields.io/badge/Docs-OpenAPI%209.0-success?style=flat-square)
@@ -91,7 +92,7 @@ The `mcp.json` file configures how clients connect to the MCP server. It support
   "mcpServers": {
     "cqrspattern-http-direct": {
       "type": "http",
-      "url": "http://localhost:5000/mcp/request",
+      "url": "http://localhost:5001/mcp",
       "description": "Direct connection to API MCP endpoint"
     },
     "cqrspattern-http-proxy": {
@@ -102,14 +103,18 @@ The `mcp.json` file configures how clients connect to the MCP server. It support
     "cqrspattern-stdio": {
       "type": "stdio",
       "command": "dotnet",
-      "args": ["run", "--project", "CQRSPatternMcpServer/CQRSPattern.McpServer.csproj"],
+      "args": [
+        "run",
+        "--project",
+        "CQRSPatternMcpServer/CQRSPattern.McpServer.csproj"
+      ],
       "env": {
-        "CQRS_API_URL": "http://localhost:5000"
+        "CQRS_API_URL": "http://localhost:5001"
       }
     }
   },
   "settings": {
-    "apiUrl": "http://localhost:5000",
+    "apiUrl": "http://localhost:5001",
     "apiUrlHttps": "https://localhost:5001"
   }
 }
@@ -129,6 +134,7 @@ Key configuration settings:
 ```
 
 You can also use environment variables:
+
 - `ConnectionStrings__ReadDb`
 - `ConnectionStrings__WriteDb`
 - `CQRS_API_URL` - Base URL for the CQRS API (used by MCP server)
@@ -146,7 +152,7 @@ cd CQRSPattern.Api
 dotnet run
 
 # The API will be available at:
-# - HTTP: http://localhost:5000
+# - HTTP: http://localhost:5001
 # - HTTPS: https://localhost:5001
 ```
 
@@ -174,6 +180,7 @@ dotnet run
 The standalone MCP server provides multiple transport modes for different use cases:
 
 ##### Mode 1: HTTP Proxy Mode (Port 5002)
+
 ```bash
 # Build the MCP server first
 dotnet build CQRSPatternMcpServer/CQRSPattern.McpServer.csproj
@@ -192,6 +199,7 @@ dotnet CQRSPatternMcpServer/bin/Debug/net9.0/CQRSPattern.McpServer.dll
 In this mode, the MCP server acts as an HTTP proxy that forwards requests to the main API.
 
 ##### Mode 2: stdio Mode (for IDE Integration)
+
 ```bash
 # Start via IDE integration (e.g., VS Code with GitHub Copilot)
 # The IDE will automatically start the server using the stdio transport
@@ -221,12 +229,12 @@ Content-Type: application/json
 
 ### Available Methods
 
-| Method | Description | Parameters Required |
-|--------|-------------|---------------------|
-| `employee.getAll` | Retrieves all employees | None |
-| `employee.add` | Creates a new employee | firstName, lastName, gender, birthDate, hireDate |
-| `employee.update` | Updates an existing employee | id, request (with all employee fields) |
-| `employee.patch` | Partially updates an employee | id, request (with optional fields) |
+| Method            | Description                   | Parameters Required                              |
+| ----------------- | ----------------------------- | ------------------------------------------------ |
+| `employee.getAll` | Retrieves all employees       | None                                             |
+| `employee.add`    | Creates a new employee        | firstName, lastName, gender, birthDate, hireDate |
+| `employee.update` | Updates an existing employee  | id, request (with all employee fields)           |
+| `employee.patch`  | Partially updates an employee | id, request (with optional fields)               |
 
 ### Request/Response Format
 
@@ -234,25 +242,27 @@ Content-Type: application/json
 
 ```json
 {
-  "method": "string",      // Required: The method to execute
-  "params": { },           // Optional: Method parameters
-  "id": "string"           // Optional: Request ID for tracking
+  "method": "string", // Required: The method to execute
+  "params": {}, // Optional: Method parameters
+  "id": "string" // Optional: Request ID for tracking
 }
 ```
 
 #### Response Structure
 
 **Success Response:**
+
 ```json
 {
   "success": true,
-  "result": { },           // Method result data
+  "result": {}, // Method result data
   "error": null,
-  "id": "string"           // Echoed request ID
+  "id": "string" // Echoed request ID
 }
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -260,7 +270,7 @@ Content-Type: application/json
   "error": {
     "code": "ERROR_CODE",
     "message": "Error description",
-    "details": { }         // Optional additional error details
+    "details": {} // Optional additional error details
   },
   "id": "string"
 }
@@ -268,21 +278,22 @@ Content-Type: application/json
 
 ### Error Codes
 
-| Code | Description |
-|------|-------------|
-| `INVALID_REQUEST` | Request body is missing or malformed |
-| `INVALID_METHOD` | Method name is missing or empty |
-| `METHOD_NOT_FOUND` | Specified method is not supported |
-| `INVALID_PARAMS` | Parameters are invalid or incorrectly formatted |
-| `VALIDATION_ERROR` | Request validation failed |
-| `NOT_FOUND` | Requested resource not found |
-| `INTERNAL_ERROR` | Unexpected server error |
+| Code               | Description                                     |
+| ------------------ | ----------------------------------------------- |
+| `INVALID_REQUEST`  | Request body is missing or malformed            |
+| `INVALID_METHOD`   | Method name is missing or empty                 |
+| `METHOD_NOT_FOUND` | Specified method is not supported               |
+| `INVALID_PARAMS`   | Parameters are invalid or incorrectly formatted |
+| `VALIDATION_ERROR` | Request validation failed                       |
+| `NOT_FOUND`        | Requested resource not found                    |
+| `INTERNAL_ERROR`   | Unexpected server error                         |
 
 ### Example Requests
 
 #### 1. Get All Employees
 
 **Request:**
+
 ```bash
 curl -X POST https://localhost:5001/mcp/request \
   -H "Content-Type: application/json" \
@@ -293,6 +304,7 @@ curl -X POST https://localhost:5001/mcp/request \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -314,6 +326,7 @@ curl -X POST https://localhost:5001/mcp/request \
 #### 2. Add New Employee
 
 **Request:**
+
 ```bash
 curl -X POST https://localhost:5001/mcp/request \
   -H "Content-Type: application/json" \
@@ -331,6 +344,7 @@ curl -X POST https://localhost:5001/mcp/request \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -345,6 +359,7 @@ curl -X POST https://localhost:5001/mcp/request \
 #### 3. Update Employee
 
 **Request:**
+
 ```bash
 curl -X POST https://localhost:5001/mcp/request \
   -H "Content-Type: application/json" \
@@ -365,6 +380,7 @@ curl -X POST https://localhost:5001/mcp/request \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -379,6 +395,7 @@ curl -X POST https://localhost:5001/mcp/request \
 #### 4. Partial Update (Patch) Employee
 
 **Request:**
+
 ```bash
 curl -X POST https://localhost:5001/mcp/request \
   -H "Content-Type: application/json" \
@@ -395,6 +412,7 @@ curl -X POST https://localhost:5001/mcp/request \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -409,6 +427,7 @@ curl -X POST https://localhost:5001/mcp/request \
 #### 5. Error Example - Method Not Found
 
 **Request:**
+
 ```bash
 curl -X POST https://localhost:5001/mcp/request \
   -H "Content-Type: application/json" \
@@ -420,6 +439,7 @@ curl -X POST https://localhost:5001/mcp/request \
 ```
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -432,15 +452,16 @@ curl -X POST https://localhost:5001/mcp/request \
 }
 ```
 
-
 # Project structure / technology
+
 `Onion Layer principle` Dependencies can only be made 1 way. From outside to the inside.
 To communicate from controller to our business logic layer (CQRSPattern.Application)
-* .NET 9: Technology
-* Entity Framework Core: ORM mapper of Microsoft
-* MediatR: Framework written by J. Bogard to decouple code more easily
-* NetArchTest: Validates architectural boundaries at runtime and during tests
-* MCP Server: Standardized protocol endpoint for handling structured requests
+
+- .NET 9: Technology
+- Entity Framework Core: ORM mapper of Microsoft
+- MediatR: Framework written by J. Bogard to decouple code more easily
+- NetArchTest: Validates architectural boundaries at runtime and during tests
+- MCP Server: Standardized protocol endpoint for handling structured requests
 
 ## Key Components
 
@@ -524,7 +545,7 @@ For a detailed architecture explanation with diagrams, see **[ARCHITECTURE.md](A
 ### Quick Architecture Overview
 
 ```
-Clients (Web/Mobile/IDE) 
+Clients (Web/Mobile/IDE)
     ↓
 CQRS API (REST + MCP HTTP Endpoint)
     ↓
@@ -536,6 +557,7 @@ Read DB ← Write DB
 For complete architecture details including communication flows, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Hosting projects: CQRSPattern.Api
+
 The executing code runs from these projects.
 
 ## Additional Resources
@@ -555,6 +577,7 @@ When the application is running, you can access the interactive API documentatio
 - **OpenAPI Spec**: Available at `/scalar/v1/openapi.json`
 
 The documentation includes:
+
 - All REST endpoints (Employee, Weather Forecast, SSE)
 - MCP endpoint with request/response examples
 - Health check endpoints
@@ -570,6 +593,7 @@ The API provides health check endpoints for monitoring:
 ## MCP vs REST Endpoints
 
 ### When to use MCP:
+
 - Programmatic access with a standardized protocol
 - Method-based routing with consistent error handling
 - Building automation tools or scripts
@@ -577,6 +601,7 @@ The API provides health check endpoints for monitoring:
 - AI-powered interactions (e.g., GitHub Copilot)
 
 ### When to use REST:
+
 - Traditional HTTP operations (GET, POST, PUT, PATCH, DELETE)
 - Browser-based applications
 - Following REST conventions
@@ -590,18 +615,20 @@ Both approaches access the same underlying CQRS infrastructure, so choose based 
 
 Connect directly to the API's built-in MCP endpoint.
 
-**Endpoint**: `POST http://localhost:5000/mcp/request` or `POST https://localhost:5001/mcp/request`
+**Endpoint**: `POST http://localhost:5001/mcp` or `POST https://localhost:5001/mcp/request`
 
 **Configuration**: Set up in `mcp.json` under `cqrspattern-http-direct`.
 
-**Benefits**: 
+**Benefits**:
+
 - Lowest latency (direct connection)
 - No additional server needed
 - Best for production use
 
 #### Example: Get All Employees
+
 ```bash
-curl -X POST http://localhost:5000/mcp/request \
+curl -X POST http://localhost:5001/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "method": "employee.getAll",
@@ -610,8 +637,9 @@ curl -X POST http://localhost:5000/mcp/request \
 ```
 
 #### Example: Add Employee
+
 ```bash
-curl -X POST http://localhost:5000/mcp/request \
+curl -X POST http://localhost:5001/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "method": "employee.add",
@@ -635,15 +663,18 @@ Use the standalone MCP server as an HTTP proxy to the API.
 **Configuration**: Set up in `mcp.json` under `cqrspattern-http-proxy`.
 
 **Prerequisites**:
+
 1. Main API must be running on port 5000
 2. MCP Server must be running on port 5002
 
 **Benefits**:
+
 - Additional layer for logging/monitoring
 - Potential for request transformation
 - Can add middleware functionality
 
 **Start the servers**:
+
 ```bash
 # Terminal 1: Start the API
 cd CQRSPattern.Api
@@ -655,6 +686,7 @@ dotnet run
 ```
 
 **Make requests**:
+
 ```bash
 curl -X POST http://localhost:5002/mcp/request \
   -H "Content-Type: application/json" \
@@ -669,18 +701,21 @@ curl -X POST http://localhost:5002/mcp/request \
 The standalone MCP server is ideal for IDE integration (e.g., VS Code with GitHub Copilot).
 
 **Prerequisites**:
+
 1. Main API must be running
 2. MCP server configured in your IDE's MCP client
 
 **Steps**:
 
 1. **Start the API**:
+
 ```bash
 cd CQRSPattern.Api
 dotnet run
 ```
 
 2. **Start the MCP Server**:
+
 ```bash
 cd CQRSPatternMcpServer
 dotnet run
@@ -691,6 +726,7 @@ dotnet run
 **Configuration**: Set up in `mcp.json` under `cqrspattern-stdio`.
 
 #### Available MCP Tools
+
 - `query_entities` - Query any entity type with pagination
 - `execute_command` - Execute CQRS commands
 - `get_entity_by_id` - Get specific entity by ID
@@ -703,13 +739,15 @@ Standard RESTful HTTP endpoints are available for all operations.
 #### Employee Endpoints
 
 **Get All Employees**:
+
 ```bash
-curl -X GET http://localhost:5000/api/employees
+curl -X GET http://localhost:5001/api/employees
 ```
 
 **Create Employee**:
+
 ```bash
-curl -X POST http://localhost:5000/api/employees \
+curl -X POST http://localhost:5001/api/employees \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "John",
@@ -721,8 +759,9 @@ curl -X POST http://localhost:5000/api/employees \
 ```
 
 **Update Employee**:
+
 ```bash
-curl -X PUT http://localhost:5000/api/employees/1 \
+curl -X PUT http://localhost:5001/api/employees/1 \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "John",
@@ -734,8 +773,9 @@ curl -X PUT http://localhost:5000/api/employees/1 \
 ```
 
 **Partial Update (PATCH)**:
+
 ```bash
-curl -X PATCH http://localhost:5000/api/employees/1 \
+curl -X PATCH http://localhost:5001/api/employees/1 \
   -H "Content-Type: application/json" \
   -d '{
     "lastName": "Smith"
@@ -744,40 +784,42 @@ curl -X PATCH http://localhost:5000/api/employees/1 \
 
 ### Choosing the Right Approach
 
-| Use Case | Recommended Approach | Why |
-|----------|---------------------|-----|
+| Use Case                 | Recommended Approach        | Why                                  |
+| ------------------------ | --------------------------- | ------------------------------------ |
 | AI Assistant Integration | MCP stdio Server (Option 3) | Native MCP protocol support for IDEs |
-| Production API Access | Direct MCP HTTP (Option 1) | Lowest latency, no extra server |
-| Development/Testing | HTTP Proxy (Option 2) | Additional logging & monitoring |
-| Web Application | REST Endpoints (Option 4) | Standard HTTP semantics |
-| Automation Scripts | Direct MCP HTTP (Option 1) | Consistent error handling |
-| Mobile App | REST Endpoints (Option 4) | Wide client library support |
-| Microservices | Direct MCP HTTP (Option 1) | Protocol standardization |
+| Production API Access    | Direct MCP HTTP (Option 1)  | Lowest latency, no extra server      |
+| Development/Testing      | HTTP Proxy (Option 2)       | Additional logging & monitoring      |
+| Web Application          | REST Endpoints (Option 4)   | Standard HTTP semantics              |
+| Automation Scripts       | Direct MCP HTTP (Option 1)  | Consistent error handling            |
+| Mobile App               | REST Endpoints (Option 4)   | Wide client library support          |
+| Microservices            | Direct MCP HTTP (Option 1)  | Protocol standardization             |
 
 ### Transport Mode Comparison
 
-| Feature | Direct HTTP MCP | HTTP Proxy MCP | stdio MCP | REST |
-|---------|----------------|----------------|-----------|------|
-| Port | 5000/5001 | 5002 | N/A | 5000/5001 |
-| Extra Server Needed | No | Yes | Yes | No |
-| IDE Integration | Via HTTP | Via HTTP | ✓ Native | No |
-| Latency | Lowest | Low | N/A | Lowest |
-| Logging/Monitoring | API only | API + Proxy | Separate | API only |
-| Best For | Production | Development | AI Tools | Web Apps |
+| Feature             | Direct HTTP MCP | HTTP Proxy MCP | stdio MCP | REST      |
+| ------------------- | --------------- | -------------- | --------- | --------- |
+| Port                | 5000/5001       | 5002           | N/A       | 5000/5001 |
+| Extra Server Needed | No              | Yes            | Yes       | No        |
+| IDE Integration     | Via HTTP        | Via HTTP       | ✓ Native  | No        |
+| Latency             | Lowest          | Low            | N/A       | Lowest    |
+| Logging/Monitoring  | API only        | API + Proxy    | Separate  | API only  |
+| Best For            | Production      | Development    | AI Tools  | Web Apps  |
 
 ### Authentication
 
 To use API key authentication (if configured):
 
 **REST**:
+
 ```bash
-curl -X GET http://localhost:5000/api/employees \
+curl -X GET http://localhost:5001/api/employees \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 **MCP HTTP**:
+
 ```bash
-curl -X POST http://localhost:5000/mcp/request \
+curl -X POST http://localhost:5001/mcp \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"method": "employee.getAll"}'
@@ -788,6 +830,7 @@ curl -X POST http://localhost:5000/mcp/request \
 ## Backward Compatibility
 
 All existing REST endpoints remain fully functional:
+
 - `GET /api/employees` - Get all employees
 - `POST /api/employees` - Create employee
 - `PUT /api/employees/{id}` - Update employee
@@ -797,6 +840,7 @@ All existing REST endpoints remain fully functional:
 The MCP endpoint is an additional interface that coexists with REST endpoints.
 
 ## Example Included
+
 # CQRS Pattern Solution
 
 This CQRS solution demonstrates a modern approach to building scalable and maintainable .NET applications by separating read and write operations. The implementation follows these key architectural principles:
@@ -810,6 +854,7 @@ This CQRS solution demonstrates a modern approach to building scalable and maint
 4. **Clean Architecture**: The codebase follows the onion architecture pattern with dependencies flowing from outside to inside layers.
 
 This example includes:
+
 - Employee management with CRUD operations
 - Weather forecast service with real-time updates
 - Server-Sent Events implementation for pushing updates to clients
@@ -845,8 +890,9 @@ SSE Console
 ![SSE_Console.jpg](./Screenshots/SSE_Console.jpg)
 
 ## Libraries:
+
 - **MediatR**: MediatR is a lightweight library designed for implementing the Mediator pattern in .NET applications.
-- **OpenAPI Documentation**: Automatically generated API documentation using OpenAPI for better understanding and testing of the 
-API.
+- **OpenAPI Documentation**: Automatically generated API documentation using OpenAPI for better understanding and testing of the
+  API.
 - **Entity Framework**: Entity Framework (EF) is an open-source object-relational mapping (ORM) framework developed by Microsoft for .NET applications.
 - **Scalar**: Replaces Swagger for calling and testing APIs.

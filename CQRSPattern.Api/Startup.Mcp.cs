@@ -7,14 +7,17 @@ namespace CQRSPattern.Api;
 public partial class Startup
 {
     /// <summary>
-    /// Registers MCP server services with Streamable HTTP transport.
-    /// Tools are auto-discovered from the assembly via [McpServerToolType] attributes.
+    /// Registers MCP server services with Streamable HTTP transport (stateless mode).
+    /// Tools, resources, and prompts are auto-discovered from the assembly via attributes.
+    /// Stateless mode is required for load-balanced/containerized deployments.
     /// </summary>
     private static void LoadMcp(IServiceCollection services)
     {
         services
             .AddMcpServer()
-            .WithHttpTransport()
-            .WithToolsFromAssembly();
+            .WithHttpTransport(options => options.Stateless = true)
+            .WithToolsFromAssembly()
+            .WithResourcesFromAssembly()
+            .WithPromptsFromAssembly();
     }
 }

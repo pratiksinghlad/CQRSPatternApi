@@ -541,6 +541,7 @@ For a detailed architecture explanation with diagrams, see **[ARCHITECTURE.md](A
 3. **MediatR** - Command/Query mediator implementation
 4. **Dual Database** - Separate read and write databases for optimal performance
 5. **Client Flexibility** - Support for REST, MCP HTTP, and MCP stdio protocols
+6. **Standardized Responses** - Centralized factory for formatting MCP outputs using Dependency Injection to uphold DRY principles
 
 ### Quick Architecture Overview
 

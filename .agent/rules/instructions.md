@@ -45,3 +45,5 @@ trigger: always_on
 - Use dependency injection.
 - Write Code simple, maintable, testable and readable.
 - Add comments where logic is complex. for public method add XML comments.
+- Simplicity is the ultimate sophistication for code.
+- High code quality and c# microsoft standards should be followed.

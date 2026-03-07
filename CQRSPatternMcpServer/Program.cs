@@ -21,6 +21,7 @@ public static class Program
                     .ReadFrom.Configuration(context.Configuration)
                     .MinimumLevel.Information()
                     .WriteTo.Console(
+                        standardErrorFromLevel: Serilog.Events.LogEventLevel.Verbose,
                         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                     .WriteTo.File(
                         "logs/mcp-server-.log",

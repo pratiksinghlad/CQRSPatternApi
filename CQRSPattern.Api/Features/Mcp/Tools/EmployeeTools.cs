@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Text.Json;
 using CQRSPattern.Application.Features.Employee.Add;
 using CQRSPattern.Application.Features.Employee.GetAll;
 using CQRSPattern.Application.Features.Employee.Patch;
@@ -21,18 +20,14 @@ public static class EmployeeTools
     /// </summary>
     [McpServerTool(Name = "get_all_employees")]
     [Description("Retrieve all employees from the database. Returns a list of employee records with their ID, name, gender, birth date, and hire date.")]
-    public static async Task<string> GetAllEmployees(
+    public static async Task<object> GetAllEmployees(
         IMediatorFactory mediatorFactory,
         CancellationToken cancellationToken)
     {
         var scope = mediatorFactory.CreateScope();
         var result = await scope.SendAsync(GetAllQuery.Create(), cancellationToken);
 
-        return JsonSerializer.Serialize(result.Data, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        });
+        return result.Data;
     }
 
     /// <summary>
@@ -40,7 +35,7 @@ public static class EmployeeTools
     /// </summary>
     [McpServerTool(Name = "add_employee")]
     [Description("Add a new employee to the database. Requires first name, last name, gender, birth date, and hire date.")]
-    public static async Task<string> AddEmployee(
+    public static async Task<object> AddEmployee(
         [Description("Employee's first name")] string firstName,
         [Description("Employee's last name")] string lastName,
         [Description("Employee's gender (e.g., 'Male', 'Female')")] string gender,
@@ -54,12 +49,12 @@ public static class EmployeeTools
         var scope = mediatorFactory.CreateScope();
         await scope.SendAsync(command, cancellationToken);
 
-        return JsonSerializer.Serialize(new
+        return new
         {
             success = true,
             message = "Employee created successfully",
             employee = new { firstName, lastName, gender, birthDate, hireDate }
-        }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true });
+        };
     }
 
     /// <summary>
@@ -67,7 +62,7 @@ public static class EmployeeTools
     /// </summary>
     [McpServerTool(Name = "update_employee")]
     [Description("Update an existing employee's full record. All fields are required — this is a full replacement.")]
-    public static async Task<string> UpdateEmployee(
+    public static async Task<object> UpdateEmployee(
         [Description("The employee's unique ID")] int id,
         [Description("Employee's first name")] string firstName,
         [Description("Employee's last name")] string lastName,
@@ -82,11 +77,11 @@ public static class EmployeeTools
         var scope = mediatorFactory.CreateScope();
         await scope.SendAsync(command, cancellationToken);
 
-        return JsonSerializer.Serialize(new
+        return new
         {
             success = true,
             message = $"Employee {id} updated successfully"
-        }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        };
     }
 
     /// <summary>
@@ -94,7 +89,7 @@ public static class EmployeeTools
     /// </summary>
     [McpServerTool(Name = "patch_employee")]
     [Description("Partially update an employee. Only provide the fields you want to change — omitted fields remain unchanged.")]
-    public static async Task<string> PatchEmployee(
+    public static async Task<object> PatchEmployee(
         [Description("The employee's unique ID")] int id,
         [Description("Employee's first name (optional)")] string? firstName = null,
         [Description("Employee's last name (optional)")] string? lastName = null,
@@ -108,20 +103,20 @@ public static class EmployeeTools
 
         if (!command.HasAnyUpdates())
         {
-            return JsonSerializer.Serialize(new
+            return new
             {
                 success = false,
                 message = "At least one field must be provided for partial update"
-            }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            };
         }
 
         var scope = mediatorFactory.CreateScope();
         await scope.SendAsync(command, cancellationToken);
 
-        return JsonSerializer.Serialize(new
+        return new
         {
             success = true,
             message = $"Employee {id} patched successfully"
-        }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        };
     }
 }

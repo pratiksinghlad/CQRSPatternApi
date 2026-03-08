@@ -6,27 +6,31 @@
 
 ## 📚 Documentation Files
 
-| File | Purpose | Read Time |
-|------|---------|-----------|
-| **QUICK_START_MCP.md** | Get started in 5 minutes | 5 min ⚡ |
-| **MCP_INTEGRATION_GUIDE.md** | Complete step-by-step guide | 15 min 📖 |
-| **MCP_JSON_CONFIGURATION_GUIDE.md** | Detailed mcp.json reference | 10 min 🔧 |
-| **CQRS_Pattern_MCP_Postman.postman_collection.json** | Pre-made Postman requests | 1 min 📤 |
+| File                                                 | Purpose                     | Read Time |
+| ---------------------------------------------------- | --------------------------- | --------- |
+| **QUICK_START_MCP.md**                               | Get started in 5 minutes    | 5 min ⚡  |
+| **MCP_INTEGRATION_GUIDE.md**                         | Complete step-by-step guide | 15 min 📖 |
+| **MCP_JSON_CONFIGURATION_GUIDE.md**                  | Detailed mcp.json reference | 10 min 🔧 |
+| **CQRS_Pattern_MCP_Postman.postman_collection.json** | Pre-made Postman requests   | 1 min 📤  |
 
 ---
 
 ## 🎯 Start Here
 
 ### **I want to test with Postman**
+
 → Go to [QUICK_START_MCP.md](QUICK_START_MCP.md) "Using with Postman" section (2 min)
 
 ### **I want to use Claude**
+
 → Go to [QUICK_START_MCP.md](QUICK_START_MCP.md) "Using with Claude" section (3 min)
 
 ### **I need detailed step-by-step instructions**
+
 → Read [MCP_INTEGRATION_GUIDE.md](MCP_INTEGRATION_GUIDE.md) (full guide)
 
 ### **I need to configure mcp.json for a specific scenario**
+
 → Check [MCP_JSON_CONFIGURATION_GUIDE.md](MCP_JSON_CONFIGURATION_GUIDE.md)
 
 ---
@@ -36,17 +40,20 @@
 ### Starting the Server
 
 **Option 1: Batch Script (Windows)**
+
 ```batch
 setup-mcp.bat
 # Choose option 1 to start API
 ```
 
 **Option 2: PowerShell**
+
 ```powershell
 .\setup-mcp.ps1 start-api
 ```
 
 **Option 3: Manual**
+
 ```bash
 cd CQRSPattern.Api
 dotnet run
@@ -97,6 +104,7 @@ setup-mcp.bat
 ```
 
 **Features:**
+
 - Start main API
 - Start stdio server
 - Test endpoints
@@ -132,7 +140,9 @@ setup-mcp.bat
 Your MCP server exposes 4 tools for employee management:
 
 ### 1. `get_all_employees`
+
 **Get all employees**
+
 ```json
 {
   "name": "get_all_employees",
@@ -141,7 +151,9 @@ Your MCP server exposes 4 tools for employee management:
 ```
 
 ### 2. `add_employee`
+
 **Add new employee**
+
 ```json
 {
   "name": "add_employee",
@@ -156,7 +168,9 @@ Your MCP server exposes 4 tools for employee management:
 ```
 
 ### 3. `update_employee`
+
 **Replace entire employee record**
+
 ```json
 {
   "name": "update_employee",
@@ -172,7 +186,9 @@ Your MCP server exposes 4 tools for employee management:
 ```
 
 ### 4. `patch_employee`
+
 **Update only specific fields (at least 1)**
+
 ```json
 {
   "name": "patch_employee",
@@ -213,21 +229,26 @@ CQRSPatternApi/
 ## 🆘 Troubleshooting
 
 ### Connection Refused
+
 - Is the API running? `dotnet run` in CQRSPattern.Api/
 - Check port: Should be `:5000`
 
 ### Tools Not Found
+
 - Run `initialize` first
 - Check API logs for startup errors
 
 ### Date Format Issues
+
 - Use ISO 8601: `1990-01-15` ✓
 - Not: `01/15/1990` ✗
 
 ### Patch Returns Error
+
 - Provide at least one field beyond the ID
 
 ### Claude Not Finding Tools
+
 - Verify mcp.json exists in workspace root
 - Check HTTP server is accessible: `curl http://localhost:5000`
 - Test in editor settings: "Test Connection"
@@ -237,13 +258,15 @@ CQRSPatternApi/
 ## 📋 Checklist
 
 ### Local Development
-- [ ] Run `dotnet run` in CQRSPattern.Api/ 
+
+- [ ] Run `dotnet run` in CQRSPattern.Api/
 - [ ] Import Postman collection
 - [ ] Test with "Get All Employees"
 - [ ] Try adding a new employee
 - [ ] Try patching an employee
 
 ### Claude Integration
+
 - [ ] Server running on localhost:5000
 - [ ] Open Claude settings
 - [ ] Add MCP server (HTTP type)
@@ -252,6 +275,7 @@ CQRSPatternApi/
 - [ ] Try a natural request: "Get all employees"
 
 ### Production
+
 - [ ] Use HTTPS endpoints
 - [ ] Add authentication headers
 - [ ] Set appropriate timeouts
@@ -264,6 +288,7 @@ CQRSPatternApi/
 ## 💡 Tips
 
 ✅ **Best Practices:**
+
 - Start with Postman collection (easiest)
 - Test each tool individually first
 - Use stdio transport for CLI tools
@@ -271,6 +296,7 @@ CQRSPatternApi/
 - Always test connection before deploying
 
 ❌ **Common Mistakes:**
+
 - Forgetting to start the API server
 - Wrong date format in requests
 - No space after "Bearer" in auth headers
@@ -305,6 +331,7 @@ CQRSPatternApi/
 ## 📝 File Descriptions
 
 ### QUICK_START_MCP.md
+
 - 5-minute quick start guide
 - Postman import instructions
 - Claude setup in 4 steps
@@ -312,6 +339,7 @@ CQRSPatternApi/
 - Troubleshooting quick fixes
 
 ### MCP_INTEGRATION_GUIDE.md
+
 - Complete architecture overview
 - Step-by-step Postman instructions
 - Detailed Claude integration guide
@@ -320,6 +348,7 @@ CQRSPatternApi/
 - Full troubleshooting section
 
 ### MCP_JSON_CONFIGURATION_GUIDE.md
+
 - What mcp.json does
 - Configuration for each transport
 - 5 real-world scenarios
@@ -328,6 +357,7 @@ CQRSPatternApi/
 - Common issues & solutions
 
 ### CQRS_Pattern_MCP_Postman.postman_collection.json
+
 - Pre-built Postman requests
 - All 4 tools pre-configured
 - Correct headers set
@@ -335,6 +365,7 @@ CQRSPatternApi/
 - 1 minute to import & use
 
 ### setup-mcp.bat
+
 - Windows-friendly menu
 - Start API server
 - Start stdio server
@@ -343,6 +374,7 @@ CQRSPatternApi/
 - Restore packages
 
 ### setup-mcp.ps1
+
 - PowerShell version of batch script
 - Same functionality
 - Consistent parameter names
@@ -355,6 +387,7 @@ CQRSPatternApi/
 **Pick your path:**
 
 ### → I want to use Postman
+
 1. Download & install [Postman](https://postman.com)
 2. Open `CQRS_Pattern_MCP_Postman.postman_collection.json`
 3. Click "Import"
@@ -362,6 +395,7 @@ CQRSPatternApi/
 5. Click "Send" on any request ✓
 
 ### → I want to use Claude
+
 1. Start server: `dotnet run` or `setup-mcp.bat`
 2. Go to claude.ai (web or desktop)
 3. Settings → Developer → MCP Config
@@ -369,6 +403,7 @@ CQRSPatternApi/
 5. Chat: "Get all employees and..." ✓
 
 ### → I want to understand everything
+
 1. Read: [QUICK_START_MCP.md](QUICK_START_MCP.md)
 2. Read: [MCP_INTEGRATION_GUIDE.md](MCP_INTEGRATION_GUIDE.md)
 3. Reference: [MCP_JSON_CONFIGURATION_GUIDE.md](MCP_JSON_CONFIGURATION_GUIDE.md)

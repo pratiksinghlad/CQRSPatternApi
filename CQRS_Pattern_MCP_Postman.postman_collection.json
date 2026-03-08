@@ -21,7 +21,7 @@
           "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"initialize\",\n  \"params\": {\n    \"protocolVersion\": \"2024-11-05\",\n    \"capabilities\": {\n      \"experimental\": {}\n    },\n    \"clientInfo\": {\n      \"name\": \"Postman\",\n      \"version\": \"12.0.0\"\n    }\n  }\n}"
         },
         "url": {
-          "raw": "http://localhost:5001/mcp",
+          "raw": "https://localhost:5001/mcp",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5001",
@@ -45,7 +45,7 @@
           "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/list\",\n  \"params\": {}\n}"
         },
         "url": {
-          "raw": "http://localhost:5001/mcp",
+          "raw": "https://localhost:5001/mcp",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5001",
@@ -69,7 +69,7 @@
           "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 3,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_all_employees\",\n    \"arguments\": {}\n  }\n}"
         },
         "url": {
-          "raw": "http://localhost:5001/mcp",
+          "raw": "https://localhost:5001/mcp",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5001",
@@ -93,7 +93,7 @@
           "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 4,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"add_employee\",\n    \"arguments\": {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"gender\": \"Male\",\n      \"birthDate\": \"1990-01-15\",\n      \"hireDate\": \"2020-06-01\"\n    }\n  }\n}"
         },
         "url": {
-          "raw": "http://localhost:5001/mcp",
+          "raw": "https://localhost:5001/mcp",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5001",
@@ -117,7 +117,7 @@
           "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"update_employee\",\n    \"arguments\": {\n      \"id\": 1,\n      \"firstName\": \"Jonathan\",\n      \"lastName\": \"Doe\",\n      \"gender\": \"Male\",\n      \"birthDate\": \"1990-01-15\",\n      \"hireDate\": \"2020-06-01\"\n    }\n  }\n}"
         },
         "url": {
-          "raw": "http://localhost:5001/mcp",
+          "raw": "https://localhost:5001/mcp",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5001",
@@ -141,7 +141,7 @@
           "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 6,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"patch_employee\",\n    \"arguments\": {\n      \"id\": 1,\n      \"firstName\": \"Jonny\"\n    }\n  }\n}"
         },
         "url": {
-          "raw": "http://localhost:5001/mcp",
+          "raw": "https://localhost:5001/mcp",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5001",
@@ -165,7 +165,7 @@
           "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 7,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"patch_employee\",\n    \"arguments\": {\n      \"id\": 1,\n      \"firstName\": \"John\",\n      \"lastName\": \"Smith\",\n      \"gender\": \"Male\",\n      \"birthDate\": \"1990-01-15\",\n      \"hireDate\": \"2022-06-01\"\n    }\n  }\n}"
         },
         "url": {
-          "raw": "http://localhost:5001/mcp",
+          "raw": "https://localhost:5001/mcp",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5001",

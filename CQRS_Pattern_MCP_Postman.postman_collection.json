@@ -1,0 +1,190 @@
+{
+  "info": {
+    "_postman_id": "cqrspattern-mcp-tools",
+    "name": "CQRS Pattern MCP Server",
+    "description": "MCP Tool requests for Employee operations via CQRS Pattern API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Protocol - Initialize",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"initialize\",\n  \"params\": {\n    \"protocolVersion\": \"2024-11-05\",\n    \"capabilities\": {\n      \"experimental\": {}\n    },\n    \"clientInfo\": {\n      \"name\": \"Postman\",\n      \"version\": \"12.0.0\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "https://localhost:5001/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["mcp"]
+        },
+        "description": "Initialize MCP protocol connection. Run this first to establish the protocol conversation."
+      }
+    },
+    {
+      "name": "2. Protocol - List Tools",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/list\",\n  \"params\": {}\n}"
+        },
+        "url": {
+          "raw": "https://localhost:5001/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["mcp"]
+        },
+        "description": "Discover all available MCP tools on the server. Returns tool names, descriptions, and input schemas."
+      }
+    },
+    {
+      "name": "3. Tool - Get All Employees",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 3,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_all_employees\",\n    \"arguments\": {}\n  }\n}"
+        },
+        "url": {
+          "raw": "https://localhost:5001/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["mcp"]
+        },
+        "description": "Retrieve all employees from the database. No parameters required."
+      }
+    },
+    {
+      "name": "4. Tool - Add Employee",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 4,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"add_employee\",\n    \"arguments\": {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"gender\": \"Male\",\n      \"birthDate\": \"1990-01-15\",\n      \"hireDate\": \"2020-06-01\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "https://localhost:5001/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["mcp"]
+        },
+        "description": "Add a new employee to the database. All fields are required."
+      }
+    },
+    {
+      "name": "5. Tool - Update Employee",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"update_employee\",\n    \"arguments\": {\n      \"id\": 1,\n      \"firstName\": \"Jonathan\",\n      \"lastName\": \"Doe\",\n      \"gender\": \"Male\",\n      \"birthDate\": \"1990-01-15\",\n      \"hireDate\": \"2020-06-01\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "https://localhost:5001/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["mcp"]
+        },
+        "description": "Update an existing employee's full record. All fields are required (full replacement)."
+      }
+    },
+    {
+      "name": "6. Tool - Patch Employee (Partial Update)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 6,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"patch_employee\",\n    \"arguments\": {\n      \"id\": 1,\n      \"firstName\": \"Jonny\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "https://localhost:5001/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["mcp"]
+        },
+        "description": "Partially update an employee. Only provide fields you want to change. Other fields remain unchanged."
+      }
+    },
+    {
+      "name": "7. Tool - Patch All Fields (Example 2)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 7,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"patch_employee\",\n    \"arguments\": {\n      \"id\": 1,\n      \"firstName\": \"John\",\n      \"lastName\": \"Smith\",\n      \"gender\": \"Male\",\n      \"birthDate\": \"1990-01-15\",\n      \"hireDate\": \"2022-06-01\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "https://localhost:5001/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["mcp"]
+        },
+        "description": "Patch allows updating any combination of fields (1 or more fields minimum)."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "mcp_endpoint",
+      "value": "/mcp",
+      "type": "string"
+    }
+  ]
+}

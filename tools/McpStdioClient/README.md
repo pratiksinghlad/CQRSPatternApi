@@ -11,12 +11,12 @@ dotnet build tools\McpStdioClient
 
 Run a test request:
 ```powershell
-dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\net9.0\CQRSPattern.McpServer.dll" "tools\McpStdioClient\request-get-all-employees.json"
+dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\net10.0\CQRSPattern.McpServer.dll" "tools\McpStdioClient\request-get-all-employees.json"
 ```
 
 Or query entities:
 ```powershell
-dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\net9.0\CQRSPattern.McpServer.dll" "tools\McpStdioClient\request-query-entities.json"
+dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\net10.0\CQRSPattern.McpServer.dll" "tools\McpStdioClient\request-query-entities.json"
 ```
 
 ## Prerequisites

@@ -1,14 +1,14 @@
-# CQRS Pattern with Unified MCP Server in .NET 9
+# CQRS Pattern with Unified MCP Server in .NET 10
 
-![.Net](https://img.shields.io/badge/-.NET%209.0-blueviolet?logo=dotnet)
+![.Net](https://img.shields.io/badge/-.NET%2010.0-blueviolet?logo=dotnet)
 ![Mysql](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white)
 ![EF](https://img.shields.io/badge/-Entity_Framework-8C3D65?logo=dotnet&logoColor=white)
-![Openapi](https://img.shields.io/badge/Docs-OpenAPI%209.0-success?style=flat-square)
+![Openapi](https://img.shields.io/badge/Docs-OpenAPI%2010.0-success?style=flat-square)
 ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?logo=swagger&logoColor=white)
 ![XUnit](https://img.shields.io/badge/Tests-xUnit-blue)
 ![MCP](https://img.shields.io/badge/MCP-Unified_Server-success)
 
-This repository demonstrates the **CQRS (Command Query Responsibility Segregation)** pattern using **.NET 9**, featuring a **Unified API** that serves both **RESTful** endpoints and the **Model Context Protocol (MCP)** via a single application host.
+This repository demonstrates the **CQRS (Command Query Responsibility Segregation)** pattern using **.NET 10**, featuring a **Unified API** that serves both **RESTful** endpoints and the **Model Context Protocol (MCP)** via a single application host.
 
 ## 🏗️ Unified Architecture
 
@@ -34,7 +34,7 @@ All protocols share the same **MediatR** core, ensuring **zero logic duplication
 
 ### Prerequisites
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [MySQL Server](https://www.mysql.com/downloads/) (Connection string in `appsettings.json`)
 
 ### Quick Launch
@@ -93,7 +93,7 @@ The project follows **Clean Architecture** and **Onion Layer** principles. For d
 
 ---
 
-_Built with ❤️ using .NET 9 and modern CQRS principles._
+_Built with ❤️ using .NET 10 and modern CQRS principles._
 | ------------------- | --------------- | -------------- | --------- | --------- |
 | Port | 5000/5001 | 5002 | N/A | 5000/5001 |
 | Extra Server Needed | No | Yes | Yes | No |

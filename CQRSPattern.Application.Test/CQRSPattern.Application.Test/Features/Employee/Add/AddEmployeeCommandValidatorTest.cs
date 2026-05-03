@@ -45,7 +45,7 @@ public class AddEmployeeCommandValidatorTest
         // Assert: Check the validation errors based on the `shouldHaveError` parameter
         if (shouldHaveError)
         {
-            result.ShouldHaveAnyValidationError();
+            Assert.False(result.IsValid);
         }
         else
         {

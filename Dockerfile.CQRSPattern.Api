@@ -1,9 +1,9 @@
 # Stage 1: Build and publish the application
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copy solution and project files
-COPY ["CQRSPattern.sln", "./"]
+COPY ["CQRSPattern.slnx", "./"]
 COPY ["CQRSPattern.Api/CQRSPattern.Api.csproj", "CQRSPattern.Api/"]
 COPY ["CQRSPattern.Application/CQRSPattern.Application.csproj", "CQRSPattern.Application/"]
 COPY ["CQRSPattern.Infrastructure.Mediator/CQRSPattern.Infrastructure.Mediator.csproj", "CQRSPattern.Infrastructure.Mediator/"]
@@ -20,7 +20,7 @@ COPY . .
 RUN dotnet publish "CQRSPattern.Api/CQRSPattern.Api.csproj" -c Release -o /app/publish
 
 # Stage 2: Build the runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 

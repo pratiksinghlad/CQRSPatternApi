@@ -31,8 +31,8 @@ Building an MCP server in .NET is straightforward using the `ModelContextProtoco
 ### 1. Install NuGet Packages
 
 ```xml
-<PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.2" />
-<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.4.0-preview.2" />
+<PackageReference Include="ModelContextProtocol" Version="1.2.0" />
+<PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.2.0" />
 ```
 
 ### 2. Configure Services (`Program.cs` or `Startup.cs`)
@@ -201,7 +201,7 @@ The repository includes a custom C# tool located in `tools/McpStdioClient` that 
 
 ```bash
 cd tools/McpStdioClient
-dotnet run -- "../../CQRSPattern.Api/bin/Debug/net9.0/CQRSPattern.Api.dll" "./request-list-tools.json"
+dotnet run -- "../../CQRSPattern.Api/bin/Debug/net10.0/CQRSPattern.Api.dll" "./request-list-tools.json"
 ```
 
 ---

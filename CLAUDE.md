@@ -2,8 +2,8 @@
 
 ## Skills
 
-Load skills from `.copilot/skills/` based on the task.
-See `.copilot/skills/INDEX.md` for what to load and when.
+Load skills from `.codex/skills/` based on the task.
+See `.codex/skills/INDEX.md` for what to load and when.
 
 Codex has a mirrored copy under `.codex/skills/`.
 

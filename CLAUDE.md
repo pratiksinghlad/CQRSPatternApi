@@ -1,13 +1,11 @@
----
-trigger: always_on
----
-
-# Copilot Instructions
+# Claude Instructions
 
 ## Skills
 
-Load skills from `.copilot/skills/` based on the task.
-See `.copilot/skills/INDEX.md` for what to load and when.
+Load skills from `.codex/skills/` based on the task.
+See `.codex/skills/INDEX.md` for what to load and when.
+
+Codex has a mirrored copy under `.codex/skills/`.
 
 ## Project Rules
 
@@ -20,6 +18,7 @@ See `.copilot/skills/INDEX.md` for what to load and when.
 - Add XML documentation comments for public types and public members.
 - Add comments only where the logic is non-trivial and the comment explains why.
 - Write or update xUnit tests for new behavior.
+- Generated code must compile without warnings or errors.
 - Generated code must compile without warnings or errors.
 
 ## Project Structure

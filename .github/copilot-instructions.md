@@ -1,13 +1,9 @@
----
-trigger: always_on
----
-
 # Copilot Instructions
 
 ## Skills
 
-Load skills from `.copilot/skills/` based on the task.
-See `.copilot/skills/INDEX.md` for what to load and when.
+Load skills from `skills/` based on the task.
+See `skills/INDEX.md` for what to load and when.
 
 ## Project Rules
 
@@ -33,7 +29,10 @@ See `.copilot/skills/INDEX.md` for what to load and when.
 
 Before finishing a task:
 
-- Run the pre-submit checklist in `.copilot/skills/core/SKILL.md`.
-- Run the relevant build and test commands for the changed area.
+- Run the pre-submit checklist in `skills/core/SKILL.md`.
+- Run `dotnet build` for all changed projects.
+- Run all relevant unit tests for changed files/projects and verify they pass without errors.
+- Run code-style and formatting checks enforced by `.editorconfig`.
+- Fix any formatting, analyzer, or style violations before completing the task.
 - Update `README.md` or other docs only when behavior, setup, commands, or public usage changes.
 - Do not mark the task complete if checks fail. List what failed and why.

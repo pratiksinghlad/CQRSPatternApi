@@ -1,13 +1,11 @@
----
-trigger: always_on
----
-
-# Copilot Instructions
+# Claude Instructions
 
 ## Skills
 
 Load skills from `.copilot/skills/` based on the task.
 See `.copilot/skills/INDEX.md` for what to load and when.
+
+Codex has a mirrored copy under `.codex/skills/`.
 
 ## Project Rules
 
@@ -21,13 +19,6 @@ See `.copilot/skills/INDEX.md` for what to load and when.
 - Add comments only where the logic is non-trivial and the comment explains why.
 - Write or update xUnit tests for new behavior.
 - Generated code must compile without warnings or errors.
-
-## Project Structure
-
-- Organize code by feature or domain.
-- Place interfaces in an `Interfaces` folder when the project already follows that convention.
-- Place implementation classes in the appropriate feature or infrastructure folder.
-- Place tests in the matching test project.
 
 ## After Every Code Change
 

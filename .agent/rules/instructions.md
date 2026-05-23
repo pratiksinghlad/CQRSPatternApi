@@ -2,48 +2,40 @@
 trigger: always_on
 ---
 
-# Antigravity & Gemini Project Instructions
+# Agent Instructions
 
-- All code must target .NET 9 and use C# 13 features and syntax[4][9].
-- Follow the official C# 13 coding conventions and best practices.
-- Use modern C# 13 features such as:
-  - `params` collections (supporting Span<T>, IEnumerable<T>, etc.)
-  - The new `lock` type and semantics
-  - The `\e` escape sequence for Unicode U+001B
-  - Method group natural type improvements
-  - Implicit indexer access in object initializers
-  - `ref` locals and `unsafe` contexts in iterators/async methods
-  - `ref struct` types implementing interfaces
-  - Partial properties and indexers in partial types[4][9]
-- All generated code must be idiomatic, clear, and maintainable.
-- Use XML documentation comments for all public types and members.
+## Skills
+
+Load skills from `.copilot/skills/` based on the task.
+See `.copilot/skills/INDEX.md` for what to load and when.
+
+Codex has a mirrored copy under `.codex/skills/`.
+
+## Project Rules
+
+- Follow the target framework and language version declared in `Directory.Build.props`.
+- Current repository defaults: `net10.0` and `LangVersion` set to `latest`.
+- Write idiomatic, clear, maintainable C#.
 - Prefer expressive variable and method names; avoid abbreviations.
-- Write unit tests for all new methods using xUnit.
-- Avoid obsolete patterns and APIs; use the latest .NET 9 libraries.
-- Ensure thread safety and proper use of async/await patterns.
-- Use dependency injection for services and data access.
-- All code should compile without warnings or errors.
-- Include comments where logic is non-trivial.
+- Use dependency injection for services, data access, and infrastructure concerns.
+- Use async/await correctly. Async methods must return `Task` or `Task<T>` and use the `Async` suffix.
+- Add XML documentation comments for public types and public members.
+- Add comments only where the logic is non-trivial and the comment explains why.
+- Write or update xUnit tests for new behavior.
+- Generated code must compile without warnings or errors.
 
-# Project Structure Guidelines
+## Project Structure
 
-- Organize code into folders by feature or domain.
-- Place interfaces in an `Interfaces` folder.
-- Place implementation classes in appropriate feature folders.
-- Place unit tests in a parallel `Tests` project.
+- Organize code by feature or domain.
+- Place interfaces in an `Interfaces` folder when the project already follows that convention.
+- Place implementation classes in the appropriate feature or infrastructure folder.
+- Place tests in the matching test project.
 
-# Example Usage
+## After Every Code Change
 
-- When generating a service, use constructor injection for dependencies.
-- When writing async methods, always use `Task` or `Task<T>` return types and include `Async` in method names.
+Before finishing a task:
 
-# MUST DO
-
-- After all changes change project should run and unit test should run without any errors.
-- After all changes update the README.md file.
-- Design principles should be DRY, SOLID and clean.
-- Use dependency injection.
-- Write Code simple, maintable, testable and readable.
-- Add comments where logic is complex. for public method add XML comments.
-- Simplicity is the ultimate sophistication for code.
-- High code quality and c# microsoft standards should be followed.
+- Run the pre-submit checklist in `.copilot/skills/core/SKILL.md`.
+- Run the relevant build and test commands for the changed area.
+- Update `README.md` or other docs only when behavior, setup, commands, or public usage changes.
+- Do not mark the task complete if checks fail. List what failed and why.

@@ -1,13 +1,9 @@
----
-trigger: always_on
----
-
-# Copilot Instructions
+# Codex Instructions
 
 ## Skills
 
-Load skills from `.copilot/skills/` based on the task.
-See `.copilot/skills/INDEX.md` for what to load and when.
+Load skills from `.codex/skills/` based on the task.
+See `.codex/skills/INDEX.md` for what to load and when.
 
 ## Project Rules
 
@@ -33,7 +29,7 @@ See `.copilot/skills/INDEX.md` for what to load and when.
 
 Before finishing a task:
 
-- Run the pre-submit checklist in `.copilot/skills/core/SKILL.md`.
+- Run the pre-submit checklist in `.codex/skills/core/SKILL.md`.
 - Run the relevant build and test commands for the changed area.
 - Update `README.md` or other docs only when behavior, setup, commands, or public usage changes.
 - Do not mark the task complete if checks fail. List what failed and why.

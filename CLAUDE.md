@@ -19,6 +19,14 @@ Codex has a mirrored copy under `.codex/skills/`.
 - Add comments only where the logic is non-trivial and the comment explains why.
 - Write or update xUnit tests for new behavior.
 - Generated code must compile without warnings or errors.
+- Generated code must compile without warnings or errors.
+
+## Project Structure
+
+- Organize code by feature or domain.
+- Place interfaces in an `Interfaces` folder when the project already follows that convention.
+- Place implementation classes in the appropriate feature or infrastructure folder.
+- Place tests in the matching test project.
 
 ## After Every Code Change
 

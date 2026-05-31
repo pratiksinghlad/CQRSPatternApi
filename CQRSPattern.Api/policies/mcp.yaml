@@ -1,0 +1,54 @@
+apiVersion: governance.toolkit/v1
+version: "1.0"
+name: cqrs-mcp-governance-policy
+# Deny all tool calls unless explicitly allowed below.
+# This ensures new tools are blocked until they are reviewed and added.
+default_action: deny
+
+rules:
+  # Employee tools
+  - name: allow-get-all-employees
+    condition: "tool_name == 'get_all_employees'"
+    action: allow
+    priority: 10
+
+  - name: allow-add-employee
+    condition: "tool_name == 'add_employee'"
+    action: allow
+    priority: 10
+
+  - name: allow-update-employee
+    condition: "tool_name == 'update_employee'"
+    action: allow
+    priority: 10
+
+  - name: allow-patch-employee
+    condition: "tool_name == 'patch_employee'"
+    action: allow
+    priority: 10
+
+  # Weather forecast tools
+  - name: allow-get-all-weather-forecasts
+    condition: "tool_name == 'get_all_weather_forecasts'"
+    action: allow
+    priority: 10
+
+  - name: allow-get-weather-forecast-by-id
+    condition: "tool_name == 'get_weather_forecast_by_id'"
+    action: allow
+    priority: 10
+
+  - name: allow-create-weather-forecast
+    condition: "tool_name == 'create_weather_forecast'"
+    action: allow
+    priority: 10
+
+  - name: allow-update-weather-forecast
+    condition: "tool_name == 'update_weather_forecast'"
+    action: allow
+    priority: 10
+
+  - name: allow-delete-weather-forecast
+    condition: "tool_name == 'delete_weather_forecast'"
+    action: allow
+    priority: 10

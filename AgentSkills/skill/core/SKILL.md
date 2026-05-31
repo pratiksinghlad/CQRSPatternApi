@@ -15,6 +15,7 @@ description: >
 3. **Surgical Changes** - Touch only what the task requires. Do not improve unrelated code.
 4. **Goal-Driven Testing** - Define success before writing code. Tests are the contract.
 5. **No Race Conditions** - Treat shared mutable state as dangerous. Prefer immutability.
+6. **Agent Memory** - Read `AgentSkills/memory/lessons.md` at start of task. Log any new lessons/mistakes before completion.
 
 ## Pre-submit Checklist
 
@@ -28,3 +29,4 @@ description: >
 - [ ] Commit message states what changed and why, when a commit is made.
 - [ ] Only required code changed; nothing extra.
 - [ ] SOLID respected, especially Single Responsibility.
+- [ ] Checked `AgentSkills/memory/lessons.md` and added any new lessons learned or mistakes corrected.

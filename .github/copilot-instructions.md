@@ -2,8 +2,21 @@
 
 ## Skills
 
-Load skills from `skills/` based on the task.
-See `skills/INDEX.md` for what to load and when.
+Load skills from `../AgentSkills/skill/` based on the task.
+See `../AgentSkills/skill/INDEX.md` for what to load and when.
+
+`AgentSkills/` is the single source of truth for skills and agents used by all tools
+(Codex, Copilot, Claude, Cursor, Antigravity). The folders `.github/skills/` and
+`.github/agents/` are redirect stubs only — do not edit skill or agent content there.
+
+## Agents
+
+Load agents from `../AgentSkills/agents/` based on the task.
+
+| Agent | Load when |
+|---|---|
+| `../AgentSkills/agents/architect.agent.md` | Designing features, planning CQRS structure, SQL schema, MCP contracts |
+| `../AgentSkills/agents/developer.agent.md` | Implementing features in .NET C# |
 
 ## Project Rules
 
@@ -29,7 +42,7 @@ See `skills/INDEX.md` for what to load and when.
 
 Before finishing a task:
 
-- Run the pre-submit checklist in `skills/core/SKILL.md`.
+- Run the pre-submit checklist in `../AgentSkills/skill/core/SKILL.md`.
 - Run `dotnet build` for all changed projects.
 - Run all relevant unit tests for changed files/projects and verify they pass without errors.
 - Run code-style and formatting checks enforced by `.editorconfig`.

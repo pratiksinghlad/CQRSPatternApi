@@ -1,29 +1,36 @@
-using Microsoft.Extensions.DependencyInjection;
-using ModelContextProtocol.AspNetCore;
+using AgentGovernance.Extensions.ModelContextProtocol;
 
 namespace CQRSPattern.Api;
 
 /// <summary>
 /// Startup partial — MCP (Model Context Protocol) server registration.
-/// Configures the official ModelContextProtocol SDK with dual-transport support.
+/// Configures the official ModelContextProtocol SDK with dual-transport support
+/// and Agent Governance Toolkit for startup scanning, policy enforcement,
+/// and response sanitization.
 /// </summary>
 public partial class Startup
 {
     /// <summary>
-    /// Registers MCP server services with both HTTP and Stdio transports enabled.
-    /// 1. HTTP Transport: Accessible via POST/GET /mcp (remote clients, Postman)
-    /// 2. Stdio Transport: Accessible via stdin/stdout (local clients, Claude Desktop)
+    /// Registers MCP server services with both HTTP and Stdio transports enabled,
+    /// governed by the Agent Governance Toolkit.
     /// </summary>
-    private static void LoadMcp(IServiceCollection services)
+    private void LoadMcp(IServiceCollection services)
     {
+        var governanceSection = Configuration.GetSection("McpGovernance");
+
         services
             .AddMcpServer()
-            // Support HTTP Transport (Stateless mode for production readiness)
             .WithHttpTransport(options => options.Stateless = true)
-            // Support Stdio Transport (Direct pipe for desktop LLM integration)
             .WithStdioServerTransport()
             .WithToolsFromAssembly()
             .WithResourcesFromAssembly()
-            .WithPromptsFromAssembly();
+            .WithPromptsFromAssembly()
+            .WithGovernance(options =>
+            {
+                // Policy file is deployed alongside the binary (see .csproj Content item).
+                options.PolicyPaths.Add(governanceSection["PolicyPath"] ?? "policies/mcp.yaml");
+                options.DefaultAgentId = governanceSection["DefaultAgentId"] ?? "did:mcp:anonymous";
+                options.ServerName = governanceSection["ServerName"] ?? "cqrs-api";
+            });
     }
 }

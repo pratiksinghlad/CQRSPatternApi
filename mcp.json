@@ -14,6 +14,33 @@
         "CQRSPattern.Api/CQRSPattern.Api.csproj"
       ],
       "description": "CQRS Pattern API — stdio MCP transport (for IDE integration)"
+    },
+    "microsoft-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp",
+      "description": "Microsoft Learn API — Search official documentation, guides, and C# code samples"
+    },
+    "nuget-server": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "run",
+        "nuget-mcp"
+      ],
+      "description": "NuGet Package Search and Management MCP Server"
+    },
+    "brave-search": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_BRAVE_API_KEY"
+      },
+      "description": "Brave Search API — Search the web, documentation, and developer blogs"
     }
   },
   "defaultServer": "cqrspattern-http",

@@ -32,31 +32,31 @@ public static class JsonPatchRequestConverter
                 case "add":
                     AddOperationByPath(patchDocument, operation.Path, operation.Value);
                     break;
-                    
+
                 case "remove":
                     RemoveOperationByPath(patchDocument, operation.Path);
                     break;
-                    
+
                 case "replace":
                     ReplaceOperationByPath(patchDocument, operation.Path, operation.Value);
                     break;
-                    
+
                 case "move":
                     if (string.IsNullOrWhiteSpace(operation.From))
                         throw new InvalidOperationException("Move operation requires 'from' property");
                     MoveOperationByPath(patchDocument, operation.From, operation.Path);
                     break;
-                    
+
                 case "copy":
                     if (string.IsNullOrWhiteSpace(operation.From))
                         throw new InvalidOperationException("Copy operation requires 'from' property");
                     CopyOperationByPath(patchDocument, operation.From, operation.Path);
                     break;
-                    
+
                 case "test":
                     TestOperationByPath(patchDocument, operation.Path, operation.Value);
                     break;
-                    
+
                 default:
                     throw new InvalidOperationException($"Unsupported operation: {operation.Op}");
             }
@@ -85,11 +85,11 @@ public static class JsonPatchRequestConverter
         };
 
         var parameter = Expression.Parameter(typeof(EmployeeModel), "x");
-        
+
         var property = typeof(EmployeeModel).GetProperty(
             propertyName,
             BindingFlags.Public | BindingFlags.Instance);
-        
+
         if (property == null)
         {
             throw new InvalidOperationException(
@@ -98,7 +98,7 @@ public static class JsonPatchRequestConverter
 
         var propertyAccess = Expression.Property(parameter, property);
         var objectConversion = Expression.Convert(propertyAccess, typeof(object));
-        
+
         return Expression.Lambda<Func<EmployeeModel, object?>>(objectConversion, parameter);
     }
 
@@ -177,14 +177,14 @@ public static class JsonPatchRequestConverter
             }
 
             // Validate ID operations (should not allow modification of ID)
-            if (operation.Path.Equals("/id", StringComparison.OrdinalIgnoreCase) && 
+            if (operation.Path.Equals("/id", StringComparison.OrdinalIgnoreCase) &&
                 operation.Op.ToLowerInvariant() is "add" or "replace")
             {
                 errors.Add("Cannot modify employee ID");
             }
 
             // Validate date formats
-            if ((operation.Path.Equals("/birthDate", StringComparison.OrdinalIgnoreCase) || 
+            if ((operation.Path.Equals("/birthDate", StringComparison.OrdinalIgnoreCase) ||
                  operation.Path.Equals("/hireDate", StringComparison.OrdinalIgnoreCase)) &&
                 operation.Value != null)
             {

@@ -67,9 +67,9 @@ public class JsonPatchRequest
             return false;
 
         var validOps = new[] { "add", "remove", "replace", "move", "copy", "test" };
-        
-        return Operations.All(op => 
-            !string.IsNullOrWhiteSpace(op.Op) && 
+
+        return Operations.All(op =>
+            !string.IsNullOrWhiteSpace(op.Op) &&
             validOps.Contains(op.Op.ToLowerInvariant()) &&
             !string.IsNullOrWhiteSpace(op.Path) &&
             op.Path.StartsWith('/'));

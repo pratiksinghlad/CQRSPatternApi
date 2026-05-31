@@ -1,8 +1,8 @@
-using System.Text.Json;
 using CQRSPattern.Api.Services;
 using CQRSPattern.Application.Features.Models;
 using CQRSPattern.Application.Repositories.Read;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace CQRSPattern.Api.Features.Weather;
 

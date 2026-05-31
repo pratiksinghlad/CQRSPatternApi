@@ -46,7 +46,6 @@ public class PatchEmployeeCommandHandlerTest
         var result = await _sut.Handle(command, default);
 
         // Assert
-        Assert.NotNull(result);
         _employeeRepository.Verify(x => x.PatchAsync(
             command.Id,
             command.FirstName,

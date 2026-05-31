@@ -9,7 +9,7 @@ public class GetAllQueryHandler : IRequestHandler<GetAllQuery, GetAllQueryResult
     public GetAllQueryHandler(IEmployeeReadRepository employeeRepo, IMemoryCache cache)
     {
         _employeeRepo = employeeRepo;
-        _cache = cache; 
+        _cache = cache;
     }
 
     public async Task<GetAllQueryResult> Handle(

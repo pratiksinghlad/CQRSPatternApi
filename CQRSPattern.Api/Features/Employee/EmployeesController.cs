@@ -224,13 +224,13 @@ public class EmployeesController : ControllerBase
             var scope = _factory?.CreateScope();
             if (scope == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, 
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "Unable to create mediator scope" });
             }
 
             var command = CQRSPattern.Application.Features.Employee.JsonPatch.JsonPatchEmployeeCommand.CreateCommand(id, patchDocument);
             var wasUpdated = await scope.SendAsync(command, cancellationToken);
-            
+
             if (!wasUpdated)
             {
                 return NotFound(new { message = $"Employee with ID {id} not found" });
@@ -248,7 +248,7 @@ public class EmployeesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, 
+            return StatusCode(StatusCodes.Status500InternalServerError,
                 new { message = "An error occurred while applying JSON patch to the employee", error = ex?.Message ?? "Unknown error" });
         }
     }

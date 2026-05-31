@@ -1,10 +1,9 @@
-using System.Text.Json.Serialization;
 using Autofac;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.FeatureManagement;
-using ModelContextProtocol.AspNetCore;
 using Scalar.AspNetCore;
+using System.Text.Json.Serialization;
 
 namespace CQRSPattern.Api;
 
@@ -98,19 +97,19 @@ public partial class Startup
         {
             ValidateArchitecture(app.ApplicationServices);
         }
-    
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
-    
+
         app.UseResponseCompression();
         app.UseStatusCodePages();
         app.UseRouting();
         app.UseCors("AllowAll");
-    
+
         UseScalar(ref app);
-    
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -125,7 +124,7 @@ public partial class Startup
                 else
                     opt.Theme = ScalarTheme.Purple;
             });
-    
+
             endpoints.MapHealthChecks(
                 "/health/ready",
                 new HealthCheckOptions()
@@ -134,7 +133,7 @@ public partial class Startup
                     ResponseWriter = WriteResponse,
                 }
             );
-    
+
             endpoints.MapHealthChecks(
                 "/health/live",
                 new HealthCheckOptions()
@@ -144,7 +143,7 @@ public partial class Startup
                 }
             );
         });
-    
+
         app.UseCookiePolicy();
     }
 
@@ -157,24 +156,24 @@ public partial class Startup
         LoadConfiguration(services);
         LoadMediator(services);
     }
-    
+
     private void ValidateArchitecture(IServiceProvider serviceProvider)
     {
         // Create a scope to resolve the architecture validator
         using var scope = serviceProvider.CreateScope();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Startup>>();
-        
+
         try
         {
             var architectureValidator = new Architecture.ArchitectureValidator(
                 scope.ServiceProvider.GetRequiredService<ILogger<Architecture.ArchitectureValidator>>());
-            
+
             var isValid = architectureValidator.ValidateArchitecture();
-            
+
             if (!isValid)
             {
                 logger.LogWarning("Architecture validation failed. The application may not be structured according to the defined architecture rules.");
-                
+
                 // Optionally, you can make this a critical error and shut down in development to enforce architecture compliance
                 // In production, we typically want to continue running even if validation fails
                 if (Environment.GetEnvironmentVariable("ENFORCE_ARCHITECTURE") == "true")

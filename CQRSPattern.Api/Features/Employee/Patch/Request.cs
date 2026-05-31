@@ -1,6 +1,6 @@
+using CQRSPattern.Application.Features.Employee.Patch;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CQRSPattern.Application.Features.Employee.Patch;
 
 namespace CQRSPattern.Api.Features.Employee.Patch;
 

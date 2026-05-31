@@ -2,10 +2,26 @@
 
 ## Skills
 
-Load skills from `.codex/skills/` based on the task.
-See `.codex/skills/INDEX.md` for what to load and when.
+Load skills from `AgentSkills/skill/` based on the task.
+See `AgentSkills/skill/INDEX.md` for what to load and when.
 
-Codex has a mirrored copy under `.codex/skills/`.
+`AgentSkills/` is the single source of truth for skills and agents used by all tools
+(Codex, Copilot, Claude, Cursor, Antigravity). Mirror entry points under `.copilot/` and
+`.codex/` are redirect stubs only — do not edit skill content there.
+
+## Agents
+
+Load agents from `AgentSkills/agents/` based on the task.
+
+| Agent | Load when |
+|---|---|
+| `AgentSkills/agents/architect.agent.md` | Designing features, planning CQRS structure, SQL schema, MCP contracts |
+| `AgentSkills/agents/developer.agent.md` | Implementing features in .NET C# |
+
+## Memory & Lessons Learned
+
+- **Always read** `AgentSkills/memory/lessons.md` at the start of a task to load past project-specific memories.
+- **Log mistakes or lessons** at the end of the task in `AgentSkills/memory/lessons.md` to keep skills and agents working efficiently and prevent repeats of past issues.
 
 ## Project Rules
 
@@ -19,7 +35,6 @@ Codex has a mirrored copy under `.codex/skills/`.
 - Add comments only where the logic is non-trivial and the comment explains why.
 - Write or update xUnit tests for new behavior.
 - Generated code must compile without warnings or errors.
-- Generated code must compile without warnings or errors.
 
 ## Project Structure
 
@@ -32,7 +47,10 @@ Codex has a mirrored copy under `.codex/skills/`.
 
 Before finishing a task:
 
-- Run the pre-submit checklist in `.copilot/skills/core/SKILL.md`.
-- Run the relevant build and test commands for the changed area.
+- Run the pre-submit checklist in `AgentSkills/skill/core/SKILL.md`.
+- Run `dotnet build` for all changed projects.
+- Run all relevant unit tests for changed files/projects and verify they pass without errors.
+- Run code-style and formatting checks enforced by `.editorconfig`.
+- Fix any formatting, analyzer, or style violations before completing the task.
 - Update `README.md` or other docs only when behavior, setup, commands, or public usage changes.
 - Do not mark the task complete if checks fail. List what failed and why.

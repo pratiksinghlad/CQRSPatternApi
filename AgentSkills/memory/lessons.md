@@ -23,11 +23,16 @@ When recording a new lesson/mistake, add it using the following format:
 ## Lessons Logged
 
 ### 2026-05-31 Agent Mirror Redirect Setup
-- **Mistake/Symptom:** Overwrote canonical skill files in `AgentSkills/` with redirect stubs, creating circular redirects pointing to themselves, and accidentally deleted the agent files from `AgentSkills/agents/`.
+- **Mistake/Symptom:** Overwrote canonical files in `AgentSkills/` with redirect stubs, creating circular redirects pointing to themselves, and accidentally deleted the agent files from `AgentSkills/agents/`.
 - **Root Cause:** Did not verify paths carefully before writing redirect files, assuming `AgentSkills/` files were already populated and only `.github/` files were duplicates.
-- **Prevention/Rule:** Never delete or overwrite files in `AgentSkills/` without verifying they are backed up elsewhere. `AgentSkills/` is the single source of truth; all mirror folders (`.github/skills/`, `.codex/skills/`, `.copilot/skills/`) are redirects pointing to it.
+- **Prevention/Rule:** Never delete or overwrite files in `AgentSkills/` without verifying they are backed up elsewhere. `AgentSkills/` is the single source of truth; tool-specific entry points must point to `AgentSkills/` and must not duplicate canonical skill or agent content.
 
 ### 2026-05-31 CQRS Implementation
 - **Mistake/Symptom:** Business logic or EF Core queries placed directly in Controllers or MediatR Handlers.
 - **Root Cause:** Bypassing Domain Entities and repositories in favor of fast endpoint creation.
 - **Prevention/Rule:** Controllers only dispatch commands/queries via MediatR. Handlers handle request translation/persistence boundaries. All business rules belong inside Domain Entities or Domain Services.
+
+### 2026-06-06 Portable AgentSkills Paths
+- **Mistake/Symptom:** AgentSkills documentation used machine-specific absolute file links and the old singular skills folder name, making the setup less portable across machines and IDEs.
+- **Root Cause:** Documentation was written against one local checkout path instead of repository-relative paths.
+- **Prevention/Rule:** Use repository-relative links and paths in AI/IDE instruction files. Canonical skills live under `AgentSkills/skills/`; never use absolute local drive paths in shared agent documentation.

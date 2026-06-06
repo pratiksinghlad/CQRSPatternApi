@@ -6,12 +6,12 @@ trigger: always_on
 
 ## Skills
 
-Load skills from `AgentSkills/skill/` based on the task.
-See `AgentSkills/skill/INDEX.md` for what to load and when.
+Load skills from `AgentSkills/skills/` based on the task.
+See `AgentSkills/skills/INDEX.md` for what to load and when.
 
 `AgentSkills/` is the single source of truth for skills and agents used by all tools
-(Codex, Copilot, Claude, Cursor, Antigravity). Mirror entry points under `.copilot/` and
-`.codex/` are redirect stubs only — do not edit skill content there.
+(Codex, Copilot, Claude, Cursor, Antigravity). Do not duplicate skill or agent content
+under tool-specific folders such as `.github/`, `.copilot/`, or `.codex/`.
 
 ## Agents
 
@@ -51,7 +51,7 @@ Load agents from `AgentSkills/agents/` based on the task.
 
 Before finishing a task:
 
-- Run the pre-submit checklist in `AgentSkills/skill/core/SKILL.md`.
+- Run the pre-submit checklist in `AgentSkills/skills/core/SKILL.md`.
 - Run `dotnet build` for all changed projects.
 - Run all relevant unit tests for changed files/projects and verify they pass without errors.
 - Run code-style and formatting checks enforced by `.editorconfig`.

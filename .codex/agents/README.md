@@ -1,6 +1,6 @@
-# Agents — Redirect
+# Agents Entry Point
 
-> **This folder is a mirror entry point only.**
+> **This folder is a lightweight tool entry point only.**
 > The single source of truth for all agents is `AgentSkills/agents/`.
 
 All agents and tools (Copilot, Codex, Claude, Cursor, Antigravity) load agents from `AgentSkills/agents/`.

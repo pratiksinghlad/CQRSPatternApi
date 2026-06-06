@@ -1,5 +1,5 @@
-using System.Reflection;
 using NetArchTest.Rules;
+using System.Reflection;
 
 namespace CQRSPattern.Api.Architecture;
 
@@ -26,20 +26,20 @@ public class ArchitectureValidator
     public bool ValidateArchitecture()
     {
         _logger.LogInformation("Starting architecture validation...");
-        
+
         var apiAssembly = Assembly.GetExecutingAssembly();
         var applicationAssembly = Assembly.Load("CQRSPattern.Application");
 
         var allRulesPassed = true;
-        
+
         // Validate layer dependencies
         allRulesPassed &= ValidateLayerDependencies(
-            apiAssembly, 
+            apiAssembly,
             applicationAssembly);
-        
+
         // Validate controllers follow naming convention
         allRulesPassed &= ValidateControllerNamingConvention(apiAssembly);
-        
+
         // Validate handlers are in correct namespaces
         allRulesPassed &= ValidateHandlerNamespaces(applicationAssembly);
 

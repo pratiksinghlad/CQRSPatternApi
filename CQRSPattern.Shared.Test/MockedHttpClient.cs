@@ -22,7 +22,8 @@ public class MockedHttpClient
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>()
                 )
-            .ReturnsAsync(() => {
+            .ReturnsAsync(() =>
+            {
                 var response = new HttpResponseMessage()
                 {
                     StatusCode = System.Net.HttpStatusCode.OK,

@@ -60,7 +60,7 @@ public class EmployeeWriteRepository : IEmployeeWriteRepository
         CancellationToken cancellationToken = default)
     {
         var existingEmployee = await _dbContext.Employees.FindAsync([id], cancellationToken);
-        
+
         if (existingEmployee == null)
         {
             return false;
@@ -109,7 +109,7 @@ public class EmployeeWriteRepository : IEmployeeWriteRepository
 
         // First check if employee exists
         var existingEmployee = await _dbContext.Employees.FindAsync([id], cancellationToken);
-        
+
         if (existingEmployee == null)
         {
             return false;
@@ -138,7 +138,7 @@ public class EmployeeWriteRepository : IEmployeeWriteRepository
                     if (error == null)
                         return;
 
-                    var errorMessage = 
+                    var errorMessage =
                         $"JSON Patch operation failed: {error.ErrorMessage ?? "Unknown error"}";
 
                     if (error.Operation != null)

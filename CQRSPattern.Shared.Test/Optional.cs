@@ -48,7 +48,7 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
     /// </summary>
     /// <param name="defaultValue">The default value to return if no value is present</param>
     /// <returns>The value or default value</returns>
-    public T? GetValueOrDefault(T? defaultValue = default) => 
+    public T? GetValueOrDefault(T? defaultValue = default) =>
         _hasValue ? _value : defaultValue;
 
     /// <summary>
@@ -61,20 +61,20 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
         _hasValue ? Optional<TResult>.Some(mapper(_value)) : Optional<TResult>.None;
 
     public static implicit operator Optional<T>(T? value) => Some(value);
-    
-    public bool Equals(Optional<T> other) => 
-        _hasValue == other._hasValue && 
+
+    public bool Equals(Optional<T> other) =>
+        _hasValue == other._hasValue &&
         (!_hasValue || EqualityComparer<T>.Default.Equals(_value, other._value));
 
     public override bool Equals(object? obj) => obj is Optional<T> other && Equals(other);
 
-    public override int GetHashCode() => 
+    public override int GetHashCode() =>
         _hasValue ? HashCode.Combine(_hasValue, _value) : _hasValue.GetHashCode();
 
     public static bool operator ==(Optional<T> left, Optional<T> right) => left.Equals(right);
     public static bool operator !=(Optional<T> left, Optional<T> right) => !left.Equals(right);
 
-    public override string ToString() => 
+    public override string ToString() =>
         _hasValue ? $"Some({_value})" : "None";
 }
 
@@ -84,7 +84,7 @@ public readonly struct Optional<T> : IEquatable<Optional<T>>
 public class OptionalJsonConverterFactory : JsonConverterFactory
 {
     public override bool CanConvert(Type typeToConvert) =>
-        typeToConvert.IsGenericType && 
+        typeToConvert.IsGenericType &&
         typeToConvert.GetGenericTypeDefinition() == typeof(Optional<>);
 
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)

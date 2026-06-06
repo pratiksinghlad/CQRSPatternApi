@@ -1,6 +1,6 @@
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.FeatureManagement;
+using System.Text.Json.Serialization;
 
 namespace CQRSPattern.Api.Extensions;
 

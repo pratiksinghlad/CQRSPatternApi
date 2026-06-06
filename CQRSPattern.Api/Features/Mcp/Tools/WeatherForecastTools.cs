@@ -1,7 +1,7 @@
-using System.ComponentModel;
 using CQRSPattern.Application.Features.Models;
 using CQRSPattern.Application.Repositories.Read;
 using ModelContextProtocol.Server;
+using System.ComponentModel;
 
 namespace CQRSPattern.Api.Features.Mcp.Tools;
 

@@ -21,7 +21,7 @@ public class AddEmployeeCommandValidatorTest
     [InlineData("John", "Doe", "M", "2025-01-01", "1990-01-01", false)] // Valid BirthDate (over 18)
     [InlineData("John", "Doe", "M", "2025-01-01", "2005-01-01", false)] // Valid Input
     public void Should_Validate_All_Rules_Correctly(
-        string firstName,
+        string? firstName,
         string lastName,
         string gender,
         string hireDate,

@@ -1,9 +1,9 @@
-# Agents — Redirect
+# Agents
 
-> **This folder is a mirror entry point only.**
-> The single source of truth for all agents is `AgentSkills/agents/`.
->
-> Do **not** edit agent files here. Make all changes in `AgentSkills/agents/`.
+This folder is the canonical source of truth for agent definitions used by all AI tools and IDEs in this repository.
+
+Do not duplicate agent content under `.github/`, `.copilot/`, `.codex/`, or other tool-specific folders.
+Those tools should load agent definitions from this folder.
 
 ## Agent Locations (canonical paths)
 

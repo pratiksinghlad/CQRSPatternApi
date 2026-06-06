@@ -26,6 +26,6 @@ public class Request
     /// Determines if the request contains any operations to apply.
     /// </summary>
     /// <returns>True if at least one operation is present; otherwise, false</returns>
-    public bool HasAnyOperations() => 
+    public bool HasAnyOperations() =>
         PatchDocument?.Operations?.Count > 0;
 }

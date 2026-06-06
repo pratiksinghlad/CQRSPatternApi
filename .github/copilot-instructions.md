@@ -2,21 +2,26 @@
 
 ## Skills
 
-Load skills from `../AgentSkills/skill/` based on the task.
-See `../AgentSkills/skill/INDEX.md` for what to load and when.
+Load skills from `AgentSkills/skills/` based on the task.
+See `AgentSkills/skills/INDEX.md` for what to load and when.
 
 `AgentSkills/` is the single source of truth for skills and agents used by all tools
-(Codex, Copilot, Claude, Cursor, Antigravity). The folders `.github/skills/` and
-`.github/agents/` are redirect stubs only — do not edit skill or agent content there.
+(Codex, Copilot, Claude, Cursor, Antigravity). Do not duplicate skill or agent content
+under tool-specific folders such as `.github/`, `.copilot/`, or `.codex/`.
 
 ## Agents
 
-Load agents from `../AgentSkills/agents/` based on the task.
+Load agents from `AgentSkills/agents/` based on the task.
 
 | Agent | Load when |
 |---|---|
-| `../AgentSkills/agents/architect.agent.md` | Designing features, planning CQRS structure, SQL schema, MCP contracts |
-| `../AgentSkills/agents/developer.agent.md` | Implementing features in .NET C# |
+| `AgentSkills/agents/architect.agent.md` | Designing features, planning CQRS structure, SQL schema, MCP contracts |
+| `AgentSkills/agents/developer.agent.md` | Implementing features in .NET C# |
+
+## Memory & Lessons Learned
+
+- **Always read** `AgentSkills/memory/lessons.md` at the start of a task to load past project-specific memories.
+- **Log mistakes or lessons** at the end of the task in `AgentSkills/memory/lessons.md` to keep skills and agents working efficiently and prevent repeats of past issues.
 
 ## Project Rules
 
@@ -42,7 +47,7 @@ Load agents from `../AgentSkills/agents/` based on the task.
 
 Before finishing a task:
 
-- Run the pre-submit checklist in `../AgentSkills/skill/core/SKILL.md`.
+- Run the pre-submit checklist in `AgentSkills/skills/core/SKILL.md`.
 - Run `dotnet build` for all changed projects.
 - Run all relevant unit tests for changed files/projects and verify they pass without errors.
 - Run code-style and formatting checks enforced by `.editorconfig`.

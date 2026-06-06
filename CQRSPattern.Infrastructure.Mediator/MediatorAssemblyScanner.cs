@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Reflection;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR.Pipeline;
+using System.Collections;
+using System.Reflection;
 
 namespace CQRSPattern.Infrastructure.Mediator
 {

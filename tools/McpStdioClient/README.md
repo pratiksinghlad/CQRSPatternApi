@@ -14,6 +14,11 @@ Run a test request:
 dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\net10.0\CQRSPattern.McpServer.dll" "tools\McpStdioClient\request-get-all-employees.json"
 ```
 
+Call the get-by-id tool:
+```powershell
+dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\net10.0\CQRSPattern.McpServer.dll" "tools\McpStdioClient\request-call-get-employee-by-id.json"
+```
+
 Or query entities:
 ```powershell
 dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\net10.0\CQRSPattern.McpServer.dll" "tools\McpStdioClient\request-query-entities.json"
@@ -28,6 +33,7 @@ dotnet run --project tools\McpStdioClient -- "CQRSPattern.McpServer\bin\Debug\ne
 ## Request files
 
 - `request-get-all-employees.json` - calls the typed get_all_employees tool
+- `request-call-get-employee-by-id.json` - calls the typed get_employee_by_id tool
 - `request-query-entities.json` - calls the generic query_entities tool
 
 Edit these files to test different tool calls and parameters.

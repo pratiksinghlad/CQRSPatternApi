@@ -1,5 +1,6 @@
 using CQRSPattern.Application.Features.Employee;
 using CQRSPattern.Application.Features.Employee.GetAll;
+using CQRSPattern.Application.Features.Employee.GetById;
 using CQRSPattern.Application.Mediator;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,44 @@ public class EmployeesController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving employees", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets an employee by ID.
+    /// </summary>
+    /// <param name="id">The employee ID</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The employee model when found</returns>
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeModel))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<EmployeeModel>> GetByIdAsync(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid employee ID");
+            }
+
+            var scope = _factory.CreateScope();
+            var result = await scope.SendAsync(GetEmployeeByIdQuery.Create(id), cancellationToken);
+
+            if (result.Data is null)
+            {
+                return NotFound(new { message = $"Employee with ID {id} not found" });
+            }
+
+            return Ok(result.Data);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving the employee", error = ex.Message });
         }
     }
 

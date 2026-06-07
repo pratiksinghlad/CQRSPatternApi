@@ -24,8 +24,8 @@ Load agents from `AgentSkills/agents/` based on the task.
 
 ## Memory & Lessons Learned
 
-- **Always read** `AgentSkills/memory/lessons.md` at the start of a task to load past project-specific memories.
-- **Log mistakes or lessons** at the end of the task in `AgentSkills/memory/lessons.md` to keep skills and agents working efficiently and prevent repeats of past issues.
+- **Always read** `AgentSkills/memory/index.md` at task start. Load only the domain file(s) that match your task — do not load all domain files.
+- **Log a lesson** at task end only if you made a mistake or found a project-specific rule. Read `AgentSkills/memory/schema.md` for the one-line format, append to the correct domain file, then update the lesson count in `index.md`.
 
 ## Project Rules
 

@@ -39,9 +39,9 @@ description: >
 - [ ] Errors carry context (what failed, where, relevant IDs) — no bare "something went wrong".
 - [ ] Code is as simple as possible, but no simpler. No speculative generality.
 - [ ] Code is small and focused; if it grows, it should be split.
-- [] Structured log entries used; no raw string concatenation in logs.
-- [] Correlation/trace ID propagated on all cross-service calls.
-- [] All async operations have cancellation path.
+- [ ] Structured log entries used; no raw string concatenation in logs.
+- [ ] Correlation/trace ID propagated on all cross-service calls.
+- [ ] All async operations have cancellation path.
 - [ ] API responses use correct HTTP status codes (no 200 for errors).
 - [ ] Pagination/filtering implemented for any collection endpoint.
 - [ ] Breaking API changes go in a new version; existing contracts preserved.

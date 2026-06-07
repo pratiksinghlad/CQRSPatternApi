@@ -12,6 +12,11 @@ rules:
     action: allow
     priority: 10
 
+  - name: allow-get-employee-by-id
+    condition: "tool_name == 'get_employee_by_id'"
+    action: allow
+    priority: 10
+
   - name: allow-add-employee
     condition: "tool_name == 'add_employee'"
     action: allow

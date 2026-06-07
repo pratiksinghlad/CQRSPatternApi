@@ -1,5 +1,6 @@
 using CQRSPattern.Application.Features.Employee.Add;
 using CQRSPattern.Application.Features.Employee.GetAll;
+using CQRSPattern.Application.Features.Employee.GetById;
 using CQRSPattern.Application.Features.Employee.Patch;
 using CQRSPattern.Application.Features.Employee.Update;
 using CQRSPattern.Application.Mediator;
@@ -26,6 +27,31 @@ public static class EmployeeTools
     {
         var scope = mediatorFactory.CreateScope();
         var result = await scope.SendAsync(GetAllQuery.Create(), cancellationToken);
+
+        return result.Data;
+    }
+
+    /// <summary>
+    /// Retrieves one employee from the database by ID.
+    /// </summary>
+    [McpServerTool(Name = "get_employee_by_id")]
+    [Description("Retrieve a single employee by ID. Use this when you need to look up or verify one employee without fetching all employees.")]
+    public static async Task<object> GetEmployeeById(
+        [Description("The employee's unique ID")] int id,
+        IMediatorFactory mediatorFactory,
+        CancellationToken cancellationToken)
+    {
+        var scope = mediatorFactory.CreateScope();
+        var result = await scope.SendAsync(GetEmployeeByIdQuery.Create(id), cancellationToken);
+
+        if (result.Data is null)
+        {
+            return new
+            {
+                success = false,
+                message = $"Employee {id} was not found"
+            };
+        }
 
         return result.Data;
     }

@@ -96,6 +96,10 @@ rules:
     condition: "tool_name == 'get_all_employees'"
     action: allow
     priority: 10
+  - name: allow-get-employee-by-id
+    condition: "tool_name == 'get_employee_by_id'"
+    action: allow
+    priority: 10
   # ... one rule per tool
 ```
 
@@ -128,6 +132,7 @@ See **[README_MCP.md](README_MCP.md)** for detailed instructions on:
 | Method | Path | Description |
 |---|---|---|
 | `GET` | `/api/employees` | Get all employees |
+| `GET` | `/api/employees/{id}` | Get employee by ID |
 | `POST` | `/api/employees` | Create employee |
 | `PUT` | `/api/employees/{id}` | Full update |
 | `PATCH` | `/api/employees/{id}` | Partial update |

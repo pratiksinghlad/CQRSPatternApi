@@ -24,7 +24,17 @@ AgentSkills/
 │   └── developer.agent.md  ← C# / .NET implementation agent
 │
 └── memory/                 ← Persistent agent memories
-    └── lessons.md          ← Log of past mistakes, bugs, and rules to prevent them
+    ├── index.md            ← Router: always load this first; maps task type to domain file
+    ├── schema.md           ← Lesson logging format (load only when writing a lesson)
+    └── lessons/
+        ├── api.md          ← CQRS, MediatR, commands, queries, controllers
+        ├── db.md           ← EF Core, migrations, schema, repositories
+        ├── infra.md        ← Build, paths, CI, tooling, portability
+        ├── auth.md         ← Authentication, authorisation, JWT
+        ├── testing.md      ← xUnit, mocking, coverage
+        ├── csharp.md       ← C# language features, naming, async/await
+        ├── design.md       ← SOLID, CQRS, patterns, architecture decisions
+        └── mcp.md          ← MCP server tools, transports, contracts
 ```
 
 ---
@@ -32,14 +42,14 @@ AgentSkills/
 ## How It Works
 
 1. **Task Initialization**:
-   - The agent reads [AgentSkills/memory/lessons.md](memory/lessons.md) to load past lessons learned from mistakes on this specific project.
+   - The agent reads [AgentSkills/memory/index.md](memory/index.md) to identify relevant domains, then loads only the matching domain file(s) from `memory/lessons/`.
    - The agent reads [AgentSkills/skills/INDEX.md](skills/INDEX.md) to load the appropriate skills for the current task.
 
 2. **Core Checklist**:
    - Before finishing any task, the agent runs the checklist in [AgentSkills/skills/core/SKILL.md](skills/core/SKILL.md).
 
 3. **Memory Update**:
-   - If the agent makes a mistake, runs into a build/test issue, or corrects an implementation error, it logs the incident in [lessons.md](memory/lessons.md) to prevent repeat occurrences.
+   - If the agent makes a mistake or discovers a project-specific rule, it reads [memory/schema.md](memory/schema.md) for the one-line format, appends to the correct domain file, and increments the count in `index.md`.
 
 4. **Tool Entry Points**:
    - Codex reads `AGENTS.md`.

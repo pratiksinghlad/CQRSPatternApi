@@ -1,15 +1,14 @@
-# Agents
+# Skills
 
-This folder is the canonical source of truth for agent definitions used by all AI tools and IDEs in this repository.
+This folder is the canonical source of truth for reusable skills used by all AI tools and IDEs in this repository.
 
-Do not duplicate agent content under `.github/`, `.copilot/`, `.codex/`, or other tool-specific folders.
-Those tools should load agent definitions from this folder.
+Do not duplicate skill content under `.github/`, `.copilot/`, `.codex/`, or other tool-specific folders.
+Those tools should load skill definitions from this folder.
 
-## Agent Locations (canonical paths)
+## Skill Index
 
-| Agent | Canonical Path |
-|---|---|
-| architect | `AgentSkills/agents/architect.agent.md` |
-| developer | `AgentSkills/agents/developer.agent.md` |
+Start with `AgentSkills/skills/INDEX.md`, then load only the skills that match the task.
 
-All agents and tools (Copilot, Codex, Claude, Cursor, Antigravity) load agents from `AgentSkills/agents/`.
+## Harness Skill
+
+Use `AgentSkills/skills/harness/SKILL.md` when changing guides, sensors, hooks, CI, validation, or operational guardrails.

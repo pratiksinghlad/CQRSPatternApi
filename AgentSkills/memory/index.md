@@ -9,7 +9,7 @@ Do NOT load domain files you do not need. Never load all files at once.
 |--------|-----------|------|---------|
 | api | CQRS, MediatR, commands, queries, controllers, endpoints | [lessons/api.md](lessons/api.md) | 1 |
 | db | EF Core, migrations, schema, seeding, repositories | [lessons/db.md](lessons/db.md) | 0 |
-| infra | Build, paths, CI, tooling, portability, AgentSkills setup | [lessons/infra.md](lessons/infra.md) | 3 |
+| infra | Build, paths, CI, tooling, portability, AgentSkills setup | [lessons/infra.md](lessons/infra.md) | 4 |
 | auth | Authentication, authorisation, JWT, policies, claims | [lessons/auth.md](lessons/auth.md) | 0 |
 | testing | xUnit, test data, mocking, coverage, assertions | [lessons/testing.md](lessons/testing.md) | 0 |
 | csharp | C# language features, async/await, naming, code style | [lessons/csharp.md](lessons/csharp.md) | 0 |

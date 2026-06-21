@@ -12,17 +12,14 @@ public class WeatherForecastController : ControllerBase
 {
     private readonly IWeatherForecastRepository _repository;
     private readonly ServerSentEventsService _sseService;
-    private readonly ILogger<WeatherForecastController> _logger;
 
     public WeatherForecastController(
         IWeatherForecastRepository repository,
-        ServerSentEventsService sseService,
-        ILogger<WeatherForecastController> logger
+        ServerSentEventsService sseService
     )
     {
         _repository = repository;
         _sseService = sseService;
-        _logger = logger;
 
         // Subscribe to data change events
         _repository.OnDataChange += async (forecast) =>

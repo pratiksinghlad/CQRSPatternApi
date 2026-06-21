@@ -9,7 +9,7 @@ public class ReadDbContext : BaseDbContext, IDatabaseContext
 {
     private readonly string _connectionString;
     private readonly int _timeout;
-    private readonly ILogger _logger;
+    private readonly ILogger? _logger;
 
     public ReadDbContext(string connectionString)
         : base()
@@ -54,7 +54,9 @@ public class ReadDbContext : BaseDbContext, IDatabaseContext
             }
         );
 
-        if (_logger != null)
-            optionsBuilder.LogTo(msg => _logger.LogDebug(msg, null));
+        if (_logger is not null)
+        {
+            optionsBuilder.LogTo(message => _logger.LogDebug("{Message}", message));
+        }
     }
 }

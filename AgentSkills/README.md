@@ -16,7 +16,8 @@ AgentSkills/
 │   ├── dotnet-best-practices/ ← General .NET and EF Core best practices
 │   ├── csharp-xunit/       ← Unit testing guidelines using xUnit
 │   ├── mcp_dotnet/         ← Model Context Protocol tool rules
-│   └── dotnet-api/         ← RESTful API URL structure, pipeline, and OpenAPI rules
+│   ├── dotnet-api/         ← RESTful API URL structure, pipeline, and OpenAPI rules
+│   └── harness/            ← Guide and sensor setup for agent operations
 │
 ├── agents/                 ← Custom agent definition personas
 │   ├── README.md           ← Agent index and canonical path instructions
@@ -58,4 +59,4 @@ AgentSkills/
    - Tool-specific files point back to `AgentSkills/`; skill and agent content is not duplicated.
 
 5. **Integration Hooks**:
-   - A post-tool-use hook is configured in `.github/hooks/build_test_lint.json` to automatically compile, run unit tests, and perform style formatting checks/fixes after any code modification.
+   - A post-tool-use hook is configured in `.github/hooks/build_test_lint.json` to run the shared harness sensor at `tools/Harness/validate.ps1`.

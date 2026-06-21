@@ -17,3 +17,4 @@ All AI tools and IDEs should load skills from this folder.
 | **csharp-xunit** | Get best practices for XUnit unit testing, including data-driven tests | [SKILL.md](csharp-xunit/SKILL.md) |
 | **mcp_dotnet** | Building, reviewing, or extending .NET MCP server tools, transports, and integration points | [SKILL.md](mcp_dotnet/SKILL.md) |
 | **dotnet-api** | Creating, structuring, or reviewing .NET 10 Web API projects with Swagger/OpenAPI, CORS, compression, auth, versioning, and error handling | [SKILL.md](dotnet-api/SKILL.md) |
+| **harness** | Changing agent instructions, validation scripts, CI workflows, hooks, or operational guardrails | [SKILL.md](harness/SKILL.md) |

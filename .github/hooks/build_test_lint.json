@@ -3,7 +3,7 @@
 		"PostToolUse": [
 			{
 				"type": "command",
-				"command": "dotnet build; if ($?) { dotnet test; if ($?) { dotnet format --verify-no-changes; if (-not $?) { dotnet format } } }"
+				"command": "pwsh ./tools/Harness/validate.ps1 -Configuration Debug"
 			}
 		]
 	}

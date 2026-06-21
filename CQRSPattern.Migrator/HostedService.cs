@@ -32,10 +32,10 @@ public class HostedService : IHostedService
         _logger.LogInformation($"1. {nameof(StartAsync)} has been called.");
 
         _logger.LogInformation($"Migrating database ...");
-        using var dbContext = new ReadDbContext(
-            _configuration.GetConnectionString(Database.ConnectionStringWriteDbName),
-            120
-        );
+        var connectionString = _configuration.GetConnectionString(Database.ConnectionStringWriteDbName)
+            ?? throw new InvalidOperationException("Write database connection string is not configured.");
+
+        using var dbContext = new ReadDbContext(connectionString, 120);
         await dbContext.Database.MigrateAsync(cancellationToken);
         _logger.LogInformation($"Migration done ...");
 

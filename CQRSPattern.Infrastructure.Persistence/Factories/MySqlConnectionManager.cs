@@ -11,7 +11,7 @@ public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<MySqlConnectionManager> _logger;
-    private MySqlConnection _mySqlConnection;
+    private MySqlConnection? _mySqlConnection;
     private bool _disposed;
     private readonly SemaphoreSlim _lock = new(1, 1);
 
@@ -38,7 +38,9 @@ public class MySqlConnectionManager : IMySqlConnectionManager, IDisposable
 
             var connectionString = _configuration.GetConnectionString(
                 Application.Constants.Database.ConnectionStringWriteDbName
-            );
+            ) ?? throw new InvalidOperationException("Write database connection string is not configured.");
+
+            _logger.LogDebug("Creating MySQL write database connection.");
             _mySqlConnection = new MySqlConnection(connectionString);
             return _mySqlConnection;
         }

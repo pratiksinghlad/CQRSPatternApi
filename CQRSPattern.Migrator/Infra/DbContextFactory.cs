@@ -21,8 +21,9 @@ public class DbContextFactory : IDesignTimeDbContextFactory<ReadDbContext>
             .AddJsonFile("secrets/appsettings.secrets.json")
             .Build();
 
-        return new ReadDbContext(
-            configuration.GetConnectionString(Database.ConnectionStringWriteDbName)
-        );
+        var connectionString = configuration.GetConnectionString(Database.ConnectionStringWriteDbName)
+            ?? throw new InvalidOperationException("Write database connection string is not configured.");
+
+        return new ReadDbContext(connectionString);
     }
 }

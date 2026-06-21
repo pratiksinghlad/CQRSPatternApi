@@ -8,12 +8,12 @@ public class ConnectionStrings
     /// <summary>
     /// Connection string to the read database
     /// </summary>
-    public string ReadDb { get; set; }
+    public string ReadDb { get; set; } = string.Empty;
 
     /// <summary>
     /// Connection string to the write database
     /// </summary>
-    public string WriteDb { get; set; }
+    public string WriteDb { get; set; } = string.Empty;
 
     /// <summary>
     /// Timeout of query

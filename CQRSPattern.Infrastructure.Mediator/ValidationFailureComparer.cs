@@ -14,7 +14,7 @@ namespace CQRSPattern.Infrastructure.Mediator
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public bool Equals(ValidationFailure x, ValidationFailure y)
+        public bool Equals(ValidationFailure? x, ValidationFailure? y)
         {
             return x?.ErrorMessage == y?.ErrorMessage && x?.Severity == y?.Severity;
         }

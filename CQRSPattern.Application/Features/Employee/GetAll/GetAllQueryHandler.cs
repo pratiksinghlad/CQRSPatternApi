@@ -17,7 +17,7 @@ public class GetAllQueryHandler : IRequestHandler<GetAllQuery, GetAllQueryResult
         CancellationToken cancellationToken
     )
     {
-        if (_cache.TryGetValue("key", out GetAllQueryResult? cachedValue))
+        if (_cache.TryGetValue("key", out GetAllQueryResult? cachedValue) && cachedValue is not null)
         {
             return cachedValue;
         }

@@ -32,7 +32,7 @@ public class AddEmployeeCommandValidatorTest
         // Arrange: Create the AddEmployeeCommand with the parameters provided by InlineData
         var command = new AddEmployeeCommand
         {
-            FirstName = firstName,
+            FirstName = firstName!,
             LastName = lastName,
             Gender = gender,
             HireDate = DateTime.Parse(hireDate),

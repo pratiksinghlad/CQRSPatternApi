@@ -5,5 +5,5 @@ public class GetAllQueryResult
     /// <summary>
     /// Result of queried workitems.
     /// </summary>
-    public IEnumerable<EmployeeModel> Data { get; set; }
+    public IEnumerable<EmployeeModel> Data { get; set; } = [];
 }

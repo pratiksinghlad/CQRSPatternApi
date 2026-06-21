@@ -150,6 +150,21 @@ dotnet test --collect:"XPlat Code Coverage"
 
 Tests cover application logic (xUnit), persistence (xUnit + EF InMemory), and architecture rules (NetArchTest).
 
+## 🤖 Agent Harness
+
+This repo keeps agent guidance and validation in one place:
+
+- Guides: `AGENTS.md`, `AgentSkills/skills/INDEX.md`, `AgentSkills/agents/`, `AgentSkills/memory/index.md`
+- Sensors: `tools/Harness/validate.ps1`, `.github/workflows/dotnet.yml`, `.editorconfig`
+
+Run the full harness before handoff:
+
+```powershell
+pwsh ./tools/Harness/validate.ps1
+```
+
+See [docs/HARNESS.md](docs/HARNESS.md) for the concise setup.
+
 ## 📘 Architecture Details
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — Diagrams and patterns.

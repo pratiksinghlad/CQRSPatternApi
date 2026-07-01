@@ -31,6 +31,22 @@ Use this skill when adding or changing guide rails, validation, recovery, or fee
 - Use inferential review only after computational checks pass.
 - Keep harness changes small, readable, and easy to remove.
 
+## Agent and IDE Entry Point Contract
+
+All coding agents and AI-enabled IDEs must start from
+`AgentSkills/OPERATING.md`.
+
+Tool-specific entry points must be short router files that:
+
+- Identify themselves as lightweight entry points.
+- Point to `AgentSkills/OPERATING.md`.
+- Point to `AgentSkills/skills/INDEX.md` for skill routing.
+- Point to `AgentSkills/agents/` for optional role definitions.
+- Avoid duplicating project rules, checklists, memory instructions, or skill content.
+
+When a new agent or IDE integration is added, create only the smallest entry
+point required by that tool and route it back to `AgentSkills/`.
+
 ## Validation
 
 Run the shared sensor before finishing changes:

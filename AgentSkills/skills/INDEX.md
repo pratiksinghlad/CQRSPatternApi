@@ -1,6 +1,7 @@
 # Skills Index
 
 Load the relevant skill from `AgentSkills/skills/` before starting any task.
+Start with `AgentSkills/OPERATING.md` for the shared prerequisite and completion workflow.
 
 `AgentSkills/` is the single source of truth for all skills and agents.
 Do not duplicate skill content under `.github/`, `.copilot/`, `.codex/`, or other tool-specific folders.

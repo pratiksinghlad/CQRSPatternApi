@@ -21,30 +21,63 @@ description: >
 
 8. **Prefer Reversible Moves** – When two approaches solve the problem equally well, choose the one that can be undone. Flag irreversible changes (schema drops, destructive migrations, hard deletes) explicitly before executing them.
 
+## Prerequisite Gate
+
+Every task starts with the shared operating contract in
+`AgentSkills/OPERATING.md`.
+
+Before editing, confirm that you have:
+
+- [ ] Read `AgentSkills/memory/index.md` and loaded only the relevant domain
+      lesson file(s).
+- [ ] Read `AgentSkills/skills/INDEX.md`.
+- [ ] Loaded this core skill.
+- [ ] Loaded task-specific skills and agent definitions only when they apply.
+- [ ] Identified the expected verification command(s).
+- [ ] Checked the worktree context so existing user changes are preserved.
+
 ## Pre-submit Checklist
 
-- [ ] No magic literals: important values are named.
-- [ ] Each function does exactly one thing.
+### Scope
+
+- [ ] Only required files changed; no unrelated refactors or metadata churn.
+- [ ] Public documentation changed only when behavior, setup, commands, or usage changed.
+- [ ] Commit message states what changed and why, when a commit is made.
+- [ ] Memory was updated only if a mistake or durable project-specific rule was discovered.
+
+### Design and Maintainability
+
+- [ ] Code is as simple as possible, but no simpler.
+- [ ] No speculative generality or unused extension points.
+- [ ] Each function does one thing.
 - [ ] No argument list longer than 4; use an object, options type, or record.
 - [ ] No nesting deeper than 2 levels; prefer early returns.
-- [ ] No duplicated logic; shared behavior is extracted.
-- [ ] No comment merely restates the code.
-- [ ] No race condition on shared mutable state.
-- [ ] Commit message states what changed and why, when a commit is made.
-- [ ] Only required code changed; nothing extra.
+- [ ] No duplicated logic; shared behavior is extracted only when it is real reuse.
 - [ ] SOLID respected, especially Single Responsibility.
-- [ ] Checked `AgentSkills/memory/index.md`, loaded relevant domain lessons, and appended any new lesson to the correct domain file.
-- [ ] No sensitive data (keys, PII, tokens) in logs, errors, or responses.
-- [ ] All external inputs validated before use; outputs sanitized before rendering.
-- [ ] Errors carry context (what failed, where, relevant IDs) — no bare "something went wrong".
-- [ ] Code is as simple as possible, but no simpler. No speculative generality.
-- [ ] Code is small and focused; if it grows, it should be split.
-- [ ] Structured log entries used; no raw string concatenation in logs.
-- [ ] Correlation/trace ID propagated on all cross-service calls.
-- [ ] All async operations have cancellation path.
-- [ ] API responses use correct HTTP status codes (no 200 for errors).
-- [ ] Pagination/filtering implemented for any collection endpoint.
-- [ ] Breaking API changes go in a new version; existing contracts preserved.
-- [ ] Tests cover the failure path, not just the happy path.
-- [ ] Test names describe behavior, not implementation ("returns 404 when user not found", not "testGetUser").
-- [ ] No test depends on external state or order of execution.
+- [ ] Important values are named; no magic literals.
+- [ ] Comments explain why, not what the code already says.
+
+### Reliability and Security
+
+- [ ] No race condition on shared mutable state.
+- [ ] All async operations have a cancellation path.
+- [ ] No sensitive data such as keys, PII, or tokens appears in logs, errors, commits, or responses.
+- [ ] External inputs are validated before use.
+- [ ] Rendered outputs are sanitized where applicable.
+- [ ] Errors include useful context: what failed, where, and relevant IDs.
+- [ ] Structured log entries are used; no raw string concatenation in logs.
+- [ ] Correlation or trace IDs are propagated on cross-service calls.
+
+### API and Contract Behavior
+
+- [ ] API responses use correct HTTP status codes; errors are not returned as `200`.
+- [ ] Collection endpoints include pagination and filtering where applicable.
+- [ ] Existing API contracts are preserved unless a versioned breaking change is intentional.
+- [ ] MCP, REST, and application contracts stay aligned when they expose the same behavior.
+
+### Tests and Verification
+
+- [ ] Tests cover failure paths, not just happy paths.
+- [ ] Test names describe behavior, not implementation.
+- [ ] Tests do not depend on external state or execution order.
+- [ ] Relevant build, test, format, and harness commands were run, or skipped with a clear reason.

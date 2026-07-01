@@ -4,6 +4,7 @@ This folder is the canonical source of truth for agent definitions used by all A
 
 Do not duplicate agent content under `.github/`, `.copilot/`, `.codex/`, or other tool-specific folders.
 Those tools should load agent definitions from this folder.
+Complete `AgentSkills/OPERATING.md` before loading a task-specific agent definition.
 
 ## Agent Locations (canonical paths)
 

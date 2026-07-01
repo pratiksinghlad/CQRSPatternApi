@@ -43,11 +43,12 @@ AgentSkills/
 ## How It Works
 
 1. **Task Initialization**:
+   - The agent starts with [AgentSkills/OPERATING.md](OPERATING.md), the shared operating contract for all coding agents and AI-enabled IDEs.
    - The agent reads [AgentSkills/memory/index.md](memory/index.md) to identify relevant domains, then loads only the matching domain file(s) from `memory/lessons/`.
-   - The agent reads [AgentSkills/skills/INDEX.md](skills/INDEX.md) to load the appropriate skills for the current task.
+   - The agent reads [AgentSkills/skills/INDEX.md](skills/INDEX.md) to load `core` and any task-specific skills.
 
 2. **Core Checklist**:
-   - Before finishing any task, the agent runs the checklist in [AgentSkills/skills/core/SKILL.md](skills/core/SKILL.md).
+   - Before finishing any task, the agent runs the prerequisite and pre-submit checklists in [AgentSkills/skills/core/SKILL.md](skills/core/SKILL.md).
 
 3. **Memory Update**:
    - If the agent makes a mistake or discovers a project-specific rule, it reads [memory/schema.md](memory/schema.md) for the one-line format, appends to the correct domain file, and increments the count in `index.md`.
@@ -56,7 +57,8 @@ AgentSkills/
    - Codex reads `AGENTS.md`.
    - Claude reads `CLAUDE.md`.
    - GitHub Copilot reads `.github/copilot-instructions.md`.
-   - Tool-specific files point back to `AgentSkills/`; skill and agent content is not duplicated.
+   - Other coding IDEs and agents read their configured lightweight entry point.
+   - Tool-specific files point back to `AgentSkills/OPERATING.md`; skill, agent, memory, checklist, and project-rule content is not duplicated.
 
 5. **Integration Hooks**:
    - A post-tool-use hook is configured in `.github/hooks/build_test_lint.json` to run the shared harness sensor at `tools/Harness/validate.ps1`.

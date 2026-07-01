@@ -5,6 +5,9 @@ namespace CQRSPattern.Infrastructure.Persistence.Database;
 
 public sealed class FakeDbContext : BaseDbContext
 {
+    private readonly string _databaseName = $"FakeDbInstance-{Guid.NewGuid():N}";
+    private readonly InMemoryDatabaseRoot _databaseRoot = new();
+
     public FakeDbContext()
     {
         Database.EnsureCreated();
@@ -14,12 +17,10 @@ public sealed class FakeDbContext : BaseDbContext
     {
         base.OnConfiguring(optionsBuilder);
 
-        var randomUniqueInMemoryDatabaseInstanceName = "FakeDbInstance";
-
         optionsBuilder
             .UseInMemoryDatabase(
-                randomUniqueInMemoryDatabaseInstanceName,
-                new InMemoryDatabaseRoot()
+                _databaseName,
+                _databaseRoot
             )
             .EnableServiceProviderCaching(false);
     }
@@ -27,5 +28,6 @@ public sealed class FakeDbContext : BaseDbContext
     public override void Dispose()
     {
         Database.EnsureDeleted();
+        base.Dispose();
     }
 }
